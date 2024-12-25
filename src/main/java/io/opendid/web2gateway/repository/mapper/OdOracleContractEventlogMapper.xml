@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.OdOracleContractEventlogMapper">
+  <resultMap id="BaseResultMap" type="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
+    <id column="log_id" jdbcType="BIGINT" property="logId" />
+    <result column="request_id" jdbcType="VARCHAR" property="requestId" />
+    <result column="vn_code" jdbcType="VARCHAR" property="vnCode" />
+    <result column="job_id" jdbcType="VARCHAR" property="jobId" />
+    <result column="job_id_fee" jdbcType="BIGINT" property="jobIdFee" />
+    <result column="platform_code" jdbcType="VARCHAR" property="platformCode" />
+    <result column="process_status" jdbcType="INTEGER" property="processStatus" />
+    <result column="callback_oracle_hash" jdbcType="VARCHAR" property="callbackOracleHash" />
+    <result column="trace_id" jdbcType="VARCHAR" property="traceId" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="next_execute_time" jdbcType="BIGINT" property="nextExecuteTime" />
+    <result column="execute_count" jdbcType="INTEGER" property="executeCount" />
+    <result column="request_oracle_hash" jdbcType="VARCHAR" property="requestOracleHash" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
+    <result column="error_msg" jdbcType="LONGVARCHAR" property="errorMsg" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    log_id, request_id, vn_code, job_id, job_id_fee, platform_code, process_status, callback_oracle_hash, 
+    trace_id, create_date, update_date, next_execute_time, execute_count, request_oracle_hash
+  </sql>
+  <sql id="Blob_Column_List">
+    error_msg
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from od_oracle_contract_eventlog
+    where log_id = #{logId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from od_oracle_contract_eventlog
+    where log_id = #{logId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
+    insert into od_oracle_contract_eventlog (log_id, request_id, vn_code, 
+      job_id, job_id_fee, platform_code, 
+      process_status, callback_oracle_hash, trace_id, 
+      create_date, update_date, next_execute_time, 
+      execute_count, request_oracle_hash, error_msg
+      )
+    values (#{logId,jdbcType=BIGINT}, #{requestId,jdbcType=VARCHAR}, #{vnCode,jdbcType=VARCHAR}, 
+      #{jobId,jdbcType=VARCHAR}, #{jobIdFee,jdbcType=BIGINT}, #{platformCode,jdbcType=VARCHAR}, 
+      #{processStatus,jdbcType=INTEGER}, #{callbackOracleHash,jdbcType=VARCHAR}, #{traceId,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{nextExecuteTime,jdbcType=BIGINT}, 
+      #{executeCount,jdbcType=INTEGER}, #{requestOracleHash,jdbcType=VARCHAR}, #{errorMsg,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
+    insert into od_oracle_contract_eventlog
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="logId != null">
+        log_id,
+      </if>
+      <if test="requestId != null">
+        request_id,
+      </if>
+      <if test="vnCode != null">
+        vn_code,
+      </if>
+      <if test="jobId != null">
+        job_id,
+      </if>
+      <if test="jobIdFee != null">
+        job_id_fee,
+      </if>
+      <if test="platformCode != null">
+        platform_code,
+      </if>
+      <if test="processStatus != null">
+        process_status,
+      </if>
+      <if test="callbackOracleHash != null">
+        callback_oracle_hash,
+      </if>
+      <if test="traceId != null">
+        trace_id,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="nextExecuteTime != null">
+        next_execute_time,
+      </if>
+      <if test="executeCount != null">
+        execute_count,
+      </if>
+      <if test="requestOracleHash != null">
+        request_oracle_hash,
+      </if>
+      <if test="errorMsg != null">
+        error_msg,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="logId != null">
+        #{logId,jdbcType=BIGINT},
+      </if>
+      <if test="requestId != null">
+        #{requestId,jdbcType=VARCHAR},
+      </if>
+      <if test="vnCode != null">
+        #{vnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="jobId != null">
+        #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="jobIdFee != null">
+        #{jobIdFee,jdbcType=BIGINT},
+      </if>
+      <if test="platformCode != null">
+        #{platformCode,jdbcType=VARCHAR},
+      </if>
+      <if test="processStatus != null">
+        #{processStatus,jdbcType=INTEGER},
+      </if>
+      <if test="callbackOracleHash != null">
+        #{callbackOracleHash,jdbcType=VARCHAR},
+      </if>
+      <if test="traceId != null">
+        #{traceId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nextExecuteTime != null">
+        #{nextExecuteTime,jdbcType=BIGINT},
+      </if>
+      <if test="executeCount != null">
+        #{executeCount,jdbcType=INTEGER},
+      </if>
+      <if test="requestOracleHash != null">
+        #{requestOracleHash,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null">
+        #{errorMsg,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
+    update od_oracle_contract_eventlog
+    <set>
+      <if test="requestId != null">
+        request_id = #{requestId,jdbcType=VARCHAR},
+      </if>
+      <if test="vnCode != null">
+        vn_code = #{vnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="jobId != null">
+        job_id = #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="jobIdFee != null">
+        job_id_fee = #{jobIdFee,jdbcType=BIGINT},
+      </if>
+      <if test="platformCode != null">
+        platform_code = #{platformCode,jdbcType=VARCHAR},
+      </if>
+      <if test="processStatus != null">
+        process_status = #{processStatus,jdbcType=INTEGER},
+      </if>
+      <if test="callbackOracleHash != null">
+        callback_oracle_hash = #{callbackOracleHash,jdbcType=VARCHAR},
+      </if>
+      <if test="traceId != null">
+        trace_id = #{traceId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nextExecuteTime != null">
+        next_execute_time = #{nextExecuteTime,jdbcType=BIGINT},
+      </if>
+      <if test="executeCount != null">
+        execute_count = #{executeCount,jdbcType=INTEGER},
+      </if>
+      <if test="requestOracleHash != null">
+        request_oracle_hash = #{requestOracleHash,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null">
+        error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where log_id = #{logId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
+    update od_oracle_contract_eventlog
+    set request_id = #{requestId,jdbcType=VARCHAR},
+      vn_code = #{vnCode,jdbcType=VARCHAR},
+      job_id = #{jobId,jdbcType=VARCHAR},
+      job_id_fee = #{jobIdFee,jdbcType=BIGINT},
+      platform_code = #{platformCode,jdbcType=VARCHAR},
+      process_status = #{processStatus,jdbcType=INTEGER},
+      callback_oracle_hash = #{callbackOracleHash,jdbcType=VARCHAR},
+      trace_id = #{traceId,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      next_execute_time = #{nextExecuteTime,jdbcType=BIGINT},
+      execute_count = #{executeCount,jdbcType=INTEGER},
+      request_oracle_hash = #{requestOracleHash,jdbcType=VARCHAR},
+      error_msg = #{errorMsg,jdbcType=LONGVARCHAR}
+    where log_id = #{logId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
+    update od_oracle_contract_eventlog
+    set request_id = #{requestId,jdbcType=VARCHAR},
+      vn_code = #{vnCode,jdbcType=VARCHAR},
+      job_id = #{jobId,jdbcType=VARCHAR},
+      job_id_fee = #{jobIdFee,jdbcType=BIGINT},
+      platform_code = #{platformCode,jdbcType=VARCHAR},
+      process_status = #{processStatus,jdbcType=INTEGER},
+      callback_oracle_hash = #{callbackOracleHash,jdbcType=VARCHAR},
+      trace_id = #{traceId,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      next_execute_time = #{nextExecuteTime,jdbcType=BIGINT},
+      execute_count = #{executeCount,jdbcType=INTEGER},
+      request_oracle_hash = #{requestOracleHash,jdbcType=VARCHAR}
+    where log_id = #{logId,jdbcType=BIGINT}
+  </update>
+</mapper>

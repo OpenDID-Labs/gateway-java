@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!-- Global parameters -->
+    <settings>
+        <!-- Enable or disable caching for the global mapper。 -->
+        <setting name="cacheEnabled" value="true"/>
+        <!-- Enable or disable lazy loading globally. When disabled, all associated objects will be loaded instantly。 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!-- When enabled, objects with lazy loading properties will be fully loaded with arbitrary properties when called. Otherwise, each attribute will be loaded as needed。 -->
+        <setting name="aggressiveLazyLoading" value="true"/>
+        <!-- When set but the JDBC type is empty, some drivers need to specify the value, default: OTHER, do not need to specify the type when inserting a null value -->
+        <setting name="jdbcTypeForNull" value="NULL"/>
+
+        <!--Available when querying using interface annotations-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+
+</configuration>

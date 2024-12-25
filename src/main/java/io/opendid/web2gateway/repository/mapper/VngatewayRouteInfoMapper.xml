@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.VngatewayRouteInfoMapper">
+  <resultMap id="BaseResultMap" type="io.opendid.web2gateway.repository.model.VngatewayRouteInfo">
+    <id column="route_id" jdbcType="BIGINT" property="routeId" />
+    <result column="vn_code" jdbcType="VARCHAR" property="vnCode" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="ssl_enabled" jdbcType="INTEGER" property="sslEnabled" />
+    <result column="gateway_disable" jdbcType="INTEGER" property="gatewayDisable" />
+    <result column="client_id" jdbcType="VARCHAR" property="clientId" />
+    <result column="client_secret" jdbcType="VARCHAR" property="clientSecret" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    route_id, vn_code, url, ssl_enabled, gateway_disable, client_id, client_secret, update_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from vngateway_route_info
+    where route_id = #{routeId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from vngateway_route_info
+    where route_id = #{routeId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.VngatewayRouteInfo">
+    insert into vngateway_route_info (route_id, vn_code, url, 
+      ssl_enabled, gateway_disable, client_id, 
+      client_secret, update_date)
+    values (#{routeId,jdbcType=BIGINT}, #{vnCode,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{sslEnabled,jdbcType=INTEGER}, #{gatewayDisable,jdbcType=INTEGER}, #{clientId,jdbcType=VARCHAR}, 
+      #{clientSecret,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.VngatewayRouteInfo">
+    insert into vngateway_route_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="routeId != null">
+        route_id,
+      </if>
+      <if test="vnCode != null">
+        vn_code,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="sslEnabled != null">
+        ssl_enabled,
+      </if>
+      <if test="gatewayDisable != null">
+        gateway_disable,
+      </if>
+      <if test="clientId != null">
+        client_id,
+      </if>
+      <if test="clientSecret != null">
+        client_secret,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="routeId != null">
+        #{routeId,jdbcType=BIGINT},
+      </if>
+      <if test="vnCode != null">
+        #{vnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="sslEnabled != null">
+        #{sslEnabled,jdbcType=INTEGER},
+      </if>
+      <if test="gatewayDisable != null">
+        #{gatewayDisable,jdbcType=INTEGER},
+      </if>
+      <if test="clientId != null">
+        #{clientId,jdbcType=VARCHAR},
+      </if>
+      <if test="clientSecret != null">
+        #{clientSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="io.opendid.web2gateway.repository.model.VngatewayRouteInfo">
+    update vngateway_route_info
+    <set>
+      <if test="vnCode != null">
+        vn_code = #{vnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="sslEnabled != null">
+        ssl_enabled = #{sslEnabled,jdbcType=INTEGER},
+      </if>
+      <if test="gatewayDisable != null">
+        gateway_disable = #{gatewayDisable,jdbcType=INTEGER},
+      </if>
+      <if test="clientId != null">
+        client_id = #{clientId,jdbcType=VARCHAR},
+      </if>
+      <if test="clientSecret != null">
+        client_secret = #{clientSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where route_id = #{routeId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.VngatewayRouteInfo">
+    update vngateway_route_info
+    set vn_code = #{vnCode,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      ssl_enabled = #{sslEnabled,jdbcType=INTEGER},
+      gateway_disable = #{gatewayDisable,jdbcType=INTEGER},
+      client_id = #{clientId,jdbcType=VARCHAR},
+      client_secret = #{clientSecret,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where route_id = #{routeId,jdbcType=BIGINT}
+  </update>
+</mapper>

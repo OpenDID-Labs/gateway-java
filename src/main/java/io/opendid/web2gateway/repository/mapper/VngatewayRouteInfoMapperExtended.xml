@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.VngatewayRouteInfoMapper">
+
+  <select id="selectByJobId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+      vri.*
+    FROM
+        vngateway_route_info AS vri
+    LEFT JOIN vngateway_jobid_mapping AS vjm ON vri.vn_code = vjm.vn_code
+    WHERE
+        vjm.job_id = #{jobId}
+  </select>
+
+  <update id="updateByVnCodeSelective" parameterType="io.opendid.web2gateway.repository.model.VngatewayRouteInfo">
+    update vngateway_route_info
+    <set>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="sslEnabled != null">
+        ssl_enabled = #{sslEnabled,jdbcType=INTEGER},
+      </if>
+      <if test="gatewayDisable != null">
+        gateway_disable = #{gatewayDisable,jdbcType=INTEGER},
+      </if>
+      <if test="clientId != null">
+        client_id = #{clientId,jdbcType=VARCHAR},
+      </if>
+      <if test="clientSecret != null">
+        client_secret = #{clientSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where vn_code = #{vnCode,jdbcType=VARCHAR}
+  </update>
+
+
+  <select id="selectByVnCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from vngateway_route_info
+    where vn_code = #{vnCode}
+  </select>
+
+  <delete id="deleteAll" parameterType="java.lang.Long">
+    delete from vngateway_route_info;
+  </delete>
+
+</mapper>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.OracleMsgRecordMapper">
+  <resultMap id="BaseResultMap" type="io.opendid.web2gateway.repository.model.OracleMsgRecord">
+    <id column="msg_id" jdbcType="BIGINT" property="msgId" />
+    <result column="vn_code" jdbcType="VARCHAR" property="vnCode" />
+    <result column="request_id" jdbcType="VARCHAR" property="requestId" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs">
+    <result column="request_body" jdbcType="LONGVARCHAR" property="requestBody" />
+    <result column="response_body" jdbcType="LONGVARCHAR" property="responseBody" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    msg_id, vn_code, request_id, create_date, update_date
+  </sql>
+  <sql id="Blob_Column_List">
+    request_body, response_body
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from oracle_msg_record
+    where msg_id = #{msgId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from oracle_msg_record
+    where msg_id = #{msgId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs">
+    insert into oracle_msg_record (msg_id, vn_code, request_id, 
+      create_date, update_date, request_body, 
+      response_body)
+    values (#{msgId,jdbcType=BIGINT}, #{vnCode,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{requestBody,jdbcType=LONGVARCHAR}, 
+      #{responseBody,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs">
+    insert into oracle_msg_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="msgId != null">
+        msg_id,
+      </if>
+      <if test="vnCode != null">
+        vn_code,
+      </if>
+      <if test="requestId != null">
+        request_id,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="requestBody != null">
+        request_body,
+      </if>
+      <if test="responseBody != null">
+        response_body,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="msgId != null">
+        #{msgId,jdbcType=BIGINT},
+      </if>
+      <if test="vnCode != null">
+        #{vnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="requestId != null">
+        #{requestId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="requestBody != null">
+        #{requestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="responseBody != null">
+        #{responseBody,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs">
+    update oracle_msg_record
+    <set>
+      <if test="vnCode != null">
+        vn_code = #{vnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="requestId != null">
+        request_id = #{requestId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="requestBody != null">
+        request_body = #{requestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="responseBody != null">
+        response_body = #{responseBody,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where msg_id = #{msgId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs">
+    update oracle_msg_record
+    set vn_code = #{vnCode,jdbcType=VARCHAR},
+      request_id = #{requestId,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      request_body = #{requestBody,jdbcType=LONGVARCHAR},
+      response_body = #{responseBody,jdbcType=LONGVARCHAR}
+    where msg_id = #{msgId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.OracleMsgRecord">
+    update oracle_msg_record
+    set vn_code = #{vnCode,jdbcType=VARCHAR},
+      request_id = #{requestId,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where msg_id = #{msgId,jdbcType=BIGINT}
+  </update>
+</mapper>

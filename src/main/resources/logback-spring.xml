@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+
+    <springProperty scope="context" name="LOG_HOME" source="logging.logpath"/>
+    <springProperty scope="context" name="LOG_APP_NAME" source="spring.application.name"/>
+    <springProperty scope="context" name="LOG_MAX_HISTORY_DAY" source="logging.logMaxHistoryDay"/>
+
+    <!--Console output appender-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!--Set output format-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--Formatted output: %d represents the date, %thread represents the thread name,
+            %-5level: the level is displayed from the left with 5 characters width %msg: log message,
+            %n is a newline character-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %X{traceId} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <!--Set encoding-->
+            <!--            <charset>UTF-8</charset>-->
+        </encoder>
+    </appender>
+
+    <!--File output, time window scrolling-->
+    <appender name="timeFileOutput" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--Log name, specify the latest file name, other file names use FileNamePattern -->
+        <File>${LOG_HOME}/${LOG_APP_NAME}/log.log</File>
+        <!--File scrolling mode-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--The file name of the log file output, the file type can be set to gz, and the file compression is turned on-->
+            <FileNamePattern>${LOG_HOME}/backlogs/${LOG_APP_NAME}/info.%d{yyyy-MM-dd}.%i.log.gz</FileNamePattern>
+            <!--Number of days to keep log files-->
+            <MaxHistory>${LOG_MAX_HISTORY_DAY}</MaxHistory>
+            <!--Divide the same day by size-->
+            <maxFileSize>500MB</maxFileSize>
+<!--            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
+<!--                <maxFileSize>${LOGMAX_FILE_SIZE}</maxFileSize>-->
+<!--            </timeBasedFileNamingAndTriggeringPolicy>-->
+        </rollingPolicy>
+
+        <!--Output format-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--Formatted output: %d represents the date, %thread represents the thread name,
+            %-5level: the level is displayed from the left with 5 characters width %msg: log message,
+            %n is a newline character-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %X{traceId} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <!--Set encoding-->
+            <charset>UTF-8</charset>
+        </encoder>
+
+    </appender>
+
+
+
+    <!--Specify the basic log output level-->
+    <root level="INFO">
+        <appender-ref ref="console"/>
+        <appender-ref ref="timeFileOutput"/>
+    </root>
+</configuration>

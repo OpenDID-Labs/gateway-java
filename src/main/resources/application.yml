@@ -1,0 +1,58 @@
+server:
+  port: 8701
+
+spring:
+  application:
+    name: web2-gateway
+  profiles:
+    include: common,jdbcdruid
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 10.0.48.107:8848
+        username: nacos
+        password: nacos
+        namespace: ClientGateway-dev
+        group: DEFAULT_GROUP
+      config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+        username: ${spring.cloud.nacos.discovery.username}
+        password: ${spring.cloud.nacos.discovery.password}
+        namespace:  ${spring.cloud.nacos.discovery.namespace}
+        group:  ${spring.cloud.nacos.discovery.group}
+        preference: remote
+        file-extension: yaml
+  config:
+    import:
+      - optional:nacos:common.yaml?preference=remote&refreshEnabled=true
+      - optional:nacos:jdbcdruid.yaml?preference=remote&refreshEnabled=true
+  datasource:
+    url: ${mysql.master.url}
+    username: ${mysql.master.username}
+    password: ${mysql.master.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    enabled: true
+    locations: classpath:schema
+    baseline-on-migrate: true
+    sql-migration-prefix: clientgateway
+    clean-disabled: true
+    baseline-version: 1
+    encoding: utf-8
+    out-of-order: true
+    url: ${mysql.master.url}
+    user: ${mysql.master.username}
+    password: ${mysql.master.password}
+    placeholder-prefix: "#("
+    placeholder-suffix: ")"
+    validate-on-migrate: false
+
+mybatis:
+  mapper-locations: classpath:io/opendid/web2gateway/repository/mapper/*.xml
+  config-location: classpath:config/mybatis-config.xml
+
+logging:
+  logpath: d://opcLogs
+  logMaxHistoryDay: 20
+  level:
+    root: info

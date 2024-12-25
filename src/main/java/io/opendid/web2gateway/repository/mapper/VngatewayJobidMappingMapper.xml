@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.VngatewayJobidMappingMapper">
+  <resultMap id="BaseResultMap" type="io.opendid.web2gateway.repository.model.VngatewayJobidMapping">
+    <id column="vn_jobid_mappingid" jdbcType="BIGINT" property="vnJobidMappingid" />
+    <result column="job_id" jdbcType="VARCHAR" property="jobId" />
+    <result column="platform_code" jdbcType="VARCHAR" property="platformCode" />
+    <result column="vn_code" jdbcType="VARCHAR" property="vnCode" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    vn_jobid_mappingid, job_id, platform_code, vn_code, update_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from vngateway_jobid_mapping
+    where vn_jobid_mappingid = #{vnJobidMappingid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from vngateway_jobid_mapping
+    where vn_jobid_mappingid = #{vnJobidMappingid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.VngatewayJobidMapping">
+    insert into vngateway_jobid_mapping (vn_jobid_mappingid, job_id, platform_code, 
+      vn_code, update_date)
+    values (#{vnJobidMappingid,jdbcType=BIGINT}, #{jobId,jdbcType=VARCHAR}, #{platformCode,jdbcType=VARCHAR}, 
+      #{vnCode,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.VngatewayJobidMapping">
+    insert into vngateway_jobid_mapping
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="vnJobidMappingid != null">
+        vn_jobid_mappingid,
+      </if>
+      <if test="jobId != null">
+        job_id,
+      </if>
+      <if test="platformCode != null">
+        platform_code,
+      </if>
+      <if test="vnCode != null">
+        vn_code,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="vnJobidMappingid != null">
+        #{vnJobidMappingid,jdbcType=BIGINT},
+      </if>
+      <if test="jobId != null">
+        #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="platformCode != null">
+        #{platformCode,jdbcType=VARCHAR},
+      </if>
+      <if test="vnCode != null">
+        #{vnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="io.opendid.web2gateway.repository.model.VngatewayJobidMapping">
+    update vngateway_jobid_mapping
+    <set>
+      <if test="jobId != null">
+        job_id = #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="platformCode != null">
+        platform_code = #{platformCode,jdbcType=VARCHAR},
+      </if>
+      <if test="vnCode != null">
+        vn_code = #{vnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where vn_jobid_mappingid = #{vnJobidMappingid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.VngatewayJobidMapping">
+    update vngateway_jobid_mapping
+    set job_id = #{jobId,jdbcType=VARCHAR},
+      platform_code = #{platformCode,jdbcType=VARCHAR},
+      vn_code = #{vnCode,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where vn_jobid_mappingid = #{vnJobidMappingid,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,5 @@
+mysql:
+  master:
+    url: jdbc:mysql://192.168.1.57:3307/client_gateway_dev?characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: LoTsrcg5Bnvr

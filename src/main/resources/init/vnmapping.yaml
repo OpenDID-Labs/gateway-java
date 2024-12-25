@@ -1,0 +1,49 @@
+vn-mapping:
+  vninfo:
+    - vncode: 33cd9563e3734f8089ea6f2b6fc743e7
+      vnurl: http://127.0.0.1:8711
+      jobidmapping:
+        - jobid: 1028e09602ca4bdd89a6bba67212001f
+          platform: ENS
+        - jobid: 9330d9fc54ab48ada8373493b0ef9cf3
+          platform: REAL-DID
+        - jobid: 87e067aa13944a2496bb9cddf46a54a4
+          platform: REAL-DID
+        - jobid: c9e15e10962142109da0e5609ed98124
+          platform: REAL-DID
+        - jobid: 785bc6ee5a0c4feb9c422cdc233c510c
+          platform: REAL-DID
+        - jobid: 9edc7a82d9aa486485329aefc10cd553
+          platform: REAL-DID
+        - jobid: e9692ce7e0de4c03b1d816f42f55b44d
+          platform: FARCASTER-ID
+        - jobid: 8e93566e07fd44ba8ba002f0fe4e7eb8
+          platform: FARCASTER-ID
+        - jobid: 5e4dd148f004f6790bd54d5f7fbd0a38
+          platform: PASSPORT-XYZ
+        - jobid: 83ee2a13cd2c43dfa920faf88eff3bdd
+          platform: EBSI-DID
+        - jobid: d1926a6028d746c89e791bf7ac1b028b
+          platform: PRIVADO-ID
+        - jobid: 152872f465eb47e09a8047359055e152
+          platform: HASHKEY-DID
+        - jobid: 05b3af7569d74983bd0895ff273ffc6f
+          platform: HASHKEY-DID
+        - jobid: 910529f3dc394bbcad0b3ddd656d2be5
+          platform: WORLD-ID
+        - jobid: 48fee62acfaf46f693edce89860369d5
+          platform: TERMINAL3-DID
+        - jobid: a795b5cb935f49b68b47687e0071751e
+          platform: TERMINAL3-DID
+        - jobid: 509e3db7758f4b61ba35036575f3f3f0
+          platform: TERMINAL3-DID
+        - jobid: f74af004a7eb41a69873a7cf2f562ca5
+          platform: TERMINAL3-DID
+        - jobid: f361ae1ef593403eace22254f34477e5
+          platform: TERMINAL3-DID
+        - jobid: 0a79a0b29ddc4665bb739ccb85513f81
+          platform: LENS
+        - jobid: e3d74f3ed1c04dc696ee4be482f5bb94
+          platform: LENS
+        - jobid: 3ac761c2d66d4c028b3c7d937173fb73
+          platform: CHEQD

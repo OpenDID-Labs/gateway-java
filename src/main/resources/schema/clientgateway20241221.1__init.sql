@@ -1,0 +1,2 @@
+ALTER table od_oracle_contract_eventlog ADD column request_oracle_hash varchar(200)  comment '';
+ALTER TABLE od_oracle_contract_eventlog MODIFY COLUMN process_status INT DEFAULT 1 COMMENT 'status  1=pending   5=processed  10=error    15=exceed fee  20=Exceeding the number of queries ';
