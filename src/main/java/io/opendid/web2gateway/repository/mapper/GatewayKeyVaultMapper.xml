@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.GatewayKeyVaultMapper">
+  <resultMap id="BaseResultMap" type="io.opendid.web2gateway.repository.model.GatewayKeyVault">
+    <id column="key_id" jdbcType="INTEGER" property="keyId" />
+    <result column="service_public_key" jdbcType="VARCHAR" property="servicePublicKey" />
+    <result column="wallet_public_key" jdbcType="VARCHAR" property="walletPublicKey" />
+    <result column="wallet_address" jdbcType="VARCHAR" property="walletAddress" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    key_id, service_public_key, wallet_public_key, wallet_address, update_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from gateway_key_vault
+    where key_id = #{keyId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from gateway_key_vault
+    where key_id = #{keyId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.GatewayKeyVault">
+    insert into gateway_key_vault (key_id, service_public_key, wallet_public_key, 
+      wallet_address, update_date)
+    values (#{keyId,jdbcType=INTEGER}, #{servicePublicKey,jdbcType=VARCHAR}, #{walletPublicKey,jdbcType=VARCHAR}, 
+      #{walletAddress,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.GatewayKeyVault">
+    insert into gateway_key_vault
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="keyId != null">
+        key_id,
+      </if>
+      <if test="servicePublicKey != null">
+        service_public_key,
+      </if>
+      <if test="walletPublicKey != null">
+        wallet_public_key,
+      </if>
+      <if test="walletAddress != null">
+        wallet_address,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="keyId != null">
+        #{keyId,jdbcType=INTEGER},
+      </if>
+      <if test="servicePublicKey != null">
+        #{servicePublicKey,jdbcType=VARCHAR},
+      </if>
+      <if test="walletPublicKey != null">
+        #{walletPublicKey,jdbcType=VARCHAR},
+      </if>
+      <if test="walletAddress != null">
+        #{walletAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="io.opendid.web2gateway.repository.model.GatewayKeyVault">
+    update gateway_key_vault
+    <set>
+      <if test="servicePublicKey != null">
+        service_public_key = #{servicePublicKey,jdbcType=VARCHAR},
+      </if>
+      <if test="walletPublicKey != null">
+        wallet_public_key = #{walletPublicKey,jdbcType=VARCHAR},
+      </if>
+      <if test="walletAddress != null">
+        wallet_address = #{walletAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where key_id = #{keyId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.GatewayKeyVault">
+    update gateway_key_vault
+    set service_public_key = #{servicePublicKey,jdbcType=VARCHAR},
+      wallet_public_key = #{walletPublicKey,jdbcType=VARCHAR},
+      wallet_address = #{walletAddress,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where key_id = #{keyId,jdbcType=INTEGER}
+  </update>
+</mapper>

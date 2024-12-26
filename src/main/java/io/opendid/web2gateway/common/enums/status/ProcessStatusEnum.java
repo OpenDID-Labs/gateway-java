@@ -8,7 +8,8 @@ public enum ProcessStatusEnum {
   PROCESSED(5),
   ERROR(10),
   EXCEEDFEE(15),
-  EXCEEDING(20)
+  EXCEEDING(20),
+  PAY_FAIL(25),
   ;
 
   private int code;

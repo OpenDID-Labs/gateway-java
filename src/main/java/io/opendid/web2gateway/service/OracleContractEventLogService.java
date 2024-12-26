@@ -33,6 +33,7 @@ public class OracleContractEventLogService {
     odOracleContractEventlog.setCreateDate(new Date());
     odOracleContractEventlog.setUpdateDate(new Date());
     odOracleContractEventlog.setRequestOracleHash(dto.getRequestOracleHash());
+    odOracleContractEventlog.setErrorMsg(dto.getErrorMsg());
 
     odOracleContractEventlogMapper.insertSelective(odOracleContractEventlog);
   }

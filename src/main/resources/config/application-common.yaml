@@ -6,14 +6,11 @@ ok:
     max-idle-connections: 200
     keep-alive-duration: 300
 
-local:
-  privatekey: 0xeaeae0286d26c699b30a2e85d4db8c672288d35653a0c71a984b2ee4543877bf
-  publickey: 0x9d055e550bccdd53ff2c61505fa6ce8ca26a1227bc6f004173ef2a0c2a8cef58d04c57ea2046b1d21abcc846b9f5ac298385bf3c0fdd032149d7cdebcc60e0b
-  address: 0x0f9e6ea7a2bf134a48dc5e5672c8e9fe98abaa67
+service-key:
+  privatekey: "0xeaeae0286d26c699b30a2e85d4db8c672288d35653a0c71a984b2ee4543877bf"
 
-home-chain:
+wallet:
   privatekey: "0x02d8e373065d355cc021d6ab465f35859a5ec68d60c0c9d10b35679f1ec391c4"
-  publickey: "0xcbbd786af6463c77fe11e44a458c65451daf455efb87a46b74c481232d97a534"
 
 oracle:
   callBack:
@@ -22,7 +19,7 @@ oracle:
 oracle-result-task:
   switch: true
   tempo: 5000
-  max-execute: 10
+  max-execute: 50
   interval-second: 5
 
 vn-mapping-file-path: "D://ideaWorkspace/opendid/client-gateway/src/main/resources/init/vnmapping.yaml"

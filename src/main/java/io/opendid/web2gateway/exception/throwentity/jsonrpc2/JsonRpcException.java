@@ -8,6 +8,6 @@ public interface JsonRpcException {
 
   String getLogId() ;
 
-  String getData() ;
+  Object getData() ;
 
 }

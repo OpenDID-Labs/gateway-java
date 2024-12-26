@@ -14,6 +14,10 @@ public class GetTransactionRespDTO {
 
   private String requestId;
 
+  private String errorMessage;
+
+  private Integer status;
+
   private Object responseBody;
 
   public String getJobId() {
@@ -30,6 +34,22 @@ public class GetTransactionRespDTO {
 
   public void setRequestId(String requestId) {
     this.requestId = requestId;
+  }
+
+  public String getErrorMessage() {
+    return errorMessage;
+  }
+
+  public void setErrorMessage(String errorMessage) {
+    this.errorMessage = errorMessage;
+  }
+
+  public Integer getStatus() {
+    return status;
+  }
+
+  public void setStatus(Integer status) {
+    this.status = status;
   }
 
   public Object getResponseBody() {

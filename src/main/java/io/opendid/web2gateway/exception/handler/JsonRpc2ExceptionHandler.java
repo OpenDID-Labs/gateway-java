@@ -110,6 +110,9 @@ public class JsonRpc2ExceptionHandler {
 
   private static @NotNull JsonRpc2ResponseError wrapError(
       JsonRpcException e) {
+
+    logger.info("JsonRpc2ResponseError data={}",e.getData());
+
     JsonRpc2ResponseError error=new JsonRpc2ResponseError();
     ErrorEntity errorEntity=new ErrorEntity();
     errorEntity.setCode(e.getCode());

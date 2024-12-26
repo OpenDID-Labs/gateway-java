@@ -26,6 +26,16 @@ public class ContractEventLogInsertDTO {
 
   private String requestOracleHash;
 
+  private String errorMsg;
+
+  public String getErrorMsg() {
+    return errorMsg;
+  }
+
+  public void setErrorMsg(String errorMsg) {
+    this.errorMsg = errorMsg;
+  }
+
   public String getRequestOracleHash() {
     return requestOracleHash;
   }

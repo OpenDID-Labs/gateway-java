@@ -25,10 +25,8 @@ public class OAuth2TokenUtil {
 
   private static Map<String, String> tokens = new ConcurrentHashMap<>();
 
-  @Value("${local.privatekey}")
+  @Value("${service-key.privatekey}")
   private String privateKey;
-  @Value("${local.publickey}")
-  private String publicKey;
 
   @Autowired
   private OAuth2Register keyClockRegister;
@@ -41,6 +39,8 @@ public class OAuth2TokenUtil {
   public String initToken(String vnCode, String vnRouteUrl) {
 
     try {
+
+      String publicKey = GatewayKeyVaultUtil.getKey(GatewayKeyVaultUtil.servicePublicKey);
 
       String sign = ECDSAUtils.sign(
           publicKey,

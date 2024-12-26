@@ -1,6 +1,8 @@
 package io.opendid.web2gateway.common.utils;
 
+import org.bouncycastle.crypto.generators.Ed25519KeyPairGenerator;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
+import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
 import org.bouncycastle.crypto.signers.Ed25519Signer;
 
 import java.nio.ByteBuffer;
@@ -38,6 +40,20 @@ public class AptosUtils {
     return "0x" + hexString;
   }
 
+  public static String generatePublicKeyFromPrivateKey(String privateKeyHex) {
+
+    byte[] privateKeyBytes = hexStringToByteArray(privateKeyHex.replace("0x", ""));
+
+    Ed25519PrivateKeyParameters ed25519PrivateKeyParameters = new Ed25519PrivateKeyParameters(privateKeyBytes, 0);
+
+    Ed25519PublicKeyParameters publicKey = ed25519PrivateKeyParameters.generatePublicKey();
+
+    byte[] publicKeyEncoded = publicKey.getEncoded();
+
+    String publicKeyHex = bytesToHex(publicKeyEncoded);
+
+    return "0x" + publicKeyHex;
+  }
 
   public static byte[] ed25519Sign(byte[] privateKey, byte[] data) {
     Ed25519PrivateKeyParameters key = new Ed25519PrivateKeyParameters(privateKey, 0);

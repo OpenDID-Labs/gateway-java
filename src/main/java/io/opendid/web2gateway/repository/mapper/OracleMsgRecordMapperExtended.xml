@@ -4,6 +4,8 @@
  <select id="selectByRequestId" resultType="io.opendid.web2gateway.model.dto.oracle.GetTransactionRespDTO">
    select
     ooce.job_id,
+    ooce.process_status status,
+    ooce.error_msg errorMessage,
     omr.request_id,
     omr.response_body
    from oracle_msg_record omr

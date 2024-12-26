@@ -15,4 +15,6 @@ public interface Web2MethodName {
 
   String ORACLE_CALL_BACK="oracle_call_back";
 
+  String ORACLE_GET_WALLET_ADDRESS="get_wallet_address";
+
 }

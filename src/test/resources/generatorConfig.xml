@@ -65,7 +65,11 @@
                enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false"></table>-->
 
-        <table tableName="od_oracle_contract_eventlog" domainObjectName="OdOracleContractEventlog" enableCountByExample="false"
+        <!--<table tableName="od_oracle_contract_eventlog" domainObjectName="OdOracleContractEventlog" enableCountByExample="false"
+          enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+          selectByExampleQueryId="false"></table>-->
+
+        <table tableName="gateway_key_vault" domainObjectName="GatewayKeyVault" enableCountByExample="false"
           enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
           selectByExampleQueryId="false"></table>
 

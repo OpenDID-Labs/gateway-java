@@ -142,7 +142,7 @@
 
   <build>
 
-    <finalName>gateway-java-${version}</finalName>
+    <finalName>gateway-java</finalName>
 
     <plugins>
 

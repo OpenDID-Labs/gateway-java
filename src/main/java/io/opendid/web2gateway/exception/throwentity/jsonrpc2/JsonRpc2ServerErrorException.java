@@ -19,14 +19,14 @@ public class JsonRpc2ServerErrorException extends Throwable implements  JsonRpcE
   private int code;
   private String message;
   private String logId;
-  private String data;
+  private Object data;
 
 
   public JsonRpc2ServerErrorException(){
 
   }
 
-  public JsonRpc2ServerErrorException(int code, String logId,String message,String data) throws Exception {
+  public JsonRpc2ServerErrorException(int code, String logId,String message,Object data) throws Exception {
     super(message);
     if (code == 0){
       throw new Exception("code is not 0");
@@ -65,7 +65,7 @@ public class JsonRpc2ServerErrorException extends Throwable implements  JsonRpcE
   }
 
   @Override
-  public String getData() {
+  public Object getData() {
     return data;
   }
 

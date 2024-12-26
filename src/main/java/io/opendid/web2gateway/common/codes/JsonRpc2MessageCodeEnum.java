@@ -11,6 +11,7 @@ package io.opendid.web2gateway.common.codes;
 public enum JsonRpc2MessageCodeEnum {
 
   JSON_RPC2_CODE_32000(-32000, "Server error!"),
+  JSON_RPC2_CODE_32001(-32001, "MAX_GAS_UNITS_BELOW_MIN_TRANSACTION_GAS_UNITS"),
 
 
   ;

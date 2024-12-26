@@ -16,7 +16,7 @@ public class JsonRpc2ResponseError extends JsonRpc2ROOT {
   public static class  ErrorEntity{
     private int code;
     private String message;
-    private String data;
+    private Object data;
 
     public int getCode() {
       return code;
@@ -34,11 +34,11 @@ public class JsonRpc2ResponseError extends JsonRpc2ROOT {
       this.message = message;
     }
 
-    public String getData() {
+    public Object getData() {
       return data;
     }
 
-    public void setData(String data) {
+    public void setData(Object data) {
       this.data = data;
     }
   }

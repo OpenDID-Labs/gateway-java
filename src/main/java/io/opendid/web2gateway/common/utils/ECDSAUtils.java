@@ -127,5 +127,15 @@ public class ECDSAUtils {
     System.arraycopy(sigBytes, 32, s, 0, 32);
     return new Sign.SignatureData(sigBytes[64], r, s);
   }
+
+  public static String getHexPubKey(String hexPrivKey){
+
+    ECKeyPair aPair = ECKeyPair.create(new BigInteger(hexPrivKey.replace("0x",""), 16));
+    BigInteger publicKeyInBT = aPair.getPublicKey();
+    String publicKeyInHex = publicKeyInBT.toString(16);
+
+    return "0x"+publicKeyInHex;
+  }
+
 }
 

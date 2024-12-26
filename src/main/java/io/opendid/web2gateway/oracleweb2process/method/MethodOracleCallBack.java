@@ -23,7 +23,7 @@ public class MethodOracleCallBack implements Web2MethodProcess {
 
   private Logger logger = LoggerFactory.getLogger(MethodOracleCallBack.class);
 
-  @Value("${local.privatekey}")
+  @Value("${service-key.privatekey}")
   private String localPrivateKey;
 
   @Autowired

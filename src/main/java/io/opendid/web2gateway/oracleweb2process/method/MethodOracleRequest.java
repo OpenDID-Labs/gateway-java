@@ -2,8 +2,11 @@ package io.opendid.web2gateway.oracleweb2process.method;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import io.opendid.web2gateway.common.codes.JsonRpc2MessageCodeEnum;
+import io.opendid.web2gateway.common.enums.status.ProcessStatusEnum;
 import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
 import io.opendid.web2gateway.common.utils.AptosUtils;
+import io.opendid.web2gateway.common.utils.GatewayKeyVaultUtil;
 import io.opendid.web2gateway.common.vnclient.VnGatewayClient;
 import io.opendid.web2gateway.common.web2.Web2MethodName;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
@@ -48,9 +51,7 @@ public class MethodOracleRequest implements Web2MethodProcess {
   private OracleMsgRecordService oracleMsgRecordService;
 
 
-  @Value("${home-chain.publickey}")
-  private String homeChainPublicKey;
-  @Value("${home-chain.privatekey}")
+  @Value("${wallet.privatekey}")
   private String homeChainPrivateKey;
   @Value("${oracle.callBack.url}")
   private String callBackUrl;
@@ -62,6 +63,8 @@ public class MethodOracleRequest implements Web2MethodProcess {
     if (request.getParams() == null) {
       return new OracleResultMethodRes();
     }
+
+    String  homeChainPublicKey = GatewayKeyVaultUtil.getKey(GatewayKeyVaultUtil.walletPublicKey);
 
     LinkedHashMap params = request.getParams();
     String jobId = MapUtils.getString(params, "jobId");
@@ -121,6 +124,8 @@ public class MethodOracleRequest implements Web2MethodProcess {
 
     logger.info("MethodOracleRequest process send result={}",respResultJson);
 
+    Object result = respResult.getResult();
+
     // Insert to DB
     String requesttId = AptosUtils.genRequestId(
         AptosUtils.generateAddressFromPublicKey(homeChainPublicKey), nonce);
@@ -134,7 +139,14 @@ public class MethodOracleRequest implements Web2MethodProcess {
     insertDTO.setVnCode(vngatewayJobidMapping.getVnCode());
     insertDTO.setPlatformCode(vngatewayJobidMapping.getPlatformCode());
     insertDTO.setJobIdFee(warpReqBody.getJobIdFee());
-    insertDTO.setProcessStatus(1);
+    if (respResultJson.get("failReason") != null && !"".equals(respResultJson.get("failReason"))){
+      // Set DB status
+      insertDTO.setProcessStatus(ProcessStatusEnum.PAY_FAIL.getCode());
+      insertDTO.setErrorMsg(respResultJson.get("failReason").toString());
+
+    }else {
+      insertDTO.setProcessStatus(ProcessStatusEnum.PENDING.getCode());
+    }
     insertDTO.setTraceId(MDC.get(LogTraceIdConstant.TRACE_ID));
 
     if (respResultJson != null && respResultJson.get("oracleRequestHash") != null) {
@@ -150,7 +162,24 @@ public class MethodOracleRequest implements Web2MethodProcess {
 
     oracleMsgRecordService.insertMsgRecord(msgRecordInsertDTO);
 
-    return respResult.getResult();
+    if (respResultJson.get("failReason") != null && !"".equals(respResultJson.get("failReason"))){
+
+      OracleRequestErrorDataDTO oracleRequestErrorDataDTO = new OracleRequestErrorDataDTO();
+      oracleRequestErrorDataDTO.setRequestId(requesttId);
+
+      String errorData = JSON.toJSONString(oracleRequestErrorDataDTO);
+      logger.info("MethodOracleRequest process error data={}",errorData);
+
+      throw new JsonRpc2ServerErrorException(
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32001.getCode(),
+          "",
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32001.getMessage(),
+          oracleRequestErrorDataDTO);
+    }
+
+    OracleRequestRespDTO oracleRequestRespDTO = JSONObject.parseObject(result.toString(),OracleRequestRespDTO.class);
+
+    return oracleRequestRespDTO;
   }
 
   @Override
