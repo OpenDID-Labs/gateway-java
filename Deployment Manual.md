@@ -44,7 +44,7 @@ CREATE DATABASE client_gateway DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin
 
 ### **2.2 Downloading Configuration Files**
 
-Download `gateway-java-1.0.zip` file, which contains `web2gateway_nacos_config.zip`, `gateway-java.jar`, `lib.zip` and `vnmapping.yaml` files.
+Download `gateway-java-1.0.0.zip` file, which contains `web2gateway_nacos_config.zip`, `gateway-java.jar`, `lib.zip` and `vnmapping.yaml` files.
 
 ### 2.3 **Configuration**
 
@@ -86,7 +86,7 @@ Make sure Java 17 or later version has been installed in your system.
 
 ### 3.2 **Starting by Package**
 
-Put `gateway-java.jar`, `lib.zip` and `vnmapping.yaml` files included in `gateway-java-1.0.zip` into the same directory and run the command below:
+Put `gateway-java.jar`, `lib.zip` and `vnmapping.yaml` files included in `gateway-java-1.0.0.zip` into the same directory and run the command below:
 
 ```Bash
 #step1:
