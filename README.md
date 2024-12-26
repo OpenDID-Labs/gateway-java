@@ -1,33 +1,10 @@
-# Gateway-java
+[![Website](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://opendid.io)
+[![license](https://img.shields.io/badge/license-MIT-red.svg)](https://mit-license.org/)
+[![Docs](https://img.shields.io/badge/docs-%F0%9F%93%84-yellow)](https://github.com/OpenDID-Labs/gateway-java/blob/main/Deployment%20Manual.md)
 
-<img width="300" alt="OpenDID Logo" src="https://github.com/45be6ca9-cab2-4a90-b113-2ea0daad04dc">
+Web2 Gateway is centralized software that users can install in their local environments to interact with OpenDID through Web2 protocols.
 
-## Document
+Currently, we provide a Java version of Web2 Gateway. When you send a verification request to OpenDID through `opendid-gateway-java` , you need to pay for the APT on the APTOS mainnet. Therefore, you need to prepare an APTOS wallet and recharge enough APT on the mainnet to ensure that OpenDID can handle your verification request normally.
 
-Website: https://www.opendid.io/
+See the  [Deployment Manual](https://github.com/OpenDID-Labs/gateway-java/blob/main/Deployment%20Manual.md) for running your own gateway in a production environment.
 
-Documentation: [OpenDID Reference](https://opendid.readme.io/reference/getting-started-1)
-
-Tutorials: [gateway-deploy-java](https://github.com/OpenDID-Labs/gateway-deploy-java)
-
-
-##  Configuration Description
-
-common.yaml Property
-
-| Property	                    | Description                                  |
-|-----------------------|-------------------------------------|
-| local.privatekey      | Private key of the key pair used for secure authentication with VN, based on the secp256k1 algorithm.    |
-| local.publickey       | Public key of the key pair used for secure authentication with VN, based on the secp256k1 algorithm.|
-| local.address         | Account address corresponding to local.publickey, based on the secp256k1 algorithm. |
-| home-chain.privatekey | Private key of the key pair used for sending transactions to the home chain, based on the Ed25519 algorithm.        |
-| home-chain.publickey  | Public key of the key pair used for sending transactions to the home chain, based on the Ed25519 algorithm.        |
-| oracle.callBack.url   | Callback URL for VN to notify the transaction results.                      |
-
-## Configuration Generation Instructions
-The five properties local.privatekey, local.publickey, local.address, home-chain.privatekey, and home-chain.publickey can be generated using the provided SDK.
-
-SDK URL:
-[gateway-keytoolkit-java](https://github.com/OpenDID-Labs/gateway-keytoolkit-java)
-
-For detailed usage instructions, refer to the README.md file in the SDK project.
