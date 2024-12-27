@@ -39,6 +39,7 @@ public class OAuth2TokenUtil {
   public String initToken(String vnCode, String vnRouteUrl) {
 
     try {
+      logger.info("KeyClockTokenUtil initToken start");
 
       String publicKey = GatewayKeyVaultUtil.getKey(GatewayKeyVaultUtil.servicePublicKey);
 
@@ -120,6 +121,8 @@ public class OAuth2TokenUtil {
 
 
   public String getToken(String vnCode, String vnRouteUrl) {
+
+    logger.info("KeyClockTokenUtil getToken start");
 
     String token = null;
 

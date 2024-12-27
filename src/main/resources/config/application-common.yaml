@@ -14,7 +14,7 @@ wallet:
 
 oracle:
   callBack:
-    url: "http://127.0.0.1:8700/v1/oracle/send"
+    url: ""
 
 oracle-result-task:
   switch: true
