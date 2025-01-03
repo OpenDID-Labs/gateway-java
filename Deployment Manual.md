@@ -44,7 +44,7 @@ CREATE DATABASE client_gateway DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin
 
 ### **2.2 Downloading Configuration Files**
 
-Download `gateway-java-1.0.0.zip` file, which contains `web2gateway_nacos_config.zip`, `gateway-java.jar`, `lib.zip` and `vnmapping.yaml` files.
+Download `[gateway-java-1.0.0.zip](https://github.com/OpenDID-Labs/gateway-java/releases/download/v1.0.0/gateway-java-1.0.0.zip "gateway-java-1.0.0.zip")` file, which contains `web2gateway_nacos_config.zip`, `gateway-java.jar`, `lib.zip` and `vnmapping.yaml` files.
 
 ### 2.3 **Configuration**
 
