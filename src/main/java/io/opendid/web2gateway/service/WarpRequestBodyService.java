@@ -3,6 +3,7 @@ package io.opendid.web2gateway.service;
 import com.alibaba.fastjson.JSONObject;
 import io.opendid.web2gateway.common.vnclient.VnGatewayClient;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
+import io.opendid.web2gateway.model.dto.oracle.CancelWarpReqBodyRequestDTO;
 import io.opendid.web2gateway.model.dto.oracle.WarpReqBodyRequestDTO;
 import io.opendid.web2gateway.model.dto.oracle.WarpReqBodyResponseDTO;
 import io.opendid.web2gateway.model.dto.vnclient.VnClientJobIdDTO;
@@ -39,6 +40,23 @@ public class WarpRequestBodyService {
     linkedHashMap.put("nonce",requestDTO.getNonce());
     linkedHashMap.put("data",requestDTO.getData());
     JsonRpc2Request oracleWrapRequestBody = new JsonRpc2Request(1L, "oracle_wrap_request_body", linkedHashMap, "");
+    vnClientJobIdDTO.setRequestBody(oracleWrapRequestBody);
+    JsonRpc2Response request = vnGatewayClient.request(vnClientJobIdDTO);
+    WarpReqBodyResponseDTO responseDTO =
+        JSONObject.parseObject(request.getResult().toString(),WarpReqBodyResponseDTO.class);
+    return responseDTO;
+
+  }
+
+  public WarpReqBodyResponseDTO getCancelWarpReqBody(CancelWarpReqBodyRequestDTO requestDTO) throws JsonRpc2ServerErrorException {
+
+
+    VnClientJobIdDTO vnClientJobIdDTO = new VnClientJobIdDTO();
+    vnClientJobIdDTO.setJobId(requestDTO.getJobId());
+    LinkedHashMap linkedHashMap = new LinkedHashMap();
+    linkedHashMap.put("publicKey",requestDTO.getPublicKey());
+    linkedHashMap.put("requestId",requestDTO.getRequestId());
+    JsonRpc2Request oracleWrapRequestBody = new JsonRpc2Request(1L, "request_wrap_cancel_request_body", linkedHashMap, "");
     vnClientJobIdDTO.setRequestBody(oracleWrapRequestBody);
     JsonRpc2Response request = vnGatewayClient.request(vnClientJobIdDTO);
     WarpReqBodyResponseDTO responseDTO =

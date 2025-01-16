@@ -8,15 +8,16 @@ import io.opendid.web2gateway.model.dto.oracle.JobIdFeeResponseDTO;
 import io.opendid.web2gateway.model.dto.vnclient.VnClientJobIdDTO;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Response;
-import io.opendid.web2gateway.oracleweb2process.Web2MethodProcess;
+import io.opendid.web2gateway.security.checkaspect.MethodPrivate;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-@Component(Web2MethodName.ORACLE_GET_JOB_FEE+ Web2MethodProcess.BEAN_SUFFIX)
-public class MethodOracleGetJobFee implements Web2MethodProcess {
+@Component(Web2MethodName.ORACLE_GET_JOB_FEE+ Web2Method.BEAN_SUFFIX)
+@MethodPrivate
+public class MethodOracleGetJobFee implements Web2Method {
 
   private Logger logger = LoggerFactory.getLogger(MethodOracleGetJobFee.class);
   @Resource

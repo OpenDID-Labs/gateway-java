@@ -15,6 +15,8 @@ vn-mapping:
           platform: REAL-DID
         - jobid: 9edc7a82d9aa486485329aefc10cd553
           platform: REAL-DID
+        - jobid: ae97894fc73c425092b4b5cf11656b7b
+          platform: REAL-DID
         - jobid: e9692ce7e0de4c03b1d816f42f55b44d
           platform: FARCASTER-ID
         - jobid: 8e93566e07fd44ba8ba002f0fe4e7eb8
@@ -47,3 +49,7 @@ vn-mapping:
           platform: LENS
         - jobid: 3ac761c2d66d4c028b3c7d937173fb73
           platform: CHEQD
+        - jobid: 61329a64e11345efba30eb56308c3291
+          platform: CIVIC-PASS
+        - jobid: d54a7215ed444b558e431985a2b64bc6
+          platform: LDID

@@ -10,15 +10,13 @@ import io.opendid.web2gateway.common.vnclient.VnGatewayClient;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
 import io.opendid.web2gateway.model.dto.oracle.EventLogPendingInputDTO;
 import io.opendid.web2gateway.model.dto.oracle.EventLogPendingOutputDTO;
-import io.opendid.web2gateway.model.dto.oracle.UpdateEventLogDTO;
 import io.opendid.web2gateway.model.dto.vnclient.VnClientJobIdDTO;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Response;
+import io.opendid.web2gateway.oracleweb2process.MethodExecutor;
 import io.opendid.web2gateway.repository.mapper.OdOracleContractEventlogMapper;
-import io.opendid.web2gateway.repository.model.OdOracleContractEventlog;
 import io.opendid.web2gateway.service.OracleContractEventLogService;
 import jakarta.annotation.Resource;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import org.slf4j.Logger;
@@ -35,8 +33,6 @@ public class OracleResultHandler {
   @Value("${oracle-result-task.max-execute}")
   private Integer maxExecute;
 
-  @Value("${oracle-result-task.interval-second}")
-  private Integer intervalSecond;
 
   @Resource
   private VnGatewayClient vnGatewayClient;
@@ -52,7 +48,7 @@ public class OracleResultHandler {
 
     EventLogPendingInputDTO eventLogPendingInputDTO = new EventLogPendingInputDTO();
     eventLogPendingInputDTO.setProcessStatus(ProcessStatusEnum.PENDING.getCode());
-    eventLogPendingInputDTO.setExecuteCount(maxExecute);
+//    eventLogPendingInputDTO.setExecuteCount(maxExecute);
     eventLogPendingInputDTO.setNextExecuteTime(DateUtils.getCurrentTimestamps());
 
     List<EventLogPendingOutputDTO> eventLogPendingOutputDTOS = oracleContractEventLogMapper.selectPendingData(
@@ -75,54 +71,30 @@ public class OracleResultHandler {
 
             JSONObject resultJson = JSONObject.parseObject(resultStr);
 
-            if (resultJson.getString("requestId") != null
-                && !"".equals(resultJson.getString("requestId"))) {
+            if (Integer.valueOf(ProcessStatusEnum.PROCESSED.getCode()).equals(resultJson.getInteger("status"))) {
 
-              UpdateEventLogDTO updateEventLogDTO = new UpdateEventLogDTO();
-
-              updateEventLogDTO.setRequestId(pendingData.getRequestId());
-              updateEventLogDTO.setProcessStatus(ProcessStatusEnum.PROCESSED.getCode());
-              updateEventLogDTO.setResponseBody(resultStr);
-              updateEventLogDTO.setCallbackOracleHash(resultJson.getString("oracleFulfillTxHash"));
-
-              oracleContractEventLogService.updateEventLogByRequestId(updateEventLogDTO);
-
+              LinkedHashMap<Object, Object> resultLinkedHashMap = new LinkedHashMap<>();
+              resultLinkedHashMap.put("requestId", resultJson.getString("requestId"));
+              resultLinkedHashMap.put("oracleFulfillTxHash", resultJson.getString("oracleFulfillTxHash"));
+              resultLinkedHashMap.put("data", resultJson.getString("data"));
+              JsonRpc2Request oracleCallBack = new JsonRpc2Request(1L, "oracle_callback", resultLinkedHashMap, "");
+              MethodExecutor.publicMethod(JSONObject.toJSONString(oracleCallBack));
             } else {
-              updateExecuteCount(pendingData.getLogId(), pendingData.getExecuteCount());
+              oracleContractEventLogService.updateExecuteCount(pendingData.getLogId(), pendingData.getExecuteCount());
             }
 
           } else {
-            updateExecuteCount(pendingData.getLogId(), pendingData.getExecuteCount());
+            oracleContractEventLogService.updateExecuteCount(pendingData.getLogId(), pendingData.getExecuteCount());
           }
 
-
-        } catch (JsonRpc2ServerErrorException e) {
+        } catch (JsonRpc2ServerErrorException | Exception e) {
+          logger.error("process OracleResultHandler pending data error", e);
           throw new RuntimeException(e);
         }
       }
     }
   }
 
-  private void updateExecuteCount(Long logId, Integer executeCount) {
-
-    int nextCount = executeCount + 1;
-
-    long nextExecuteTime = (long) nextCount * intervalSecond + DateUtils.getCurrentTimestamps();
-
-    OdOracleContractEventlog eventlog = new OdOracleContractEventlog();
-    eventlog.setLogId(logId);
-    eventlog.setUpdateDate(new Date());
-    eventlog.setNextExecuteTime(nextExecuteTime);
-    eventlog.setExecuteCount(nextCount);
-
-    if (maxExecute.equals(nextCount)) {
-      eventlog.setProcessStatus(ProcessStatusEnum.EXCEEDING.getCode());
-      eventlog.setErrorMsg("Exceeding the number of queries");
-    }
-
-    oracleContractEventLogMapper.updateByPrimaryKeySelective(eventlog);
-
-  }
 
   private VnClientJobIdDTO requestParameters(EventLogPendingOutputDTO pendingData) {
 

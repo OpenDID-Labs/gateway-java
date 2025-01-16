@@ -3,6 +3,7 @@ package io.opendid.web2gateway.config.vnmapping;
 import com.alibaba.fastjson.JSON;
 import io.opendid.web2gateway.common.utils.ECDSAUtils;
 import io.opendid.web2gateway.common.utils.GatewayKeyVaultUtil;
+import io.opendid.web2gateway.security.jwt.JWTKeyLoader;
 import io.opendid.web2gateway.model.dto.oracle.GeneratePubKeyAndAddrDTO;
 import io.opendid.web2gateway.model.vnmapping.JobidMappin;
 import io.opendid.web2gateway.model.vnmapping.VnMapping;
@@ -15,7 +16,10 @@ import io.opendid.web2gateway.repository.model.VngatewayRouteInfo;
 import java.util.Date;
 import java.util.List;
 
+import io.opendid.web2gateway.service.GatewayKeyVaultService;
 import io.opendid.web2gateway.service.HomeChainService;
+import io.opendid.web2gateway.service.VngatewayJobidMappingService;
+import io.opendid.web2gateway.service.VngatewayRouteInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +36,21 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
   @Autowired
   private VnMappingConfig vnMappingConfig;
   @Autowired
-  private VngatewayRouteInfoMapper vngatewayRouteInfoMapper;
+  private VngatewayRouteInfoService vngatewayRouteInfoService;
   @Autowired
-  private VngatewayJobidMappingMapper vngatewayJobidMappingMapper;
+  private VngatewayJobidMappingService vngatewayJobidMappingService;
   @Autowired
   private HomeChainService homeChainService;
   @Autowired
-  private GatewayKeyVaultMapper gatewayKeyVaultMapper;
+  private GatewayKeyVaultService gatewayKeyVaultService;
+
+  @Autowired
+  public JWTKeyLoader jwtKeyLoader;
 
   @Value("${service-key.privatekey}")
   private String servicePrivateKey;
+
+
 
   @Override
   public void onApplicationEvent(ApplicationStartedEvent event) {
@@ -49,6 +58,12 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
     initializationVnMapping();
 
     initializationGatewayPublicKey();
+
+    initializationRootJWTToken();
+  }
+
+  private void initializationRootJWTToken() {
+    jwtKeyLoader.load();
   }
 
 
@@ -56,10 +71,10 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
 
     try {
 
-      GatewayKeyVault gatewayKeyVaultOld = gatewayKeyVaultMapper.selectKeyInfo();
+      GatewayKeyVault gatewayKeyVaultOld = gatewayKeyVaultService.selectCurrentKeyVault();
 
       if (gatewayKeyVaultOld != null){
-        gatewayKeyVaultMapper.deleteByPrimaryKey(gatewayKeyVaultOld.getKeyId());
+        gatewayKeyVaultService.deleteByKey(gatewayKeyVaultOld.getKeyId());
       }
 
       String servicePubKey = ECDSAUtils.getHexPubKey(servicePrivateKey);
@@ -70,9 +85,14 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
       gatewayKeyVault.setWalletPublicKey(generatePubKeyAndAddrDTO.getPublicKey());
       gatewayKeyVault.setWalletAddress(generatePubKeyAndAddrDTO.getWalletAddress());
       gatewayKeyVault.setServicePublicKey(servicePubKey);
+      if (gatewayKeyVaultOld != null){
+        gatewayKeyVault.setAdminJwt(gatewayKeyVaultOld.getAdminJwt());
+      }
+
+
       gatewayKeyVault.setUpdateDate(new Date());
 
-      gatewayKeyVaultMapper.insertSelective(gatewayKeyVault);
+      gatewayKeyVaultService.insertKeyVault(gatewayKeyVault);
 
       GatewayKeyVaultUtil.putValue(GatewayKeyVaultUtil.servicePublicKey,servicePubKey);
       GatewayKeyVaultUtil.putValue(GatewayKeyVaultUtil.walletPublicKey,generatePubKeyAndAddrDTO.getPublicKey());
@@ -92,8 +112,8 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
 
     if (!vninfo.isEmpty()) {
 
-      vngatewayRouteInfoMapper.deleteAll();
-      vngatewayJobidMappingMapper.deleteAll();
+      vngatewayRouteInfoService.deleteAll();
+      vngatewayJobidMappingService.deleteAll();
       logger.info("VN Route SAVE Starting " );
 
       for (VnMapping vnMapping : vninfo) {
@@ -128,7 +148,7 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
     vngatewayJobidMapping.setPlatformCode(jobidmapping.getPlatform());
     vngatewayJobidMapping.setUpdateDate(new Date());
 
-    vngatewayJobidMappingMapper.insertSelective(vngatewayJobidMapping);
+    vngatewayJobidMappingService.insertJobIdMapping(vngatewayJobidMapping);
     logger.info("VN Route JobMapping SAVE: " + JSON.toJSONString(vngatewayJobidMapping,
         true));
 
@@ -143,7 +163,7 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
     vngatewayRouteInfo.setUrl(vnMapping.getVnurl());
     vngatewayRouteInfo.setUpdateDate(new Date());
 
-    vngatewayRouteInfoMapper.insertSelective(vngatewayRouteInfo);
+    vngatewayRouteInfoService.insertRouteInfo(vngatewayRouteInfo);
     logger.info("VN Route SAVE: " + JSON.toJSONString(vngatewayRouteInfo,true));
 
 

@@ -31,6 +31,12 @@
       <if test="responseBody != null">
         response_body = #{responseBody,jdbcType=LONGVARCHAR},
       </if>
+      <if test="cancelRequestBody != null">
+        cancel_request_body = #{cancelRequestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelResponseBody != null">
+        cancel_response_body = #{cancelResponseBody,jdbcType=LONGVARCHAR},
+      </if>
     </set>
     where request_id = #{requestId,jdbcType=VARCHAR}
   </update>

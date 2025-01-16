@@ -19,6 +19,8 @@ public class VngatewayRouteInfo {
 
     private Date updateDate;
 
+    private String vnPublicKey;
+
     public Long getRouteId() {
         return routeId;
     }
@@ -81,5 +83,13 @@ public class VngatewayRouteInfo {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public String getVnPublicKey() {
+        return vnPublicKey;
+    }
+
+    public void setVnPublicKey(String vnPublicKey) {
+        this.vnPublicKey = vnPublicKey == null ? null : vnPublicKey.trim();
     }
 }

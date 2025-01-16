@@ -1,0 +1,1 @@
+alter  table  gateway_key_vault add  column  admin_jwt  varchar(600)  comment 'admin_jwt';

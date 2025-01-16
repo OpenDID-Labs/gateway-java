@@ -33,6 +33,9 @@
       <if test="updateDate != null">
         update_date = #{updateDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="vnPublicKey != null">
+        vn_public_key = #{vnPublicKey,jdbcType=VARCHAR},
+      </if>
     </set>
     where vn_code = #{vnCode,jdbcType=VARCHAR}
   </update>

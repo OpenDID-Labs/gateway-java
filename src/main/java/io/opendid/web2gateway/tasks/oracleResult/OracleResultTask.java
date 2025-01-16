@@ -1,5 +1,6 @@
 package io.opendid.web2gateway.tasks.oracleResult;
 
+import io.opendid.web2gateway.security.jwt.JWTKeyLoader;
 import io.opendid.web2gateway.tasks.TaskInf;
 import java.util.Date;
 import org.slf4j.Logger;
@@ -21,12 +22,16 @@ public class OracleResultTask implements TaskInf {
   @Scheduled(fixedDelayString = "${oracle-result-task.tempo}", initialDelay = 5000)
   @Override
   public void taskStart() {
+    if (JWTKeyLoader.JWTRootGenerated){
+      logger.info("Task:OracleResultTask start on {}",new Date());
 
-    logger.info("Task:OracleResultTask start on {}",new Date());
+      oracleResultHandler.resultManage();
 
-    oracleResultHandler.resultManage();
+      logger.info("Task:OracleResultTask end on {}",new Date());
+    }else{
+      logger.info("ROOT JWT Token has not been generated yet ");
+    }
 
-    logger.info("Task:OracleResultTask end on {}",new Date());
 
   }
 

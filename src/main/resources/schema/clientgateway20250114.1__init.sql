@@ -1,0 +1,1 @@
+alter table tenant_jwt_manger add  column exped_date           datetime  comment 'exped_date';

@@ -10,9 +10,11 @@
     <result column="client_id" jdbcType="VARCHAR" property="clientId" />
     <result column="client_secret" jdbcType="VARCHAR" property="clientSecret" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="vn_public_key" jdbcType="VARCHAR" property="vnPublicKey" />
   </resultMap>
   <sql id="Base_Column_List">
-    route_id, vn_code, url, ssl_enabled, gateway_disable, client_id, client_secret, update_date
+    route_id, vn_code, url, ssl_enabled, gateway_disable, client_id, client_secret, update_date, 
+    vn_public_key
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -27,10 +29,12 @@
   <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.VngatewayRouteInfo">
     insert into vngateway_route_info (route_id, vn_code, url, 
       ssl_enabled, gateway_disable, client_id, 
-      client_secret, update_date)
+      client_secret, update_date, vn_public_key
+      )
     values (#{routeId,jdbcType=BIGINT}, #{vnCode,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
       #{sslEnabled,jdbcType=INTEGER}, #{gatewayDisable,jdbcType=INTEGER}, #{clientId,jdbcType=VARCHAR}, 
-      #{clientSecret,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP})
+      #{clientSecret,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{vnPublicKey,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.VngatewayRouteInfo">
     insert into vngateway_route_info
@@ -59,6 +63,9 @@
       <if test="updateDate != null">
         update_date,
       </if>
+      <if test="vnPublicKey != null">
+        vn_public_key,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="routeId != null">
@@ -84,6 +91,9 @@
       </if>
       <if test="updateDate != null">
         #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="vnPublicKey != null">
+        #{vnPublicKey,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -111,6 +121,9 @@
       <if test="updateDate != null">
         update_date = #{updateDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="vnPublicKey != null">
+        vn_public_key = #{vnPublicKey,jdbcType=VARCHAR},
+      </if>
     </set>
     where route_id = #{routeId,jdbcType=BIGINT}
   </update>
@@ -122,7 +135,8 @@
       gateway_disable = #{gatewayDisable,jdbcType=INTEGER},
       client_id = #{clientId,jdbcType=VARCHAR},
       client_secret = #{clientSecret,jdbcType=VARCHAR},
-      update_date = #{updateDate,jdbcType=TIMESTAMP}
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      vn_public_key = #{vnPublicKey,jdbcType=VARCHAR}
     where route_id = #{routeId,jdbcType=BIGINT}
   </update>
 </mapper>

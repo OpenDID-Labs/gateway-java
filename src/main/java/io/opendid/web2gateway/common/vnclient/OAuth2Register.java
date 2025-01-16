@@ -41,6 +41,7 @@ public class OAuth2Register {
 
           keyClockClientDTO.setClientId(keyClockData.getString("clientId"));
           keyClockClientDTO.setClientSecret(keyClockData.getString("clientSecret"));
+          keyClockClientDTO.setVnPublicKey(keyClockData.getString("vnPublicKey"));
 
           return keyClockClientDTO;
         }

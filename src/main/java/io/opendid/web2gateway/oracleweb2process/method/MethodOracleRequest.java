@@ -15,9 +15,9 @@ import io.opendid.web2gateway.model.dto.vnclient.VnClientJobIdDTO;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Response;
 import io.opendid.web2gateway.model.jsonrpc2.method.OracleResultMethodRes;
-import io.opendid.web2gateway.oracleweb2process.Web2MethodProcess;
 import io.opendid.web2gateway.repository.mapper.VngatewayJobidMappingMapper;
 import io.opendid.web2gateway.repository.model.VngatewayJobidMapping;
+import io.opendid.web2gateway.security.checkaspect.MethodPrivate;
 import io.opendid.web2gateway.service.OracleContractEventLogService;
 import io.opendid.web2gateway.service.OracleMsgRecordService;
 import io.opendid.web2gateway.service.OracleNonceService;
@@ -32,8 +32,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 
-@Component(Web2MethodName.ORACLE_REQUEST + Web2MethodProcess.BEAN_SUFFIX)
-public class MethodOracleRequest implements Web2MethodProcess {
+@Component(Web2MethodName.ORACLE_REQUEST + Web2Method.BEAN_SUFFIX)
+@MethodPrivate
+public class MethodOracleRequest implements Web2Method {
 
   private Logger logger = LoggerFactory.getLogger(MethodOracleRequest.class);
 
@@ -178,6 +179,8 @@ public class MethodOracleRequest implements Web2MethodProcess {
     }
 
     OracleRequestRespDTO oracleRequestRespDTO = JSONObject.parseObject(result.toString(),OracleRequestRespDTO.class);
+
+
 
     return oracleRequestRespDTO;
   }

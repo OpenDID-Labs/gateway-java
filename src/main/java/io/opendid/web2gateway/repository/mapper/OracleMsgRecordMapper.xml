@@ -11,12 +11,14 @@
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs">
     <result column="request_body" jdbcType="LONGVARCHAR" property="requestBody" />
     <result column="response_body" jdbcType="LONGVARCHAR" property="responseBody" />
+    <result column="cancel_request_body" jdbcType="LONGVARCHAR" property="cancelRequestBody" />
+    <result column="cancel_response_body" jdbcType="LONGVARCHAR" property="cancelResponseBody" />
   </resultMap>
   <sql id="Base_Column_List">
     msg_id, vn_code, request_id, create_date, update_date
   </sql>
   <sql id="Blob_Column_List">
-    request_body, response_body
+    request_body, response_body, cancel_request_body, cancel_response_body
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select 
@@ -33,10 +35,12 @@
   <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs">
     insert into oracle_msg_record (msg_id, vn_code, request_id, 
       create_date, update_date, request_body, 
-      response_body)
+      response_body, cancel_request_body, 
+      cancel_response_body)
     values (#{msgId,jdbcType=BIGINT}, #{vnCode,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR}, 
       #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{requestBody,jdbcType=LONGVARCHAR}, 
-      #{responseBody,jdbcType=LONGVARCHAR})
+      #{responseBody,jdbcType=LONGVARCHAR}, #{cancelRequestBody,jdbcType=LONGVARCHAR}, 
+      #{cancelResponseBody,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs">
     insert into oracle_msg_record
@@ -62,6 +66,12 @@
       <if test="responseBody != null">
         response_body,
       </if>
+      <if test="cancelRequestBody != null">
+        cancel_request_body,
+      </if>
+      <if test="cancelResponseBody != null">
+        cancel_response_body,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="msgId != null">
@@ -84,6 +94,12 @@
       </if>
       <if test="responseBody != null">
         #{responseBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelRequestBody != null">
+        #{cancelRequestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelResponseBody != null">
+        #{cancelResponseBody,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -108,6 +124,12 @@
       <if test="responseBody != null">
         response_body = #{responseBody,jdbcType=LONGVARCHAR},
       </if>
+      <if test="cancelRequestBody != null">
+        cancel_request_body = #{cancelRequestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelResponseBody != null">
+        cancel_response_body = #{cancelResponseBody,jdbcType=LONGVARCHAR},
+      </if>
     </set>
     where msg_id = #{msgId,jdbcType=BIGINT}
   </update>
@@ -118,7 +140,9 @@
       create_date = #{createDate,jdbcType=TIMESTAMP},
       update_date = #{updateDate,jdbcType=TIMESTAMP},
       request_body = #{requestBody,jdbcType=LONGVARCHAR},
-      response_body = #{responseBody,jdbcType=LONGVARCHAR}
+      response_body = #{responseBody,jdbcType=LONGVARCHAR},
+      cancel_request_body = #{cancelRequestBody,jdbcType=LONGVARCHAR},
+      cancel_response_body = #{cancelResponseBody,jdbcType=LONGVARCHAR}
     where msg_id = #{msgId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.OracleMsgRecord">

@@ -4,7 +4,6 @@ public class UpdateEventLogDTO {
 
   private String requestId;
 
-
   private String responseBody;
 
   private Integer processStatus;

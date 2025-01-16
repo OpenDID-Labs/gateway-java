@@ -16,16 +16,22 @@
     <result column="next_execute_time" jdbcType="BIGINT" property="nextExecuteTime" />
     <result column="execute_count" jdbcType="INTEGER" property="executeCount" />
     <result column="request_oracle_hash" jdbcType="VARCHAR" property="requestOracleHash" />
+    <result column="cancel_status" jdbcType="INTEGER" property="cancelStatus" />
+    <result column="cancel_oracle_hash" jdbcType="VARCHAR" property="cancelOracleHash" />
+    <result column="cancel_next_execute_time" jdbcType="BIGINT" property="cancelNextExecuteTime" />
+    <result column="cancel_execute_count" jdbcType="INTEGER" property="cancelExecuteCount" />
   </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs">
     <result column="error_msg" jdbcType="LONGVARCHAR" property="errorMsg" />
+    <result column="cancel_error_msg" jdbcType="LONGVARCHAR" property="cancelErrorMsg" />
   </resultMap>
   <sql id="Base_Column_List">
     log_id, request_id, vn_code, job_id, job_id_fee, platform_code, process_status, callback_oracle_hash, 
-    trace_id, create_date, update_date, next_execute_time, execute_count, request_oracle_hash
+    trace_id, create_date, update_date, next_execute_time, execute_count, request_oracle_hash, 
+    cancel_status, cancel_oracle_hash, cancel_next_execute_time, cancel_execute_count
   </sql>
   <sql id="Blob_Column_List">
-    error_msg
+    error_msg, cancel_error_msg
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select 
@@ -39,21 +45,25 @@
     delete from od_oracle_contract_eventlog
     where log_id = #{logId,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
+  <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs">
     insert into od_oracle_contract_eventlog (log_id, request_id, vn_code, 
       job_id, job_id_fee, platform_code, 
       process_status, callback_oracle_hash, trace_id, 
       create_date, update_date, next_execute_time, 
-      execute_count, request_oracle_hash, error_msg
+      execute_count, request_oracle_hash, cancel_status, 
+      cancel_oracle_hash, cancel_next_execute_time, 
+      cancel_execute_count, error_msg, cancel_error_msg
       )
     values (#{logId,jdbcType=BIGINT}, #{requestId,jdbcType=VARCHAR}, #{vnCode,jdbcType=VARCHAR}, 
       #{jobId,jdbcType=VARCHAR}, #{jobIdFee,jdbcType=BIGINT}, #{platformCode,jdbcType=VARCHAR}, 
       #{processStatus,jdbcType=INTEGER}, #{callbackOracleHash,jdbcType=VARCHAR}, #{traceId,jdbcType=VARCHAR}, 
       #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{nextExecuteTime,jdbcType=BIGINT}, 
-      #{executeCount,jdbcType=INTEGER}, #{requestOracleHash,jdbcType=VARCHAR}, #{errorMsg,jdbcType=LONGVARCHAR}
+      #{executeCount,jdbcType=INTEGER}, #{requestOracleHash,jdbcType=VARCHAR}, #{cancelStatus,jdbcType=INTEGER}, 
+      #{cancelOracleHash,jdbcType=VARCHAR}, #{cancelNextExecuteTime,jdbcType=BIGINT}, 
+      #{cancelExecuteCount,jdbcType=INTEGER}, #{errorMsg,jdbcType=LONGVARCHAR}, #{cancelErrorMsg,jdbcType=LONGVARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
+  <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs">
     insert into od_oracle_contract_eventlog
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="logId != null">
@@ -98,8 +108,23 @@
       <if test="requestOracleHash != null">
         request_oracle_hash,
       </if>
+      <if test="cancelStatus != null">
+        cancel_status,
+      </if>
+      <if test="cancelOracleHash != null">
+        cancel_oracle_hash,
+      </if>
+      <if test="cancelNextExecuteTime != null">
+        cancel_next_execute_time,
+      </if>
+      <if test="cancelExecuteCount != null">
+        cancel_execute_count,
+      </if>
       <if test="errorMsg != null">
         error_msg,
+      </if>
+      <if test="cancelErrorMsg != null">
+        cancel_error_msg,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -145,12 +170,27 @@
       <if test="requestOracleHash != null">
         #{requestOracleHash,jdbcType=VARCHAR},
       </if>
+      <if test="cancelStatus != null">
+        #{cancelStatus,jdbcType=INTEGER},
+      </if>
+      <if test="cancelOracleHash != null">
+        #{cancelOracleHash,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelNextExecuteTime != null">
+        #{cancelNextExecuteTime,jdbcType=BIGINT},
+      </if>
+      <if test="cancelExecuteCount != null">
+        #{cancelExecuteCount,jdbcType=INTEGER},
+      </if>
       <if test="errorMsg != null">
         #{errorMsg,jdbcType=LONGVARCHAR},
       </if>
+      <if test="cancelErrorMsg != null">
+        #{cancelErrorMsg,jdbcType=LONGVARCHAR},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
+  <update id="updateByPrimaryKeySelective" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs">
     update od_oracle_contract_eventlog
     <set>
       <if test="requestId != null">
@@ -192,13 +232,28 @@
       <if test="requestOracleHash != null">
         request_oracle_hash = #{requestOracleHash,jdbcType=VARCHAR},
       </if>
+      <if test="cancelStatus != null">
+        cancel_status = #{cancelStatus,jdbcType=INTEGER},
+      </if>
+      <if test="cancelOracleHash != null">
+        cancel_oracle_hash = #{cancelOracleHash,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelNextExecuteTime != null">
+        cancel_next_execute_time = #{cancelNextExecuteTime,jdbcType=BIGINT},
+      </if>
+      <if test="cancelExecuteCount != null">
+        cancel_execute_count = #{cancelExecuteCount,jdbcType=INTEGER},
+      </if>
       <if test="errorMsg != null">
         error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelErrorMsg != null">
+        cancel_error_msg = #{cancelErrorMsg,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where log_id = #{logId,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs">
     update od_oracle_contract_eventlog
     set request_id = #{requestId,jdbcType=VARCHAR},
       vn_code = #{vnCode,jdbcType=VARCHAR},
@@ -213,7 +268,12 @@
       next_execute_time = #{nextExecuteTime,jdbcType=BIGINT},
       execute_count = #{executeCount,jdbcType=INTEGER},
       request_oracle_hash = #{requestOracleHash,jdbcType=VARCHAR},
-      error_msg = #{errorMsg,jdbcType=LONGVARCHAR}
+      cancel_status = #{cancelStatus,jdbcType=INTEGER},
+      cancel_oracle_hash = #{cancelOracleHash,jdbcType=VARCHAR},
+      cancel_next_execute_time = #{cancelNextExecuteTime,jdbcType=BIGINT},
+      cancel_execute_count = #{cancelExecuteCount,jdbcType=INTEGER},
+      error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
+      cancel_error_msg = #{cancelErrorMsg,jdbcType=LONGVARCHAR}
     where log_id = #{logId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
@@ -230,7 +290,11 @@
       update_date = #{updateDate,jdbcType=TIMESTAMP},
       next_execute_time = #{nextExecuteTime,jdbcType=BIGINT},
       execute_count = #{executeCount,jdbcType=INTEGER},
-      request_oracle_hash = #{requestOracleHash,jdbcType=VARCHAR}
+      request_oracle_hash = #{requestOracleHash,jdbcType=VARCHAR},
+      cancel_status = #{cancelStatus,jdbcType=INTEGER},
+      cancel_oracle_hash = #{cancelOracleHash,jdbcType=VARCHAR},
+      cancel_next_execute_time = #{cancelNextExecuteTime,jdbcType=BIGINT},
+      cancel_execute_count = #{cancelExecuteCount,jdbcType=INTEGER}
     where log_id = #{logId,jdbcType=BIGINT}
   </update>
 </mapper>

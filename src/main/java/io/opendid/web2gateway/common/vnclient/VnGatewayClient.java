@@ -49,7 +49,8 @@ public class VnGatewayClient implements VnClient {
 
     if (vnGatewayRouteInfo != null) {
 
-      logger.info("VnGatewayClient request vnGatewayRouteInfo != null");
+      logger.info("VnGatewayClient request vnGatewayRouteInfo != null,url={}",
+          vnGatewayRouteInfo.getUrl());
 
       String accessToken;
 

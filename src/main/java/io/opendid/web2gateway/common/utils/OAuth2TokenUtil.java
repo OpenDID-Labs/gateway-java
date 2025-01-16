@@ -79,6 +79,7 @@ public class OAuth2TokenUtil {
       vngatewayRouteInfo.setVnCode(vnCode);
       vngatewayRouteInfo.setClientId(register.getClientId());
       vngatewayRouteInfo.setClientSecret(register.getClientSecret());
+      vngatewayRouteInfo.setVnPublicKey(register.getVnPublicKey());
       // Update keyClock client information
       vnGlobalMapping.updateForVnCode(vngatewayRouteInfo);
 

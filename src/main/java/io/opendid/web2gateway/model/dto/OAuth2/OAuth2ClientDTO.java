@@ -6,6 +6,16 @@ public class OAuth2ClientDTO {
 
   private String clientSecret;
 
+  private String vnPublicKey;
+
+  public String getVnPublicKey() {
+    return vnPublicKey;
+  }
+
+  public void setVnPublicKey(String vnPublicKey) {
+    this.vnPublicKey = vnPublicKey;
+  }
+
   public String getClientId() {
     return clientId;
   }

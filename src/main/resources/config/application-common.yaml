@@ -10,8 +10,13 @@ service-key:
   privatekey: "0xeaeae0286d26c699b30a2e85d4db8c672288d35653a0c71a984b2ee4543877bf"
 
 wallet:
-  privatekey: "0x02d8e373065d355cc021d6ab465f35859a5ec68d60c0c9d10b35679f1ec391c4"
+  privatekey: "0xd67946a885804714166d72e876b2ca27ea4461a4bd85edbcfed687020cd0b641"
 
+
+jwt-key:
+  private-pem-filepath: D:\Test\RSA_private.pem
+  public-pem-filepath: D:\Test\RSA_public.pem
+  access-expiration-ms: 9600000
 oracle:
   callBack:
     url: ""
@@ -21,5 +26,14 @@ oracle-result-task:
   tempo: 5000
   max-execute: 50
   interval-second: 5
+
+oracle-cancel-result-task:
+  switch: true
+  tempo: 10000
+  max-execute: 50
+  interval-second: 10
+
+#Same as HomeChainName class definition
+homechain_name: APTOS
 
 vn-mapping-file-path: "D://ideaWorkspace/opendid/client-gateway/src/main/resources/init/vnmapping.yaml"

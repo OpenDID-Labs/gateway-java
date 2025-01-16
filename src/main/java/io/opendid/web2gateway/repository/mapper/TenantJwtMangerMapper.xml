@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.TenantJwtMangerMapper">
+  <resultMap id="BaseResultMap" type="io.opendid.web2gateway.repository.model.TenantJwtManger">
+    <id column="tenant_jwt_id" jdbcType="BIGINT" property="tenantJwtId" />
+    <result column="subject_id" jdbcType="VARCHAR" property="subjectId" />
+    <result column="subject_name" jdbcType="VARCHAR" property="subjectName" />
+    <result column="jwt" jdbcType="VARCHAR" property="jwt" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="exped_date" jdbcType="TIMESTAMP" property="expedDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    tenant_jwt_id, subject_id, subject_name, jwt, create_date, update_date, exped_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tenant_jwt_manger
+    where tenant_jwt_id = #{tenantJwtId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tenant_jwt_manger
+    where tenant_jwt_id = #{tenantJwtId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.TenantJwtManger">
+    insert into tenant_jwt_manger (tenant_jwt_id, subject_id, subject_name, 
+      jwt, create_date, update_date, 
+      exped_date)
+    values (#{tenantJwtId,jdbcType=BIGINT}, #{subjectId,jdbcType=VARCHAR}, #{subjectName,jdbcType=VARCHAR}, 
+      #{jwt,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{expedDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.TenantJwtManger">
+    insert into tenant_jwt_manger
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="tenantJwtId != null">
+        tenant_jwt_id,
+      </if>
+      <if test="subjectId != null">
+        subject_id,
+      </if>
+      <if test="subjectName != null">
+        subject_name,
+      </if>
+      <if test="jwt != null">
+        jwt,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="expedDate != null">
+        exped_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="tenantJwtId != null">
+        #{tenantJwtId,jdbcType=BIGINT},
+      </if>
+      <if test="subjectId != null">
+        #{subjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectName != null">
+        #{subjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="jwt != null">
+        #{jwt,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expedDate != null">
+        #{expedDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="io.opendid.web2gateway.repository.model.TenantJwtManger">
+    update tenant_jwt_manger
+    <set>
+      <if test="subjectId != null">
+        subject_id = #{subjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectName != null">
+        subject_name = #{subjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="jwt != null">
+        jwt = #{jwt,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expedDate != null">
+        exped_date = #{expedDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where tenant_jwt_id = #{tenantJwtId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.TenantJwtManger">
+    update tenant_jwt_manger
+    set subject_id = #{subjectId,jdbcType=VARCHAR},
+      subject_name = #{subjectName,jdbcType=VARCHAR},
+      jwt = #{jwt,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      exped_date = #{expedDate,jdbcType=TIMESTAMP}
+    where tenant_jwt_id = #{tenantJwtId,jdbcType=BIGINT}
+  </update>
+</mapper>

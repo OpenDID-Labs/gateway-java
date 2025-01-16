@@ -11,7 +11,11 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 
 /**
@@ -24,22 +28,22 @@ import org.springframework.stereotype.Component;
  **/
 @Aspect
 @Component
+@Order(1)
 public class GlobalTraceId {
 
   private Logger logger = LoggerFactory.getLogger(GlobalTraceId.class);
 
   @Pointcut(
       " execution(public * io.opendid.web2gateway.api..*.*(..)) "
-
   )
-
-  public void eventOperation() {
+  public void globalTraceId() {
 
   }
 
 
-  @Before("eventOperation()")
+  @Before("globalTraceId()")
   public void eventBefore(JoinPoint joinPoint) {
+
     logger.info("eventBefore Log aop start");
     String traceId = UuidUtil.generateUuid32();
 
@@ -48,7 +52,7 @@ public class GlobalTraceId {
     MDC.put(LogTraceIdConstant.TRACE_ID, traceId);
   }
 
-  @After("eventOperation()")
+  @After("globalTraceId()")
   public void eventAfter(JoinPoint joinPoint) {
     logger.info("eventAfter Log trace id aop clear");
     MDC.clear();

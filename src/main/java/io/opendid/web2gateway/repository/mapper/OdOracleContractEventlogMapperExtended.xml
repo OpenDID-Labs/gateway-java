@@ -17,13 +17,12 @@
     WHERE
         ocel.process_status = #{processStatus}
     AND ocel.next_execute_time &lt;= #{nextExecuteTime}
-    AND ocel.execute_count &lt; #{executeCount}
     ORDER BY
-        logId ASC;
+      log_id ASC;
   </select>
 
 
-  <update id="updateByRequestId" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
+  <update id="updateByRequestId" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs">
     update od_oracle_contract_eventlog
     <set>
       <if test="vnCode != null">
@@ -59,11 +58,52 @@
       <if test="executeCount != null">
         execute_count = #{executeCount,jdbcType=INTEGER},
       </if>
+      <if test="cancelStatus != null">
+        cancel_status = #{cancelStatus,jdbcType=INTEGER},
+      </if>
+      <if test="cancelOracleHash != null">
+        cancel_oracle_hash = #{cancelOracleHash,jdbcType=VARCHAR},
+      </if>
       <if test="errorMsg != null">
         error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelErrorMsg != null">
+        cancel_error_msg = #{cancelErrorMsg,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where request_id = #{requestId,jdbcType=VARCHAR}
   </update>
 
+  <select id="selectByRequestId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from od_oracle_contract_eventlog
+    where request_id = #{requestId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectCancelStatusByRequestId" parameterType="java.lang.String" resultType="io.opendid.web2gateway.model.dto.oracle.GetCancelTransactionRespDTO">
+    select
+        job_id jobId,
+        request_id requestId,
+        cancel_status status,
+        cancel_error_msg errorMessage
+    from od_oracle_contract_eventlog
+    where request_id = #{requestId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectCancelPendingData" parameterType="io.opendid.web2gateway.model.dto.oracle.CancelEventLogPendingInDTO"
+          resultType="io.opendid.web2gateway.model.dto.oracle.CancelEventLogPendingOutDTO">
+    SELECT
+      ocel.log_id AS logId,
+      ocel.request_id AS requestId,
+      ocel.job_id AS jobId,
+      ocel.cancel_execute_count AS cancelExecuteCount
+    FROM
+      od_oracle_contract_eventlog AS ocel
+    WHERE
+      ocel.cancel_status = #{cancelStatus}
+      AND ocel.cancel_next_execute_time &lt;= #{cancelNextExecuteTime}
+    ORDER BY
+      log_id ASC;
+  </select>
 </mapper>

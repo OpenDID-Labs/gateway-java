@@ -13,8 +13,19 @@ public interface Web2MethodName {
 
   String ORACLE_REQUEST="oracle_request";
 
-  String ORACLE_CALL_BACK="oracle_call_back";
+  String ORACLE_CALL_BACK="oracle_callback";
+
+  String ORACLE_REQUEST_CANCEL_CALLBACK ="request_cancel_callback";
+
 
   String ORACLE_GET_WALLET_ADDRESS="get_wallet_address";
+
+  String REQUEST_CANCEL="request_cancel";
+
+  String ORACLE_GET_CANCEL_TRANSACTION="get_cancel_transaction";
+
+  String JWT_ROOT_UPDATE="jwt_root_update";
+  String JWT_TENANT_CREATE="jwt_tenant_create";
+  String JWT_TENANT_CANCEL ="jwt_tenant_cancel";
 
 }

@@ -11,6 +11,7 @@ import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2InvalidRequ
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2MethodNotFoundException;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ParseErrorException;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
+import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2UnauthorizedRequestException;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpcException;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2ResponseError;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2ResponseError.ErrorEntity;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -69,6 +71,17 @@ public class JsonRpc2ExceptionHandler {
 
     JsonRpc2ResponseError error = wrapError(e);
     return error;
+  }
+
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(JsonRpc2UnauthorizedRequestException.class)
+  public ResponseEntity<JsonRpc2ResponseError> handler(JsonRpc2UnauthorizedRequestException e) {
+    logger.error("JsonRpc2InvalidParamsException logid: {} body:{}",
+        e.getLogId(),
+        e
+    );
+    JsonRpc2ResponseError error = wrapError(e);
+    return new ResponseEntity<>(error,HttpStatus.UNAUTHORIZED);
   }
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)

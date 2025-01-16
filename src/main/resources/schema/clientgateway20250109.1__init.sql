@@ -1,0 +1,1 @@
+alter  table  vngateway_route_info add  column  vn_public_key        varchar(500)  comment 'vn_public_key';

@@ -31,7 +31,13 @@ public class OdOracleContractEventlog {
 
     private String requestOracleHash;
 
-    private String errorMsg;
+    private Integer cancelStatus;
+
+    private String cancelOracleHash;
+
+    private Long cancelNextExecuteTime;
+
+    private Integer cancelExecuteCount;
 
     public Long getLogId() {
         return logId;
@@ -145,11 +151,35 @@ public class OdOracleContractEventlog {
         this.requestOracleHash = requestOracleHash == null ? null : requestOracleHash.trim();
     }
 
-    public String getErrorMsg() {
-        return errorMsg;
+    public Integer getCancelStatus() {
+        return cancelStatus;
     }
 
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg == null ? null : errorMsg.trim();
+    public void setCancelStatus(Integer cancelStatus) {
+        this.cancelStatus = cancelStatus;
+    }
+
+    public String getCancelOracleHash() {
+        return cancelOracleHash;
+    }
+
+    public void setCancelOracleHash(String cancelOracleHash) {
+        this.cancelOracleHash = cancelOracleHash == null ? null : cancelOracleHash.trim();
+    }
+
+    public Long getCancelNextExecuteTime() {
+        return cancelNextExecuteTime;
+    }
+
+    public void setCancelNextExecuteTime(Long cancelNextExecuteTime) {
+        this.cancelNextExecuteTime = cancelNextExecuteTime;
+    }
+
+    public Integer getCancelExecuteCount() {
+        return cancelExecuteCount;
+    }
+
+    public void setCancelExecuteCount(Integer cancelExecuteCount) {
+        this.cancelExecuteCount = cancelExecuteCount;
     }
 }

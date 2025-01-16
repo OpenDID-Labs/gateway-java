@@ -13,6 +13,8 @@ public class GatewayKeyVault {
 
     private Date updateDate;
 
+    private String adminJwt;
+
     public Integer getKeyId() {
         return keyId;
     }
@@ -51,5 +53,13 @@ public class GatewayKeyVault {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public String getAdminJwt() {
+        return adminJwt;
+    }
+
+    public void setAdminJwt(String adminJwt) {
+        this.adminJwt = adminJwt == null ? null : adminJwt.trim();
     }
 }
