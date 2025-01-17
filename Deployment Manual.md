@@ -144,13 +144,9 @@ bash 5-install-web2gateway.sh
 
 #### Verification
 
-After installation, verify the services:
+After installation, verify the service's status.
 
 ```
 docker ps
 ```
-
-- MySQL service status
-- Nacos console access
-- Web2Gateway service status
 
