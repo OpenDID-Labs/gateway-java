@@ -1,123 +1,156 @@
-## **Introduction**
+### Gateway Deployment Guide
 
-This document is a guide to install, configure and run the `opendid-gateway-java`. 
+- ## **Introduction**
 
-> As a clear demonstration, all commands in this document are run with root permission. These commands can also be run under normal user permissions, please set the file storage and configure the parameters properly.
+  This document is a guide to install, configure and run the `opendid-gateway-java`. 
 
-## 1. Environmental requirements
+  > As a clear demonstration, all commands in this document are run with root permission. These commands can also be run under normal user permissions, please set the file storage and configure the parameters properly.
 
-### 1.1 **Hardware Requirements**
+  ## 1. Environmental requirements
 
-It is recommended to build the `opendid-gateway-java` on Linux Server with the following requirements:
+  ### 1.1 **Hardware Requirements**
 
-#### **Minimum Requirements:**
+  It is recommended to build the `opendid-gateway-java` on Ubuntu Server (Version 22.04 LTS or higher) with the following requirements:
 
-- 2 CPU
-- Memory: 4GB
-- Disk: 25GB SSD
-- Bandwidth: 20Mbps
+  #### **Minimum Requirements:**
 
-#### **Recommended Requirements:**
+  - 2 CPU
+  - Memory: 4GB
+  - Disk: 25GB SSD
+  - Bandwidth: 20Mbps
 
-- 4 CPU
-- Memory: 8GB
-- Disk: 50GB SSD
-- Bandwidth: 20Mbps
+  #### **Recommended Requirements:**
 
-### 1.2 **Prerequisites**
+  - 4 CPU
+  - Memory: 8GB
+  - Disk: 50GB SSD
+  - Bandwidth: 20Mbps
 
-| Software | Version |
-| -------- | ------- |
-| Java     | 17      |
-| MySQL    | 8.0+    |
-| nacos    | 2.4.3   |
+  ### 1.2 **Prerequisites**
 
-## 2. **Download and Configuration**
+  | Software       | Version  |
+  | -------------- | -------- |
+  | MySQL          | 8.0+     |
+  | Nacos          | 2.4.3    |
+  | OpenssL        | 3.0.2+   |
+  | Docker-ce      | 20.10.0+ |
+  | Docker-compose | 1.25.5+  |
 
-### **2.1** **Installing** **MySQL** **and** **Nacos**
+  # 2. **Download and Configuration**
 
-Install MySQL 8.0+ and Nacos 2.4.3, and create a new client gateway library in the MySQL database:
+1. Download [gateway-java-1.0.1.zip](https://github.com/OpenDID-Labs/gateway-java/releases/download/v1.0.1/gateway-java-1.0.1.zip "gateway-java-1.0.1.zip") file.
 
-```SQL
-CREATE DATABASE client_gateway DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+```
+gateway-java/
+├── 1-init.sh
+├── 2-install-docker.sh
+├── 3-install-mysql.sh
+├── 4-install_nacos.sh
+├── 5-install-web2gateway.sh
+├── conf
+│   ├── containerd.service
+│   ├── docker.service
+│   ├── docker.socket
+│   ├── my.cnf
+│   ├── web2gateway_nacos_config.zip
+│   └── vnmapping.yaml
+├── install.conf
+├── packages
+│   ├── docker
+│   │   ├── containerd
+│   │   ├── containerd-shim-runc-v2
+│   │   ├── ctr
+│   │   ├── docker
+│   │   ├── docker-init
+│   │   ├── docker-proxy
+│   │   ├── dockerd
+│   │   └── runc
+│   ├── docker-24.0.7.tar.gz
+│   ├── docker-compose-linux-x86_64
+│   ├── gateway-java.jar
+│   └── lib.tar.gz
+└── sql
+    └── standalone-nacos-mysql.sql
 ```
 
-### **2.2 Downloading Configuration Files**
 
-Download [gateway-java-1.0.0.zip](https://github.com/OpenDID-Labs/gateway-java/releases/download/v1.0.0/gateway-java-1.0.0.zip "gateway-java-1.0.0.zip") file, which contains `web2gateway_nacos_config.zip`, `gateway-java.jar`, `lib.zip` and `vnmapping.yaml` files.
 
-### 2.3 **Configuration**
+2. **Configure Settings**
 
-Log in to the Nacos management page, create a new namespace named web2gateway, and import the `web2gateway_nacos_config.zip` file included in `gateway-java-1.0.zip`.
+   Edit the install.conf configuration file, configure the basic installation directory, MySQL and nacos connection information.
 
-Modify the `common.yaml` configuration file, Fill in the public and private keys of secp256k1 and Ed25519 algorithms.
+```bash
+# ========================================================================================
+# Web2Gateway Service Configuration File
+# ----------------------------------------------------------------------------------------
+# Description: This configuration file is for Web2Gateway service basic settings
+# 1. If using installation scripts to deploy MySQL and Nacos, these values will be used for service initialization
+# 2. If using existing MySQL and Nacos services, please fill in the actual connection information
+# ========================================================================================
 
-```YAML
-service-key:
-  privatekey: "0x"    #Enter the private key of secp256k1 algorithm after the 0x prefix
+# Base installation path for Web2Gateway service
+# Used to specify the installation directory for service components
+INSTALL_BASE_PATH=/data
 
-wallet:
-  privatekey: "0x"    #Enter the ed25519 algorithm private key corresponding to your APTOS mainnet wallet address after the 0x prefix
+# ----------------------------------------------------------------------------------------
+# MySQL Configuration
+# Description: MySQL database connection settings
+# - Using installation script: These values will be used for MySQL initialization
+# - Using existing MySQL: Fill in your existing MySQL server connection details
+# ----------------------------------------------------------------------------------------
+MYSQL_HOST="127.0.0.1"                      # Enter the MySQL server address
+MYSQL_PORT="3306"                           # Enter the MySQL server port
+MYSQL_USER=                                 # Enter the username for MySQL
+MYSQL_PASSWORD=                             # Enter the password for MySQL
+
+# ----------------------------------------------------------------------------------------
+# Nacos Configuration
+# Description: Nacos service connection settings
+# - Using installation script: These values will be used for Nacos initialization
+# - Using existing Nacos: Fill in your existing Nacos server connection details
+# ----------------------------------------------------------------------------------------
+NACOS_HOST="127.0.0.1"                      # Enter the Nacos server address
+NACOS_PORT="8848"                           # Enter the Nacos service port
+NACOS_USER=                                 # Enter the username for Nacos
+NACOS_PASSWORD=                             # Enter the password for Nacos
+NACOS_NAMESPACE=                            # Enter the Nacos namespace name
+NACOS_NAMESPACE_ID=                         # Enter the Nacos namespace ID
 ```
 
-Generate Service-Key public and private keys based on secp256k1 algorithm:
 
-```Bash
-openssl ecparam -name secp256k1 -genkey -noout -out private_key.pem
-openssl ec -in private_key.pem -pubout -out public_key.pem
-openssl ec -in private_key.pem -text -noout | tr -d ':'
+
+3. **Execute Installation Scripts**
+
+   Run the following scripts in order:
+
+```bash
+# System initialization
+bash 1-init.sh
+
+# Docker installation
+bash 2-install-docker.sh
+
+# MySQL installation (Optional)
+bash 3-install-mysql.sh
+
+# Nacos installation (Optional)
+bash 4-install_nacos.sh
+
+# Web2Gateway service installation
+bash 5-install-web2gateway.sh
 ```
 
-Modify the parameters for linking MySQL libraries in `jdbcdruid.yaml`:
 
-```YAML
-mysql:
-  master:
-    url: jdbc:mysql://xxx.xxx.xxx.xxx:3306/client_gateway?characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
-    username:     #Enter the username for MySQL
-    password:     #Enter the password for MySQL
+
+#### Verification
+
+After installation, verify the services:
+
+```
+docker ps
 ```
 
-## 3. **Starting the Service**
+- MySQL service status
+- Nacos console access
+- Web2Gateway service status
 
-### 3.1 Requirements
-
-Make sure Java 17 or later version has been installed in your system.
-
-### 3.2 **Starting by Package**
-
-Put `gateway-java.jar`, `lib.zip` and `vnmapping.yaml` files included in `gateway-java-1.0.0.zip` into the same directory and run the command below:
-
-```Bash
-#step1:
-unzip lib.zip
-
-#step2:
-nohup java \
--XX:MetaspaceSize=256m \
--XX:MaxMetaspaceSize=256m \
--Dlogging.file.path \           #Enter the log storage path
--Dspring.cloud.nacos.discovery.server-addr= \       #Enter the host's IP address and port for Nacos
--Dspring.cloud.nacos.discovery.username= \          #Enter the username for Nacos
--Dspring.cloud.nacos.discovery.password= \          #Enter the password for Nacos
--Dspring.cloud.nacos.discovery.namespace= \         #Enter the ID of the Nacos's namespace
--Dvn-mapping-file-path=vnmapping.yaml \             #Enter the absolute path of the vnmapping.yaml file
--jar -Xms4000m -Xmx4000m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./oomdumpfile/heap.hprof gateway-java.jar \
- > nohup.out  2>&1 &
-```
-
-You can also check the process from the log:
-
-```Plain
-tail -f nohup.out
-```
-
-To stop the service in `nohup` mode, please refer to the below command:
-
-```Bash
-# Check the PID of the web2gateway service
-ps -ef | grep java
-
-# Stop the service, change "PID" to the correct number
-kill -9 PID
-```
