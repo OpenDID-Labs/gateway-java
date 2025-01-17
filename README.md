@@ -1,8 +1,6 @@
-<img width="300" alt="OpenDID Logo" src="https://github.com/OpenDID-Labs/gateway-java/blob/main/logo.png?raw=true">
+**OpenDID** is an infrastructure that connects all major cryptography-based digital identity and decentralized identifier (DID) systems, routing encrypted messages between them and business systems. It enables developers and applications to easily register, authenticate, and verify identities and verifiable credentials (VCs) across diverse platforms.
 
-**OpenDID** is an infrastructure that connects all major asymmetric encryption-based digital identity and decentralized identifier systems, routing encrypted messages between them and enabling developers and business applications to easily register, authenticate, and verify identities and verifiable credentials across diverse platforms. OpenDID now integrates 10 additional identity systems: China RealDID, Terminal3 Identity, ENS, Farcaster ID, HashKey DID, Passport XYZ, Privado ID, World ID, cheqd DID, Lens.
-
-As a messaging backbone similar to the SWIFT network for identity systems, OpenDID provides two types of Access Points: Web3-based Oracles and Web2-based Gateways. Both access methods are open-source at GitHub and available for public audits.
+As a messaging backbone similar to SWIFT, but for identity systems, OpenDID provides two types of Access Points: Web3-based Oracles deployed on various public chains and Web2-based Gateways deployed locally. Both access methods are open-source at GitHub and can be freely accessed or installed. For detailed information about the OpenDID Project, please read the whitepaper below.
 
 Web2 Gateway is centralized software that users can install in their local environments to interact with OpenDID through Web2 protocols. Currently, we provide a Java version of Web2 Gateway, When you send a verification request to OpenDID through `opendid-gateway-java` , you need to pay for the APT on the APTOS mainnet. Therefore, you need to prepare an APTOS wallet and recharge enough APT on the mainnet to ensure that OpenDID can handle your verification request normally.
 
