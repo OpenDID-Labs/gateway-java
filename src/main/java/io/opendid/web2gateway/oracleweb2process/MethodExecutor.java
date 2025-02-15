@@ -17,16 +17,16 @@ public class MethodExecutor {
   }
 
   public static JsonRpc2Response privateMethod(String bodyStr)
-      throws JsonRpc2ServerErrorException, Exception {
+      throws Exception {
     return PrivateMethodExecute.execute(bodyStr);
   }
 
   public static  JsonRpc2Response publicMethod(String bodyStr)
-      throws JsonRpc2ServerErrorException, Exception {
+      throws Exception {
     return PublicMethodExecute.execute(bodyStr);
   }
   public static  JsonRpc2Response adminMethod(String bodyStr)
-      throws JsonRpc2ServerErrorException, Exception {
+      throws Exception {
     return AdminMethodExecute.execute(bodyStr);
   }
 

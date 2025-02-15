@@ -2,15 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="io.opendid.web2gateway.repository.mapper.OracleMsgRecordMapper">
  <select id="selectByRequestId" resultType="io.opendid.web2gateway.model.dto.oracle.GetTransactionRespDTO">
-   select
-    ooce.job_id,
-    ooce.process_status status,
-    ooce.error_msg errorMessage,
-    omr.request_id,
-    omr.response_body
-   from oracle_msg_record omr
-   left join od_oracle_contract_eventlog ooce on omr.request_id = ooce.request_id
-   where omr.request_id = #{requestId,jdbcType=VARCHAR}
+   SELECT
+     ooce.job_id,
+     ooce.process_status STATUS,
+     ooce.error_msg errorMessage,
+     ooce.request_id requestId,
+     ooce.create_date requestDate,
+     ooce.request_oracle_hash oracleRequestHash,
+     ooce.response_body responseBody
+   FROM
+     od_oracle_contract_eventlog ooce
+   WHERE
+       ooce.request_id = #{requestId,jdbcType=VARCHAR}
+   ORDER BY
+     log_id DESC;
  </select>
 
   <update id="updateByRequestId" parameterType="io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs">

@@ -3,6 +3,7 @@ package io.opendid.web2gateway.repository.mapper;
 import io.opendid.web2gateway.model.dto.oracle.GetTransactionRespDTO;
 import io.opendid.web2gateway.repository.model.OracleMsgRecord;
 import io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs;
+import java.util.List;
 
 public interface OracleMsgRecordMapper {
     int deleteByPrimaryKey(Long msgId);
@@ -19,7 +20,7 @@ public interface OracleMsgRecordMapper {
 
     int updateByPrimaryKey(OracleMsgRecord record);
 
-    GetTransactionRespDTO selectByRequestId(String requestId);
+    List<GetTransactionRespDTO> selectByRequestId(String requestId);
 
     int updateByRequestId(OracleMsgRecordWithBLOBs record);
 }

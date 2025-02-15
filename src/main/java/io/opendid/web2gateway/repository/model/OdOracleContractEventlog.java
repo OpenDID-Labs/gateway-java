@@ -39,6 +39,12 @@ public class OdOracleContractEventlog {
 
     private Integer cancelExecuteCount;
 
+    private String requestAptosVersion;
+
+    private String cancelAptosVersion;
+
+    private Date cancelCreateDate;
+
     public Long getLogId() {
         return logId;
     }
@@ -181,5 +187,29 @@ public class OdOracleContractEventlog {
 
     public void setCancelExecuteCount(Integer cancelExecuteCount) {
         this.cancelExecuteCount = cancelExecuteCount;
+    }
+
+    public String getRequestAptosVersion() {
+        return requestAptosVersion;
+    }
+
+    public void setRequestAptosVersion(String requestAptosVersion) {
+        this.requestAptosVersion = requestAptosVersion == null ? null : requestAptosVersion.trim();
+    }
+
+    public String getCancelAptosVersion() {
+        return cancelAptosVersion;
+    }
+
+    public void setCancelAptosVersion(String cancelAptosVersion) {
+        this.cancelAptosVersion = cancelAptosVersion == null ? null : cancelAptosVersion.trim();
+    }
+
+    public Date getCancelCreateDate() {
+        return cancelCreateDate;
+    }
+
+    public void setCancelCreateDate(Date cancelCreateDate) {
+        this.cancelCreateDate = cancelCreateDate;
     }
 }

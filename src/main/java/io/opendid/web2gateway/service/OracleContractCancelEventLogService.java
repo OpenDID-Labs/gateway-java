@@ -40,12 +40,13 @@ public class OracleContractCancelEventLogService {
     eventlog.setRequestId(updateCancelEventLogDTO.getRequestId());
     eventlog.setUpdateDate(now);
     eventlog.setCancelStatus(updateCancelEventLogDTO.getCancelStatus());
+    eventlog.setCancelOracleHash(updateCancelEventLogDTO.getCancelOracleHash());
 
     if (updateCancelEventLogDTO.getCancelStatus().equals(CancelStatusEnum.SUCCESSFULLY.getCode())) {
       eventlog.setProcessStatus(ProcessStatusEnum.CANCELED.getCode());
     }
 
-    odOracleContractEventlogMapper.updateByRequestId(eventlog);
+    odOracleContractEventlogMapper.updateByRequestIdAndHash(eventlog);
 
   }
 

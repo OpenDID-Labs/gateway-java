@@ -20,18 +20,26 @@
     <result column="cancel_oracle_hash" jdbcType="VARCHAR" property="cancelOracleHash" />
     <result column="cancel_next_execute_time" jdbcType="BIGINT" property="cancelNextExecuteTime" />
     <result column="cancel_execute_count" jdbcType="INTEGER" property="cancelExecuteCount" />
+    <result column="request_aptos_version" jdbcType="VARCHAR" property="requestAptosVersion" />
+    <result column="cancel_aptos_version" jdbcType="VARCHAR" property="cancelAptosVersion" />
+    <result column="cancel_create_date" jdbcType="TIMESTAMP" property="cancelCreateDate" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs">
     <result column="error_msg" jdbcType="LONGVARCHAR" property="errorMsg" />
     <result column="cancel_error_msg" jdbcType="LONGVARCHAR" property="cancelErrorMsg" />
+    <result column="request_body" jdbcType="LONGVARCHAR" property="requestBody" />
+    <result column="response_body" jdbcType="LONGVARCHAR" property="responseBody" />
+    <result column="cancel_request_body" jdbcType="LONGVARCHAR" property="cancelRequestBody" />
+    <result column="cancel_response_body" jdbcType="LONGVARCHAR" property="cancelResponseBody" />
   </resultMap>
   <sql id="Base_Column_List">
     log_id, request_id, vn_code, job_id, job_id_fee, platform_code, process_status, callback_oracle_hash, 
     trace_id, create_date, update_date, next_execute_time, execute_count, request_oracle_hash, 
-    cancel_status, cancel_oracle_hash, cancel_next_execute_time, cancel_execute_count
+    cancel_status, cancel_oracle_hash, cancel_next_execute_time, cancel_execute_count, 
+    request_aptos_version, cancel_aptos_version, cancel_create_date
   </sql>
   <sql id="Blob_Column_List">
-    error_msg, cancel_error_msg
+    error_msg, cancel_error_msg, request_body, response_body, cancel_request_body, cancel_response_body
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select 
@@ -52,16 +60,22 @@
       create_date, update_date, next_execute_time, 
       execute_count, request_oracle_hash, cancel_status, 
       cancel_oracle_hash, cancel_next_execute_time, 
-      cancel_execute_count, error_msg, cancel_error_msg
-      )
+      cancel_execute_count, request_aptos_version, 
+      cancel_aptos_version, cancel_create_date, 
+      error_msg, cancel_error_msg, request_body, 
+      response_body, cancel_request_body, 
+      cancel_response_body)
     values (#{logId,jdbcType=BIGINT}, #{requestId,jdbcType=VARCHAR}, #{vnCode,jdbcType=VARCHAR}, 
       #{jobId,jdbcType=VARCHAR}, #{jobIdFee,jdbcType=BIGINT}, #{platformCode,jdbcType=VARCHAR}, 
       #{processStatus,jdbcType=INTEGER}, #{callbackOracleHash,jdbcType=VARCHAR}, #{traceId,jdbcType=VARCHAR}, 
       #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{nextExecuteTime,jdbcType=BIGINT}, 
       #{executeCount,jdbcType=INTEGER}, #{requestOracleHash,jdbcType=VARCHAR}, #{cancelStatus,jdbcType=INTEGER}, 
       #{cancelOracleHash,jdbcType=VARCHAR}, #{cancelNextExecuteTime,jdbcType=BIGINT}, 
-      #{cancelExecuteCount,jdbcType=INTEGER}, #{errorMsg,jdbcType=LONGVARCHAR}, #{cancelErrorMsg,jdbcType=LONGVARCHAR}
-      )
+      #{cancelExecuteCount,jdbcType=INTEGER}, #{requestAptosVersion,jdbcType=VARCHAR}, 
+      #{cancelAptosVersion,jdbcType=VARCHAR}, #{cancelCreateDate,jdbcType=TIMESTAMP}, 
+      #{errorMsg,jdbcType=LONGVARCHAR}, #{cancelErrorMsg,jdbcType=LONGVARCHAR}, #{requestBody,jdbcType=LONGVARCHAR}, 
+      #{responseBody,jdbcType=LONGVARCHAR}, #{cancelRequestBody,jdbcType=LONGVARCHAR}, 
+      #{cancelResponseBody,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs">
     insert into od_oracle_contract_eventlog
@@ -120,11 +134,32 @@
       <if test="cancelExecuteCount != null">
         cancel_execute_count,
       </if>
+      <if test="requestAptosVersion != null">
+        request_aptos_version,
+      </if>
+      <if test="cancelAptosVersion != null">
+        cancel_aptos_version,
+      </if>
+      <if test="cancelCreateDate != null">
+        cancel_create_date,
+      </if>
       <if test="errorMsg != null">
         error_msg,
       </if>
       <if test="cancelErrorMsg != null">
         cancel_error_msg,
+      </if>
+      <if test="requestBody != null">
+        request_body,
+      </if>
+      <if test="responseBody != null">
+        response_body,
+      </if>
+      <if test="cancelRequestBody != null">
+        cancel_request_body,
+      </if>
+      <if test="cancelResponseBody != null">
+        cancel_response_body,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -182,11 +217,32 @@
       <if test="cancelExecuteCount != null">
         #{cancelExecuteCount,jdbcType=INTEGER},
       </if>
+      <if test="requestAptosVersion != null">
+        #{requestAptosVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelAptosVersion != null">
+        #{cancelAptosVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelCreateDate != null">
+        #{cancelCreateDate,jdbcType=TIMESTAMP},
+      </if>
       <if test="errorMsg != null">
         #{errorMsg,jdbcType=LONGVARCHAR},
       </if>
       <if test="cancelErrorMsg != null">
         #{cancelErrorMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="requestBody != null">
+        #{requestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="responseBody != null">
+        #{responseBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelRequestBody != null">
+        #{cancelRequestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelResponseBody != null">
+        #{cancelResponseBody,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -244,11 +300,32 @@
       <if test="cancelExecuteCount != null">
         cancel_execute_count = #{cancelExecuteCount,jdbcType=INTEGER},
       </if>
+      <if test="requestAptosVersion != null">
+        request_aptos_version = #{requestAptosVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelAptosVersion != null">
+        cancel_aptos_version = #{cancelAptosVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelCreateDate != null">
+        cancel_create_date = #{cancelCreateDate,jdbcType=TIMESTAMP},
+      </if>
       <if test="errorMsg != null">
         error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
       </if>
       <if test="cancelErrorMsg != null">
         cancel_error_msg = #{cancelErrorMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="requestBody != null">
+        request_body = #{requestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="responseBody != null">
+        response_body = #{responseBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelRequestBody != null">
+        cancel_request_body = #{cancelRequestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelResponseBody != null">
+        cancel_response_body = #{cancelResponseBody,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where log_id = #{logId,jdbcType=BIGINT}
@@ -272,8 +349,15 @@
       cancel_oracle_hash = #{cancelOracleHash,jdbcType=VARCHAR},
       cancel_next_execute_time = #{cancelNextExecuteTime,jdbcType=BIGINT},
       cancel_execute_count = #{cancelExecuteCount,jdbcType=INTEGER},
+      request_aptos_version = #{requestAptosVersion,jdbcType=VARCHAR},
+      cancel_aptos_version = #{cancelAptosVersion,jdbcType=VARCHAR},
+      cancel_create_date = #{cancelCreateDate,jdbcType=TIMESTAMP},
       error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
-      cancel_error_msg = #{cancelErrorMsg,jdbcType=LONGVARCHAR}
+      cancel_error_msg = #{cancelErrorMsg,jdbcType=LONGVARCHAR},
+      request_body = #{requestBody,jdbcType=LONGVARCHAR},
+      response_body = #{responseBody,jdbcType=LONGVARCHAR},
+      cancel_request_body = #{cancelRequestBody,jdbcType=LONGVARCHAR},
+      cancel_response_body = #{cancelResponseBody,jdbcType=LONGVARCHAR}
     where log_id = #{logId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
@@ -294,7 +378,10 @@
       cancel_status = #{cancelStatus,jdbcType=INTEGER},
       cancel_oracle_hash = #{cancelOracleHash,jdbcType=VARCHAR},
       cancel_next_execute_time = #{cancelNextExecuteTime,jdbcType=BIGINT},
-      cancel_execute_count = #{cancelExecuteCount,jdbcType=INTEGER}
+      cancel_execute_count = #{cancelExecuteCount,jdbcType=INTEGER},
+      request_aptos_version = #{requestAptosVersion,jdbcType=VARCHAR},
+      cancel_aptos_version = #{cancelAptosVersion,jdbcType=VARCHAR},
+      cancel_create_date = #{cancelCreateDate,jdbcType=TIMESTAMP}
     where log_id = #{logId,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -1,15 +1,11 @@
 package io.opendid.web2gateway.config;
 
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.*;
+
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,34 +26,25 @@ public class OkHttpConfiguration {
   @Value("${ok.http.keep-alive-duration}")
   private Long keepAliveDuration;
 
-  @Bean
-  public X509TrustManager x509TrustManager(){
-    return new X509TrustManager() {
-      @Override
-      public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-      }
-      @Override
-      public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-      }
-      @Override
-      public X509Certificate[] getAcceptedIssuers() {
-        return new X509Certificate[0];
-      }
-    };
 
-  }
   @Bean
-  public SSLSocketFactory sslSocketFactory() {
+  public SSLSocketFactory sslSocketFactory() throws NoSuchAlgorithmException, KeyManagementException {
+    TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
     try {
-      SSLContext sslContext = SSLContext.getInstance("TLS");
-      sslContext.init(null, new TrustManager[]{x509TrustManager()}, new SecureRandom());
-      return sslContext.getSocketFactory();
-    } catch (NoSuchAlgorithmException e) {
-      e.printStackTrace();
-    } catch (KeyManagementException e) {
-      e.printStackTrace();
+      trustManagerFactory.init((KeyStore) null);
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to initialize TrustManagerFactory", e);
     }
-    return null;
+
+    TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+    if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+      throw new IllegalStateException("Unexpected default trust managers: " + trustManagers);
+    }
+    X509TrustManager trustManager = (X509TrustManager) trustManagers[0];
+
+    SSLContext sslContext = SSLContext.getInstance("TLS");
+    sslContext.init(null, trustManagers, null);
+    return sslContext.getSocketFactory();
   }
   /**
    * Create a new connection pool with tuning parameters appropriate for a single-user application.
@@ -68,9 +55,15 @@ public class OkHttpConfiguration {
     return new ConnectionPool(maxIdleConnections, keepAliveDuration, TimeUnit.SECONDS);
   }
   @Bean
-  public OkHttpClient okHttpClient() {
+  public OkHttpClient okHttpClient() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+
+    TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+    trustManagerFactory.init((KeyStore) null);
+    TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+    X509TrustManager trustManager = (X509TrustManager) trustManagers[0];
+
     return new OkHttpClient.Builder()
-        .sslSocketFactory(sslSocketFactory(), x509TrustManager())
+        .sslSocketFactory(sslSocketFactory(), trustManager) // Use authentic textbooks
         .retryOnConnectionFailure(false)
         .connectionPool(pool())
         .connectTimeout(connectTimeout, TimeUnit.SECONDS)

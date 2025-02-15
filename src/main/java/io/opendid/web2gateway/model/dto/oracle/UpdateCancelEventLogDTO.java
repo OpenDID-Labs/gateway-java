@@ -7,6 +7,15 @@ public class UpdateCancelEventLogDTO {
 
     private Integer cancelStatus;
 
+    private String cancelOracleHash;
+
+    public String getCancelOracleHash() {
+        return cancelOracleHash;
+    }
+
+    public void setCancelOracleHash(String cancelOracleHash) {
+        this.cancelOracleHash = cancelOracleHash;
+    }
 
     public String getRequestId() {
         return requestId;

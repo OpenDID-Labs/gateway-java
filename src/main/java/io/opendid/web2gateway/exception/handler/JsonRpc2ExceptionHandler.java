@@ -131,6 +131,7 @@ public class JsonRpc2ExceptionHandler {
     errorEntity.setCode(e.getCode());
     errorEntity.setMessage(e.getMessage());
     errorEntity.setData(e.getData());
+    errorEntity.setLogId(e.getLogId());
 
     error.setError(errorEntity);
     return error;

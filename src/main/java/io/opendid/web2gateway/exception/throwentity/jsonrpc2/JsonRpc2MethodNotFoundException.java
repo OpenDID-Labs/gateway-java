@@ -14,7 +14,7 @@ package io.opendid.web2gateway.exception.throwentity.jsonrpc2;
  * @Date: 2023/9/28
  * @history date, modifier,and description
  **/
-public class JsonRpc2MethodNotFoundException extends RuntimeException implements  JsonRpcException{
+public class JsonRpc2MethodNotFoundException extends JsonRpc2ExceptionObject implements  JsonRpcException{
 
   private Integer code=-32601;
   private String message;

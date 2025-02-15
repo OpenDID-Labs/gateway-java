@@ -6,7 +6,7 @@ import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
 
 public interface Web2Method {
   String BEAN_SUFFIX="Process";
-  Object process(JsonRpc2Request request) throws Exception, JsonRpc2ServerErrorException;
+  Object process(JsonRpc2Request request) throws Exception;
 
   String checkParams(JsonRpc2Request request);
 }

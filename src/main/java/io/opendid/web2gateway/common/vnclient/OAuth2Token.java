@@ -24,7 +24,7 @@ public class OAuth2Token {
   @Autowired
   private VnGlobalMapping vnGlobalMapping;
 
-  public GetTokenResDTO getAccessToken(GetTokenReqDTO getTokenReqDTO) {
+  public GetTokenResDTO getAccessToken(GetTokenReqDTO getTokenReqDTO) throws Exception {
 
     Map<String, String> reqData = new HashMap<>();
 

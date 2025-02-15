@@ -18,7 +18,7 @@ public class MethodOracleGetCancelTransaction implements Web2Method {
   private OracleMsgRecordService oracleMsgRecordService;
 
   @Override
-  public Object process(JsonRpc2Request request) throws Exception, JsonRpc2ServerErrorException {
+  public Object process(JsonRpc2Request request) throws Exception {
 
     return oracleMsgRecordService.selectCancelStatusByRequestId(String.valueOf(request.getParams().get("requestId")));
   }

@@ -12,6 +12,8 @@ public class ContractEventLogUpdateForCancelDTO {
 
   private String requestBody;
 
+
+
   public String getRequestBody() {
     return requestBody;
   }

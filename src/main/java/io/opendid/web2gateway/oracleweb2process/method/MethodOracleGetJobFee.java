@@ -1,6 +1,8 @@
 package io.opendid.web2gateway.oracleweb2process.method;
 
 import com.alibaba.fastjson.JSONObject;
+import io.opendid.web2gateway.common.codes.JsonRpc2MessageCodeEnum;
+import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
 import io.opendid.web2gateway.common.vnclient.VnGatewayClient;
 import io.opendid.web2gateway.common.web2.Web2MethodName;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
@@ -13,6 +15,7 @@ import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 @Component(Web2MethodName.ORACLE_GET_JOB_FEE+ Web2Method.BEAN_SUFFIX)
@@ -24,7 +27,7 @@ public class MethodOracleGetJobFee implements Web2Method {
   private VnGatewayClient vnGatewayClient;
 
   @Override
-  public Object process(JsonRpc2Request request) throws JsonRpc2ServerErrorException {
+  public Object process(JsonRpc2Request request) throws Exception {
 
     // build params
     VnClientJobIdDTO dto = new VnClientJobIdDTO();
@@ -38,7 +41,11 @@ public class MethodOracleGetJobFee implements Web2Method {
       return respResultJson.getObject("result", JobIdFeeResponseDTO.class);
     } else {
       logger.error("MethodOracleGetJobFee request vn gateway return null");
-      throw new RuntimeException();
+      throw new JsonRpc2ServerErrorException(
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32002.getCode(),
+          MDC.get(LogTraceIdConstant.TRACE_ID),
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32002.getMessage(),
+          "Method getJobIdFee call vn result is null");
     }
   }
 

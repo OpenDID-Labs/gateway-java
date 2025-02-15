@@ -103,12 +103,12 @@ public class ApiJwtCheck {
     catch (SignatureException e) {
 //      logger.error("Invalid JWT signature: {}", e.getMessage());
       throw new JsonRpc2UnauthorizedRequestException(traceId,
-          "Invalid JWT Signature"
+          "Invalid JWT Signature","Invalid JWT Signature"
       );
     } catch (MalformedJwtException e) {
 //      logger.error("Invalid JWT token: {}", e.getMessage());
       throw new JsonRpc2UnauthorizedRequestException(traceId,
-          "Invalid JWT token"
+          "Invalid JWT token","Invalid JWT token"
       );
 
     } catch (ExpiredJwtException e) {
@@ -131,7 +131,7 @@ public class ApiJwtCheck {
 //      throw e;
 
     }  catch (Throwable e) {
-      throw new JsonRpc2UnauthorizedRequestException(traceId, e.getMessage());
+      throw new JsonRpc2UnauthorizedRequestException(traceId, e.getMessage(),e.getMessage());
 
     }
   }
@@ -165,10 +165,10 @@ public class ApiJwtCheck {
     if (tenantJwt != null &&
         StringUtils.isNotBlank(tenantJwt.getJwt())) {
       if (!bearerJwt.equals(tenantJwt.getJwt())) {
-        throw new JsonRpc2UnauthorizedRequestException(traceId, "Invalid JWT token.");
+        throw new JsonRpc2UnauthorizedRequestException(traceId, "Invalid JWT token.","Invalid JWT token.");
       }
     } else {
-      throw new JsonRpc2UnauthorizedRequestException(traceId, "Invalid JWT token.");
+      throw new JsonRpc2UnauthorizedRequestException(traceId, "Invalid JWT token.","Invalid JWT token.");
     }
   }
 

@@ -33,7 +33,7 @@ public class MethodAdminUpdateJWT implements Web2Method {
   private JwtTokenService jwtTokenService;
 
   @Override
-  public Object process(JsonRpc2Request request) throws JsonRpc2ServerErrorException {
+  public Object process(JsonRpc2Request request) throws Exception {
     String token = jwtCreate.generateAdminJwt();
     UpdateJWTResponseDTO updateJWTResponseDTO = new UpdateJWTResponseDTO();
     jwtTokenService.updateAdminJwt(token);

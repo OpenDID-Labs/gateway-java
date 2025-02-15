@@ -10,8 +10,13 @@ package io.opendid.web2gateway.common.codes;
 **/
 public enum JsonRpc2MessageCodeEnum {
 
+  // Please use -32000 to -32049
   JSON_RPC2_CODE_32000(-32000, "Server error!"),
   JSON_RPC2_CODE_32001(-32001, "MAX_GAS_UNITS_BELOW_MIN_TRANSACTION_GAS_UNITS"),
+  JSON_RPC2_CODE_32002(-32002, "Call VN error!"),
+  JSON_RPC2_CODE_32003(-32003, "Call http error!"),
+  JSON_RPC2_CODE_32004(-32004, "Data does not exist!"),
+  JSON_RPC2_CODE_32005(-32005, "This JobId is currently not supported!"),
 
 
   ;

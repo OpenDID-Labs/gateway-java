@@ -44,7 +44,9 @@ public class OracleContractEventLogService {
     odOracleContractEventlog.setCreateDate(new Date());
     odOracleContractEventlog.setUpdateDate(new Date());
     odOracleContractEventlog.setRequestOracleHash(dto.getRequestOracleHash());
+    odOracleContractEventlog.setRequestAptosVersion(dto.getRequestAptosVersion());
     odOracleContractEventlog.setErrorMsg(dto.getErrorMsg());
+    odOracleContractEventlog.setRequestBody(dto.getRequestBody());
 
     odOracleContractEventlogMapper.insertSelective(odOracleContractEventlog);
   }
@@ -59,16 +61,18 @@ public class OracleContractEventLogService {
     eventlog.setRequestId(updateEventLogDTO.getRequestId());
     eventlog.setProcessStatus(updateEventLogDTO.getProcessStatus());
     eventlog.setCallbackOracleHash(updateEventLogDTO.getCallbackOracleHash());
+    eventlog.setRequestAptosVersion(updateEventLogDTO.getRequestAptosVersion());
+    eventlog.setResponseBody(updateEventLogDTO.getResponseBody());
     eventlog.setUpdateDate(now);
 
-    odOracleContractEventlogMapper.updateByRequestId(eventlog);
+    odOracleContractEventlogMapper.updateByRequestIdAndHash(eventlog);
 
-    OracleMsgRecordWithBLOBs msgRecordWithBLOBs = new OracleMsgRecordWithBLOBs();
+    /*OracleMsgRecordWithBLOBs msgRecordWithBLOBs = new OracleMsgRecordWithBLOBs();
     msgRecordWithBLOBs.setRequestId(updateEventLogDTO.getRequestId());
     msgRecordWithBLOBs.setResponseBody(updateEventLogDTO.getResponseBody());
     msgRecordWithBLOBs.setUpdateDate(now);
 
-    oracleMsgRecordMapper.updateByRequestId(msgRecordWithBLOBs);
+    oracleMsgRecordMapper.updateByRequestId(msgRecordWithBLOBs);*/
 
   }
 
@@ -82,17 +86,18 @@ public class OracleContractEventLogService {
     contractEventlog.setCancelOracleHash(cancelDTO.getCancelOracleHash());
     contractEventlog.setCancelErrorMsg(cancelDTO.getCancelErrorMsg());
     contractEventlog.setUpdateDate(now);
+    contractEventlog.setCancelResponseBody(cancelDTO.getRequestBody());
 
     odOracleContractEventlogMapper.updateByRequestId(contractEventlog);
 
 
-    OracleMsgRecordWithBLOBs msgRecordWithBLOBs = new OracleMsgRecordWithBLOBs();
+    /*OracleMsgRecordWithBLOBs msgRecordWithBLOBs = new OracleMsgRecordWithBLOBs();
 
     msgRecordWithBLOBs.setRequestId(cancelDTO.getRequestId());
     msgRecordWithBLOBs.setCancelRequestBody(cancelDTO.getRequestBody());
     msgRecordWithBLOBs.setUpdateDate(now);
 
-    oracleMsgRecordMapper.updateByRequestId(msgRecordWithBLOBs);
+    oracleMsgRecordMapper.updateByRequestId(msgRecordWithBLOBs);*/
 
 
 
@@ -117,6 +122,10 @@ public class OracleContractEventLogService {
 
     odOracleContractEventlogMapper.updateByPrimaryKeySelective(eventlog);
 
+  }
+
+  public int updateByPrimaryKeySelective(OdOracleContractEventlogWithBLOBs record){
+    return odOracleContractEventlogMapper.updateByPrimaryKeySelective(record);
   }
 
 }

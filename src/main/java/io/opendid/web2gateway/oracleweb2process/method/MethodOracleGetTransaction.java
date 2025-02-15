@@ -16,7 +16,7 @@ public class MethodOracleGetTransaction implements Web2Method {
   private OracleMsgRecordService oracleMsgRecordService;
 
   @Override
-  public Object process(JsonRpc2Request request) {
+  public Object process(JsonRpc2Request request) throws Exception {
 
     return oracleMsgRecordService.selectMsgRecordByRequestId(String.valueOf(request.getParams().get("requestId")));
   }

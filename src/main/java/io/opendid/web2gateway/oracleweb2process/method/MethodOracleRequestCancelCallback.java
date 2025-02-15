@@ -42,9 +42,12 @@ public class MethodOracleRequestCancelCallback implements Web2CallbackMethod {
     try {
       LinkedHashMap params = request.getParams();
       String requestId = params.get("requestId").toString();
+      String cancelTxHash = params.get("cancelTxHash").toString();
+
 
       UpdateCancelEventLogDTO updateCancelEventLogDTO = new UpdateCancelEventLogDTO();
       updateCancelEventLogDTO.setRequestId(requestId);
+      updateCancelEventLogDTO.setCancelOracleHash(cancelTxHash);
 
       if (params.get("status") != null) {
         Integer status = (Integer) params.get("status");

@@ -22,7 +22,7 @@ public class MethodExecuteHandler {
 
   public static JsonRpc2Response execute(String bodyStr,
       MethodAccessVerify methodAccessVerify)
-      throws JsonRpc2ServerErrorException, Exception {
+      throws Exception {
 
     String traceId = MDC.get(LogTraceIdConstant.TRACE_ID);
 

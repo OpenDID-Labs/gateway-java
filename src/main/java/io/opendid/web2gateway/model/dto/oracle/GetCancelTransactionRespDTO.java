@@ -1,5 +1,7 @@
 package io.opendid.web2gateway.model.dto.oracle;
 
+import java.util.Date;
+
 /**
 *  GetTransactionRespDTO
 * @author Dong-Jianguo
@@ -16,7 +18,27 @@ public class GetCancelTransactionRespDTO {
 
   private Integer status;
 
+  private String cancelOracleHash;
+
+  private String cancelDate;
+
   private String errorMessage;
+
+  public String getCancelOracleHash() {
+    return cancelOracleHash;
+  }
+
+  public void setCancelOracleHash(String cancelOracleHash) {
+    this.cancelOracleHash = cancelOracleHash;
+  }
+
+  public String getCancelDate() {
+    return cancelDate;
+  }
+
+  public void setCancelDate(String cancelDate) {
+    this.cancelDate = cancelDate;
+  }
 
   public String getRequestId() {
     return requestId;

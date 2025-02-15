@@ -37,7 +37,7 @@ public class MethodAdminTenantCreateJWT implements Web2Method {
   private JwtTokenService jwtTokenService;
 
   @Override
-  public Object process(JsonRpc2Request request) throws JsonRpc2ServerErrorException {
+  public Object process(JsonRpc2Request request) throws Exception {
 
     TenantJwtGenerateResDTO tenantJwtGenerateResDTO = null;
     Object exp = request.getParams().get("exp");

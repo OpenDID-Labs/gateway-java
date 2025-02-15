@@ -40,6 +40,7 @@ public class MethodOracleRequestCallback implements Web2CallbackMethod {
       LinkedHashMap params = request.getParams();
       String requestId = params.get("requestId").toString();
       String callbackOracleHash = params.get("oracleFulfillTxHash").toString();
+      String aptosVersion = params.get("aptosVersion").toString();
       String responseBody = params.get("data").toString();
 
       UpdateEventLogDTO updateEventLogDTO = new UpdateEventLogDTO();
@@ -47,6 +48,7 @@ public class MethodOracleRequestCallback implements Web2CallbackMethod {
       updateEventLogDTO.setRequestId(requestId);
       updateEventLogDTO.setResponseBody(responseBody);
       updateEventLogDTO.setCallbackOracleHash(callbackOracleHash);
+      updateEventLogDTO.setRequestAptosVersion(aptosVersion);
       oracleContractEventLogService.updateEventLogByRequestId(updateEventLogDTO);
       callBackRespDTO.setSuccessfully(CallbackProcessStatus.SUCCESSFUL.getCode());
     } catch (Exception e) {

@@ -59,23 +59,23 @@ public class MethodOracleRequest implements Web2Method {
 
 
   @Override
-  public Object process(JsonRpc2Request request) throws Exception, JsonRpc2ServerErrorException {
+  public Object process(JsonRpc2Request request) throws Exception {
 
     if (request.getParams() == null) {
       return new OracleResultMethodRes();
     }
 
-    String  homeChainPublicKey = GatewayKeyVaultUtil.getKey(GatewayKeyVaultUtil.walletPublicKey);
+    String homeChainPublicKey = GatewayKeyVaultUtil.getKey(GatewayKeyVaultUtil.walletPublicKey);
 
     LinkedHashMap params = request.getParams();
     String jobId = MapUtils.getString(params, "jobId");
     String data = MapUtils.getString(params, "data");
 
-    logger.info("MethodOracleRequest process jobId={}",jobId);
+    logger.info("MethodOracleRequest process jobId={}", jobId);
 
     Long nonce = getNonce(homeChainPublicKey);
 
-    logger.info("MethodOracleRequest process jobId={},nonce={}",jobId,nonce);
+    logger.info("MethodOracleRequest process jobId={},nonce={}", jobId, nonce);
 
     WarpReqBodyRequestDTO warpReqBodyRequestDTO = new WarpReqBodyRequestDTO();
     warpReqBodyRequestDTO.setJobId(jobId);
@@ -83,12 +83,14 @@ public class MethodOracleRequest implements Web2Method {
     warpReqBodyRequestDTO.setNonce(nonce.toString());
     warpReqBodyRequestDTO.setData(data);
 
-    logger.info("MethodOracleRequest process warp RequestBody prams={}",JSON.toJSONString(warpReqBodyRequestDTO));
+    logger.info("MethodOracleRequest process warp RequestBody prams={}",
+        JSON.toJSONString(warpReqBodyRequestDTO));
 
+    // Get warp request body
     WarpReqBodyResponseDTO warpReqBody = warpRequestBodyService.getWarpReqBody(
         warpReqBodyRequestDTO);
 
-    logger.info("MethodOracleRequest process warp RequestBody={}",JSON.toJSONString(warpReqBody));
+    logger.info("MethodOracleRequest process warp RequestBody={}", JSON.toJSONString(warpReqBody));
 
     // 1,Signing with a private key
     byte[] signature = AptosUtils.ed25519Sign(
@@ -120,10 +122,20 @@ public class MethodOracleRequest implements Web2Method {
     vnClientJobIdDTO.setRequestBody(jsonRpc2Request);
 
     JsonRpc2Response respResult = vnGatewayClient.request(vnClientJobIdDTO);
+
+    if (respResult == null){
+      logger.error("MethodOracleRequest request vn gateway return null");
+      throw new JsonRpc2ServerErrorException(
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32002.getCode(),
+          MDC.get(LogTraceIdConstant.TRACE_ID),
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32002.getMessage(),
+          "Method request call vn result is null");
+    }
+
     JSONObject respResultJson = JSONObject.parseObject(
         JSONObject.toJSONString(respResult.getResult()));
 
-    logger.info("MethodOracleRequest process send result={}",respResultJson);
+    logger.info("MethodOracleRequest process send result={}", respResultJson);
 
     Object result = respResult.getResult();
 
@@ -132,7 +144,7 @@ public class MethodOracleRequest implements Web2Method {
         AptosUtils.generateAddressFromPublicKey(homeChainPublicKey), nonce);
     VngatewayJobidMapping vngatewayJobidMapping = vngatewayJobidMappingMapper.selectByJobId(jobId);
 
-    logger.info("MethodOracleRequest process requestId={}",requesttId);
+    logger.info("MethodOracleRequest process requestId={}", requesttId);
 
     ContractEventLogInsertDTO insertDTO = new ContractEventLogInsertDTO();
     insertDTO.setJobId(jobId);
@@ -140,36 +152,40 @@ public class MethodOracleRequest implements Web2Method {
     insertDTO.setVnCode(vngatewayJobidMapping.getVnCode());
     insertDTO.setPlatformCode(vngatewayJobidMapping.getPlatformCode());
     insertDTO.setJobIdFee(warpReqBody.getJobIdFee());
-    if (respResultJson.get("failReason") != null && !"".equals(respResultJson.get("failReason"))){
+    insertDTO.setTraceId(MDC.get(LogTraceIdConstant.TRACE_ID));
+    insertDTO.setRequestBody(data);
+
+    if (respResultJson.get("failReason") != null && !"".equals(respResultJson.get("failReason"))) {
       // Set DB status
       insertDTO.setProcessStatus(ProcessStatusEnum.PAY_FAIL.getCode());
       insertDTO.setErrorMsg(respResultJson.get("failReason").toString());
 
-    }else {
+    } else {
       insertDTO.setProcessStatus(ProcessStatusEnum.PENDING.getCode());
     }
-    insertDTO.setTraceId(MDC.get(LogTraceIdConstant.TRACE_ID));
-
-    if (respResultJson != null && respResultJson.get("oracleRequestHash") != null) {
+    if (respResultJson.get("oracleRequestHash") != null) {
       insertDTO.setRequestOracleHash(respResultJson.getString("oracleRequestHash"));
+    }
+    if(respResultJson.get("aptosVersion") != null){
+      insertDTO.setRequestAptosVersion(respResultJson.getString("aptosVersion"));
     }
 
     oracleContractEventLogService.insertContractEventLog(insertDTO);
 
-    MsgRecordInsertDTO msgRecordInsertDTO = new MsgRecordInsertDTO();
+    /*MsgRecordInsertDTO msgRecordInsertDTO = new MsgRecordInsertDTO();
     msgRecordInsertDTO.setVnCode(vngatewayJobidMapping.getVnCode());
     msgRecordInsertDTO.setRequestId(requesttId);
     msgRecordInsertDTO.setRequestBody(data);
 
-    oracleMsgRecordService.insertMsgRecord(msgRecordInsertDTO);
+    oracleMsgRecordService.insertMsgRecord(msgRecordInsertDTO);*/
 
-    if (respResultJson.get("failReason") != null && !"".equals(respResultJson.get("failReason"))){
+    if (respResultJson.get("failReason") != null && !"".equals(respResultJson.get("failReason"))) {
 
       OracleRequestErrorDataDTO oracleRequestErrorDataDTO = new OracleRequestErrorDataDTO();
       oracleRequestErrorDataDTO.setRequestId(requesttId);
 
       String errorData = JSON.toJSONString(oracleRequestErrorDataDTO);
-      logger.info("MethodOracleRequest process error data={}",errorData);
+      logger.info("MethodOracleRequest process error data={}", errorData);
 
       throw new JsonRpc2ServerErrorException(
           JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32001.getCode(),
@@ -178,9 +194,8 @@ public class MethodOracleRequest implements Web2Method {
           oracleRequestErrorDataDTO);
     }
 
-    OracleRequestRespDTO oracleRequestRespDTO = JSONObject.parseObject(result.toString(),OracleRequestRespDTO.class);
-
-
+    OracleRequestRespDTO oracleRequestRespDTO = JSONObject.parseObject(result.toString(),
+        OracleRequestRespDTO.class);
 
     return oracleRequestRespDTO;
   }

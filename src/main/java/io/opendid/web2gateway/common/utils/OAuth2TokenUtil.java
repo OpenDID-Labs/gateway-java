@@ -96,7 +96,7 @@ public class OAuth2TokenUtil {
   }
 
 
-  public String createToken(String vnCode, String vnRouteUrl) {
+  public String createToken(String vnCode, String vnRouteUrl) throws Exception {
 
     VngatewayRouteInfo vngatewayRouteInfo = vnGlobalMapping.getRouteInfoForVnCode(vnCode);
 
@@ -121,7 +121,7 @@ public class OAuth2TokenUtil {
   }
 
 
-  public String getToken(String vnCode, String vnRouteUrl) {
+  public String getToken(String vnCode, String vnRouteUrl) throws Exception {
 
     logger.info("KeyClockTokenUtil getToken start");
 

@@ -1,7 +1,7 @@
 package io.opendid.web2gateway.repository.model;
 
 public class OracleMsgRecordWithBLOBs extends OracleMsgRecord {
-    private String requestBody;
+    /*private String requestBody;
 
     private String responseBody;
 
@@ -39,5 +39,5 @@ public class OracleMsgRecordWithBLOBs extends OracleMsgRecord {
 
     public void setCancelResponseBody(String cancelResponseBody) {
         this.cancelResponseBody = cancelResponseBody == null ? null : cancelResponseBody.trim();
-    }
+    }*/
 }

@@ -1,0 +1,2 @@
+alter table od_oracle_contract_eventlog add request_aptos_version varchar(100) comment 'aptos version';
+alter table od_oracle_contract_eventlog add cancel_aptos_version varchar(100) comment 'aptos version';

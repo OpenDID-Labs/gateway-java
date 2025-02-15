@@ -1,6 +1,7 @@
 package io.opendid.web2gateway.tasks.oracleResult;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.opendid.web2gateway.common.enums.request.MethodEnum;
 import io.opendid.web2gateway.common.enums.status.ProcessStatusEnum;
@@ -69,25 +70,40 @@ public class OracleResultHandler {
 
             String resultStr = JSONObject.toJSONString(request.getResult());
 
-            JSONObject resultJson = JSONObject.parseObject(resultStr);
+            JSONArray resultJsonArray = JSONArray.parseArray(resultStr);
 
-            if (Integer.valueOf(ProcessStatusEnum.PROCESSED.getCode()).equals(resultJson.getInteger("status"))) {
+            for (int i = 0; i < resultJsonArray.size(); i++) {
 
-              LinkedHashMap<Object, Object> resultLinkedHashMap = new LinkedHashMap<>();
-              resultLinkedHashMap.put("requestId", resultJson.getString("requestId"));
-              resultLinkedHashMap.put("oracleFulfillTxHash", resultJson.getString("oracleFulfillTxHash"));
-              resultLinkedHashMap.put("data", resultJson.getString("data"));
-              JsonRpc2Request oracleCallBack = new JsonRpc2Request(1L, "oracle_callback", resultLinkedHashMap, "");
-              MethodExecutor.publicMethod(JSONObject.toJSONString(oracleCallBack));
-            } else {
-              oracleContractEventLogService.updateExecuteCount(pendingData.getLogId(), pendingData.getExecuteCount());
+              JSONObject resultJson = resultJsonArray.getJSONObject(i);
+
+              String requestId = resultJson.getString("requestId");
+              String aptosVersion = resultJson.getString("aptosVersion");
+
+              if(pendingData.getRequestId().equals(requestId)
+                  && pendingData.getRequestAptosVersion().equals(aptosVersion)){
+
+                if (Integer.valueOf(ProcessStatusEnum.PROCESSED.getCode()).equals(resultJson.getInteger("status"))) {
+
+                  LinkedHashMap<Object, Object> resultLinkedHashMap = new LinkedHashMap<>();
+                  resultLinkedHashMap.put("requestId", resultJson.getString("requestId"));
+                  resultLinkedHashMap.put("oracleFulfillTxHash", resultJson.getString("oracleFulfillTxHash"));
+                  resultLinkedHashMap.put("aptosVersion", resultJson.getString("aptosVersion"));
+                  resultLinkedHashMap.put("data", resultJson.getString("data"));
+                  JsonRpc2Request oracleCallBack = new JsonRpc2Request(1L, "oracle_callback", resultLinkedHashMap, "");
+                  MethodExecutor.publicMethod(JSONObject.toJSONString(oracleCallBack));
+                } else {
+                  oracleContractEventLogService.updateExecuteCount(pendingData.getLogId(), pendingData.getExecuteCount());
+                }
+
+              }
+
             }
 
           } else {
             oracleContractEventLogService.updateExecuteCount(pendingData.getLogId(), pendingData.getExecuteCount());
           }
 
-        } catch (JsonRpc2ServerErrorException | Exception e) {
+        } catch ( Exception e) {
           logger.error("process OracleResultHandler pending data error", e);
           throw new RuntimeException(e);
         }

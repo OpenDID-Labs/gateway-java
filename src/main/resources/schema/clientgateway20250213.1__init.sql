@@ -1,0 +1,1 @@
+alter table od_oracle_contract_eventlog add cancel_create_date datetime comment 'cancel create date';

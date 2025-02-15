@@ -8,7 +8,7 @@ import io.opendid.web2gateway.oracleweb2process.methodhandler.MethodExecuteHandl
 public  class PublicMethodExecute {
 
   public static JsonRpc2Response execute(String bodyStr)
-      throws JsonRpc2ServerErrorException, Exception {
+      throws Exception {
     return MethodExecuteHandler.execute(bodyStr,
         PublicMethodAccessValidator.getInstance());
   }

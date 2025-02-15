@@ -1,5 +1,8 @@
 package io.opendid.web2gateway.model.dto.oracle;
 
+import java.util.Date;
+import javax.xml.crypto.Data;
+
 /**
 *  GetTransactionRespDTO
 * @author Dong-Jianguo
@@ -18,7 +21,27 @@ public class GetTransactionRespDTO {
 
   private Integer status;
 
+  private String oracleRequestHash;
+
+  private String requestDate;
+
   private Object responseBody;
+
+  public String getOracleRequestHash() {
+    return oracleRequestHash;
+  }
+
+  public void setOracleRequestHash(String oracleRequestHash) {
+    this.oracleRequestHash = oracleRequestHash;
+  }
+
+  public String getRequestDate() {
+    return requestDate;
+  }
+
+  public void setRequestDate(String requestDate) {
+    this.requestDate = requestDate;
+  }
 
   public String getJobId() {
     return jobId;

@@ -2,6 +2,7 @@ package io.opendid.web2gateway.common.vnclient;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import io.opendid.web2gateway.common.codes.JsonRpc2MessageCodeEnum;
 import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
 import io.opendid.web2gateway.common.VnRequestAddress;
 import io.opendid.web2gateway.common.utils.OAuth2TokenUtil;
@@ -32,7 +33,7 @@ public class VnGatewayClient implements VnClient {
 
   @Override
   public JsonRpc2Response request(VnClientJobIdDTO vnClientJobIdDTO)
-      throws JsonRpc2ServerErrorException {
+      throws Exception {
 
     Integer counter = vnClientJobIdDTO.getCounter();
     if (counter == null){
@@ -102,7 +103,11 @@ public class VnGatewayClient implements VnClient {
       logger.info("VnGatewayClient request vnGatewayRouteInfo = null");
 
       String logId = MDC.get(LogTraceIdConstant.TRACE_ID);
-      throw new JsonRpc2InternalErrorException(logId,"Vn route is empty");
+      throw new JsonRpc2ServerErrorException(
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32005.getCode(),
+          logId,
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32005.getMessage(),
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32005.getMessage());
     }
 
     logger.info("VnGatewayClient request return null");
@@ -110,7 +115,7 @@ public class VnGatewayClient implements VnClient {
   }
 
 
-  private JsonRpc2Response responseManage(String body) throws JsonRpc2ServerErrorException {
+  private JsonRpc2Response responseManage(String body) throws Exception {
 
     logger.info("VnGatewayClient responseManage = {}",body);
 
@@ -120,19 +125,12 @@ public class VnGatewayClient implements VnClient {
 
       JSONObject errorJson = jsonBody.getJSONObject("error");
 
-      try {
-
-        throw new JsonRpc2ServerErrorException(
-            errorJson.getInteger("code"),
-            errorJson.getString("logId"),
-            errorJson.getString("message"),
-            errorJson.getString("data")
-        );
-
-      } catch (Exception e) {
-
-        throw new RuntimeException(e);
-      }
+      throw new JsonRpc2ServerErrorException(
+          errorJson.getInteger("code"),
+          errorJson.getString("logId"),
+          errorJson.getString("message"),
+          errorJson.getString("data")
+      );
 
     } else {
       return new JsonRpc2Response(jsonBody.getLong("id"),

@@ -1,7 +1,11 @@
 package io.opendid.web2gateway.common.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import io.opendid.web2gateway.common.codes.JsonRpc2MessageCodeEnum;
 import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
+import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
+import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2InternalErrorException;
+import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
 import io.opendid.web2gateway.model.dto.okhttp.ResponseDTO;
 import jakarta.annotation.Resource;
 import java.io.File;
@@ -14,10 +18,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+
+import javax.net.ssl.SSLHandshakeException;
 
 @Component
 public class OkHttpClientUtil {
@@ -72,13 +79,14 @@ public class OkHttpClientUtil {
   }
 
 
-  public ResponseDTO postForForm(String url, Map<String, String> params) {
+  public ResponseDTO postForForm(String url, Map<String, String> params) throws Exception {
     String traceId = MDC.get(LogTraceIdConstant.TRACE_ID);
 
 
     String responseBody = "";
     FormBody.Builder builder = new FormBody.Builder();
     if (params != null && params.keySet().size() > 0) {
+      checkAuthPrams(params,url);
       for (String key : params.keySet()) {
         builder.add(key, params.get(key));
       }
@@ -101,18 +109,44 @@ public class OkHttpClientUtil {
       }
 
       return responseDTO;
+    } catch (SSLHandshakeException e){
+
+      logger.error("OkHttpClientUtil postForJson SSL error");
+      throw new JsonRpc2ServerErrorException(
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32003.getCode(),
+          MDC.get(LogTraceIdConstant.TRACE_ID),
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32003.getMessage(),
+          "SSL Certificate Error");
     } catch (Exception e) {
+
       logger.error("okhttp post error >> ex = {}", e.getMessage());
+      throw new JsonRpc2ServerErrorException(
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32003.getCode(),
+          MDC.get(LogTraceIdConstant.TRACE_ID),
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32003.getMessage(),
+          "Call http error");
     } finally {
       if (response != null) {
         response.close();
       }
     }
-    return null;
+  }
+
+  private void checkAuthPrams(Map<String, String> params,
+                              String url) {
+    String clientSecret = MapUtils.getString(params, "client_secret");
+    String clientId = MapUtils.getString(params, "client_id");
+
+    String traceId = MDC.get(LogTraceIdConstant.TRACE_ID);
+
+    if (clientSecret == null || clientId == null) {
+      throw new JsonRpc2InternalErrorException(traceId,
+              "The openid-box service of the target vn may not be started or not working properly:  URL::"+url);
+    }
   }
 
 
-  public ResponseDTO postForJson(String url, Object params, String accessToken) {
+  public ResponseDTO postForJson(String url, Object params, String accessToken) throws Exception {
     String traceId = MDC.get(LogTraceIdConstant.TRACE_ID);
 
     String responseBody = JSONObject.toJSONString(params);
@@ -146,15 +180,26 @@ public class OkHttpClientUtil {
       }
 
       return responseDTO;
+    } catch (SSLHandshakeException e){
+      logger.error("OkHttpClientUtil postForJson SSL error");
+      throw new JsonRpc2ServerErrorException(
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32003.getCode(),
+          MDC.get(LogTraceIdConstant.TRACE_ID),
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32003.getMessage(),
+          "SSL Certificate Error");
     } catch (Exception e) {
       logger.error("okhttp post error >> ex = {}", e.getMessage());
+      throw new JsonRpc2ServerErrorException(
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32003.getCode(),
+          MDC.get(LogTraceIdConstant.TRACE_ID),
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32003.getMessage(),
+          "Call http error");
     } finally {
       if (response != null) {
         response.close();
       }
     }
 
-    return null;
   }
 
 

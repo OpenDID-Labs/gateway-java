@@ -20,7 +20,7 @@ public class OAuth2Register {
   private OkHttpClientUtil okHttpClientUtil;
 
 
-  public OAuth2ClientDTO register(OAuth2RegisterDTO keyClockRegisterDTO) {
+  public OAuth2ClientDTO register(OAuth2RegisterDTO keyClockRegisterDTO) throws Exception {
 
     ResponseDTO responseData = okHttpClientUtil.postForJson(
           keyClockRegisterDTO.getVnRouteUrl()+ VnRequestAddress.KEY_CLOCK_REGISTER,

@@ -26,7 +26,27 @@ public class ContractEventLogInsertDTO {
 
   private String requestOracleHash;
 
+  private String requestAptosVersion;
+
   private String errorMsg;
+
+  private String requestBody;
+
+  public String getRequestBody() {
+    return requestBody;
+  }
+
+  public void setRequestBody(String requestBody) {
+    this.requestBody = requestBody;
+  }
+
+  public String getRequestAptosVersion() {
+    return requestAptosVersion;
+  }
+
+  public void setRequestAptosVersion(String requestAptosVersion) {
+    this.requestAptosVersion = requestAptosVersion;
+  }
 
   public String getErrorMsg() {
     return errorMsg;

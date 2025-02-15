@@ -17,6 +17,15 @@ public class JsonRpc2ResponseError extends JsonRpc2ROOT {
     private int code;
     private String message;
     private Object data;
+    private String logId;
+
+    public String getLogId() {
+      return logId;
+    }
+
+    public void setLogId(String logId) {
+      this.logId = logId;
+    }
 
     public int getCode() {
       return code;

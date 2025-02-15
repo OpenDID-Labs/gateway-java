@@ -16,6 +16,16 @@ public class OracleRequestRespDTO {
 
   private String oracleRequestHash;
 
+  private String aptosVersion;
+
+  public String getAptosVersion() {
+    return aptosVersion;
+  }
+
+  public void setAptosVersion(String aptosVersion) {
+    this.aptosVersion = aptosVersion;
+  }
+
   public String getRequestId() {
     return requestId;
   }

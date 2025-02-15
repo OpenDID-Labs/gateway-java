@@ -15,7 +15,7 @@ public interface OdOracleContractEventlogMapper {
 
     OdOracleContractEventlog selectByPrimaryKey(Long logId);
 
-    int updateByPrimaryKeySelective(OdOracleContractEventlog record);
+    int updateByPrimaryKeySelective(OdOracleContractEventlogWithBLOBs record);
 
     int updateByPrimaryKeyWithBLOBs(OdOracleContractEventlog record);
 
@@ -27,7 +27,10 @@ public interface OdOracleContractEventlogMapper {
 
     OdOracleContractEventlog selectByRequestId(String requestId);
 
-    GetCancelTransactionRespDTO selectCancelStatusByRequestId(String requestId);
+    List<GetCancelTransactionRespDTO> selectCancelStatusByRequestId(String requestId);
 
     List<CancelEventLogPendingOutDTO> selectCancelPendingData(CancelEventLogPendingInDTO inDTO);
+
+    int updateByRequestIdAndHash(OdOracleContractEventlogWithBLOBs record);
+
 }

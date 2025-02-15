@@ -14,6 +14,16 @@ public class EventLogPendingOutputDTO {
 
   private String jobId;
 
+  private String requestAptosVersion;
+
+  public String getRequestAptosVersion() {
+    return requestAptosVersion;
+  }
+
+  public void setRequestAptosVersion(String requestAptosVersion) {
+    this.requestAptosVersion = requestAptosVersion;
+  }
+
   public String getJobId() {
     return jobId;
   }

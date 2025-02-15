@@ -6,6 +6,7 @@ import io.opendid.web2gateway.common.codes.JsonRpc2MessageCodeEnum;
 import io.opendid.web2gateway.common.enums.status.CancelStatusEnum;
 import io.opendid.web2gateway.common.enums.status.ChainErrorEnum;
 import io.opendid.web2gateway.common.homechain.HomeChainName;
+import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
 import io.opendid.web2gateway.common.utils.AptosUtils;
 import io.opendid.web2gateway.common.web2.Web2MethodName;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
@@ -22,13 +23,16 @@ import io.opendid.web2gateway.oraclechainmsghandler.factory.ChainRequestCancelBo
 import io.opendid.web2gateway.oraclechainmsghandler.interfaces.ChainRequestCancelBodyHandler;
 import io.opendid.web2gateway.repository.mapper.OdOracleContractEventlogMapper;
 import io.opendid.web2gateway.repository.model.OdOracleContractEventlog;
+import io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs;
 import io.opendid.web2gateway.security.checkaspect.MethodPrivate;
 import io.opendid.web2gateway.service.OracleContractEventLogService;
 import io.opendid.web2gateway.service.OracleNonceService;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -48,7 +52,7 @@ public class MethodOracleRequestCancel implements Web2Method {
 
   @Override
   public OracleRequestCancelRespDTO process(JsonRpc2Request request)
-      throws Exception, JsonRpc2ServerErrorException {
+      throws Exception {
 
     if (request.getParams() == null) {
       return new OracleRequestCancelRespDTO();
@@ -65,6 +69,14 @@ public class MethodOracleRequestCancel implements Web2Method {
     OdOracleContractEventlog odOracleContractEventlog =
         odOracleContractEventlogMapper.selectByRequestId(requestId);
 
+    if (odOracleContractEventlog == null){
+      throw new JsonRpc2ServerErrorException(
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32004.getCode(),
+          MDC.get(LogTraceIdConstant.TRACE_ID),
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32004.getMessage(),
+          "Transaction does not exist");
+    }
+
     OracleChainCancelMsgDTO oracleChainCancelMsgDTO = new OracleChainCancelMsgDTO();
     oracleChainCancelMsgDTO.setRequestId(requestId);
     oracleChainCancelMsgDTO.setJobId(odOracleContractEventlog.getJobId());
@@ -79,21 +91,22 @@ public class MethodOracleRequestCancel implements Web2Method {
 
     } catch (JsonRpc2ServerErrorException jsonRpc2ServerErrorException) {
 
-      if(jsonRpc2ServerErrorException.getData()!=null){
+      /*if(jsonRpc2ServerErrorException.getData()!=null){
 
         String data = jsonRpc2ServerErrorException.getData().toString();
 
         if (data.contains(ChainErrorEnum.NOT_EXPIRED.getCode())
             || data.contains(ChainErrorEnum.INSUFFICIENT_BALANCE.getCode())) {
 
-          ContractEventLogUpdateForCancelDTO updateForCancelDTO = new ContractEventLogUpdateForCancelDTO();
-          updateForCancelDTO.setRequestId(requestId);
-          updateForCancelDTO.setCancelStatus(CancelStatusEnum.PENDING.getCode());
-          eventLogService.cancelTxLogHandle(updateForCancelDTO);
+          OdOracleContractEventlogWithBLOBs contractEventlog = new OdOracleContractEventlogWithBLOBs();
+          contractEventlog.setCancelStatus(CancelStatusEnum.PENDING.getCode());
+          contractEventlog.setLogId(odOracleContractEventlog.getLogId());
+
+          eventLogService.updateByPrimaryKeySelective(contractEventlog);
 
         }
 
-      }
+      }*/
 
       throw jsonRpc2ServerErrorException;
     }
@@ -121,20 +134,26 @@ public class MethodOracleRequestCancel implements Web2Method {
     JSONObject respResultJson = JSONObject.parseObject(
         JSONObject.toJSONString(respResult.getResult()));
 
-    ContractEventLogUpdateForCancelDTO updateForCancelDTO = new ContractEventLogUpdateForCancelDTO();
-    updateForCancelDTO.setRequestId(requestId);
-    updateForCancelDTO.setRequestBody(JSONObject.toJSONString(request));
+    logger.info("Request cancel opendid return value : {}", respResultJson.toJSONString());
+
+
+    OdOracleContractEventlogWithBLOBs contractEventlog = new OdOracleContractEventlogWithBLOBs();
+    contractEventlog.setLogId(odOracleContractEventlog.getLogId());
+    contractEventlog.setCancelCreateDate(new Date());
+    contractEventlog.setCancelRequestBody(JSONObject.toJSONString(request));
 
     if (respResultJson.get("failReason") != null && !"".equals(respResultJson.get("failReason"))) {
-      updateForCancelDTO.setCancelErrorMsg(respResultJson.getString("failReason"));
-      updateForCancelDTO.setCancelStatus(CancelStatusEnum.FAIL.getCode());
+
+      contractEventlog.setCancelErrorMsg(respResultJson.getString("failReason"));
+      contractEventlog.setCancelStatus(CancelStatusEnum.FAIL.getCode());
     } else {
-      updateForCancelDTO.setCancelOracleHash(respResultJson.getString("oracleRequestHash"));
-      updateForCancelDTO.setCancelStatus(CancelStatusEnum.PENDING.getCode());
+
+      contractEventlog.setCancelOracleHash(respResultJson.getString("oracleRequestHash"));
+      contractEventlog.setCancelStatus(CancelStatusEnum.PENDING.getCode());
     }
 
     // update cancel transaction log
-    eventLogService.cancelTxLogHandle(updateForCancelDTO);
+    eventLogService.updateByPrimaryKeySelective(contractEventlog);
 
     if (respResultJson.get("failReason") != null && !"".equals(respResultJson.get("failReason"))) {
 

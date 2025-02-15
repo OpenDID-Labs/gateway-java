@@ -2,7 +2,9 @@ package io.opendid.web2gateway.oraclechainmsghandler.aptos.cancel;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import io.opendid.web2gateway.common.codes.JsonRpc2MessageCodeEnum;
 import io.opendid.web2gateway.common.homechain.HomeChainName;
+import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
 import io.opendid.web2gateway.common.utils.AptosUtils;
 import io.opendid.web2gateway.common.utils.GatewayKeyVaultUtil;
 import io.opendid.web2gateway.common.vnclient.VnGatewayClient;
@@ -26,6 +28,7 @@ import io.opendid.web2gateway.service.WarpRequestBodyService;
 import java.util.LinkedHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -61,6 +64,15 @@ public class AptosChainRequestCancelBody implements ChainRequestCancelBodyHandle
     vnClientJobIdDTO.setRequestBody(jsonRpc2Request);
 
     JsonRpc2Response respResult = vnGatewayClient.request(vnClientJobIdDTO);
+
+    if (respResult == null){
+      logger.error("AptosChainRequestCancelBody request vn gateway return null");
+      throw new JsonRpc2ServerErrorException(
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32002.getCode(),
+          MDC.get(LogTraceIdConstant.TRACE_ID),
+          JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32002.getMessage(),
+          "Method cancelRequest call vn result is null");
+    }
 
     logger.info("Cancel MethodOracleRequest process send result={}",JSONObject.toJSONString(respResult.getResult()));
 

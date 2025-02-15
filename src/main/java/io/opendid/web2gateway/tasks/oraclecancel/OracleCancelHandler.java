@@ -1,6 +1,7 @@
 package io.opendid.web2gateway.tasks.oraclecancel;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.opendid.web2gateway.common.enums.request.MethodEnum;
 import io.opendid.web2gateway.common.enums.status.CancelStatusEnum;
@@ -53,7 +54,8 @@ public class OracleCancelHandler {
     cancelEventLogPendingInDTO.setCancelNextExecuteTime(DateUtils.getCurrentTimestamps());
 
     // query data which cancel_status is pending
-    List<CancelEventLogPendingOutDTO> cancelEventLogPendingList = odOracleContractEventlogMapper.selectCancelPendingData(cancelEventLogPendingInDTO);
+    List<CancelEventLogPendingOutDTO> cancelEventLogPendingList = odOracleContractEventlogMapper.selectCancelPendingData(
+        cancelEventLogPendingInDTO);
 
     logger.info("OracleCancelHandler pending data size: {}", cancelEventLogPendingList.size());
     try {
@@ -62,39 +64,47 @@ public class OracleCancelHandler {
 
         TraceIdPutUtil.newPutTraceId();
         logger.info("process cancel pending data: {}", JSON.toJSONString(pendingOutDTO));
-          JsonRpc2Response request = null;
+        JsonRpc2Response request = null;
 
-          request = vnGatewayClient.request(requestParameters(pendingOutDTO));
+        request = vnGatewayClient.request(requestParameters(pendingOutDTO));
 
-          if (request != null) {
+        if (request != null) {
 
           String resultStr = JSONObject.toJSONString(request.getResult());
 
-          JSONObject resultJson = JSONObject.parseObject(resultStr);
+          logger.info("cancel task opendid return value : {}", JSON.toJSONString(pendingOutDTO));
 
-          Integer status = resultJson.getInteger("status");
+          JSONArray resultJsonArray = JSONArray.parseArray(resultStr);
 
-          if (
-              status.equals(CancelStatusEnum.SUCCESSFULLY.getCode())
-                  || status.equals(CancelStatusEnum.NOT_EXPIRED.getCode())
-                  || status.equals(CancelStatusEnum.INSUFFICIENT_BALANCE.getCode())
+          for (int i = 0; i < resultJsonArray.size(); i++) {
+            JSONObject resultJson = resultJsonArray.getJSONObject(i);
+            Integer status = resultJson.getInteger("status");
+
+            if (
+                status.equals(CancelStatusEnum.SUCCESSFULLY.getCode())
+                    || status.equals(CancelStatusEnum.NOT_EXPIRED.getCode())
+                    || status.equals(CancelStatusEnum.INSUFFICIENT_BALANCE.getCode())
             ) {
 
-            LinkedHashMap<Object, Object> resultLinkedHashMap = new LinkedHashMap<>();
-            resultLinkedHashMap.put("requestId", resultJson.getString("requestId"));
-            resultLinkedHashMap.put("status", status);
-            JsonRpc2Request oracleCallBack = new JsonRpc2Request(1L, "request_cancel_callback", resultLinkedHashMap, "");
-            MethodExecutor.publicMethod(JSONObject.toJSONString(oracleCallBack));
-          } else {
-            cancelEventLogService.updateExecuteCount(pendingOutDTO.getLogId(), pendingOutDTO.getCancelExecuteCount());
-          }
+              LinkedHashMap<Object, Object> resultLinkedHashMap = new LinkedHashMap<>();
+              resultLinkedHashMap.put("requestId", resultJson.getString("requestId"));
+              resultLinkedHashMap.put("status", status);
+              resultLinkedHashMap.put("cancelTxHash", resultJson.getString("cancelTxHash"));
+              JsonRpc2Request oracleCallBack = new JsonRpc2Request(1L, "request_cancel_callback",
+                  resultLinkedHashMap, "");
+              MethodExecutor.publicMethod(JSONObject.toJSONString(oracleCallBack));
 
+            } else {
+              cancelEventLogService.updateExecuteCount(pendingOutDTO.getLogId(),pendingOutDTO.getCancelExecuteCount());
+            }
+
+          }
         } else {
-            cancelEventLogService.updateExecuteCount(pendingOutDTO.getLogId(), pendingOutDTO.getCancelExecuteCount());
+          cancelEventLogService.updateExecuteCount(pendingOutDTO.getLogId(),pendingOutDTO.getCancelExecuteCount());
         }
 
       }
-    } catch (JsonRpc2ServerErrorException | Exception e) {
+    } catch (Exception e) {
       logger.error("OracleCancelHandler run failed:", e);
       throw new RuntimeException(e);
     }
@@ -107,10 +117,10 @@ public class OracleCancelHandler {
     params.put("requestId", pendingOutDTO.getRequestId());
 
     JsonRpc2Request jsonRpc2Request = new JsonRpc2Request(
-            1L,
-            MethodEnum.CANCEL_RESULT.getCode(),
-            params,
-            ""
+        1L,
+        MethodEnum.CANCEL_RESULT.getCode(),
+        params,
+        ""
     );
 
     VnClientJobIdDTO vnClientJobIdDTO = new VnClientJobIdDTO();
