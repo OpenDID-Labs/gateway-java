@@ -12,6 +12,26 @@ public class GetWalletAddressRespDTO {
 
   private String walletAddress;
 
+  private String walletPublicKey;
+
+  private String vnCode;
+
+  public String getWalletPublicKey() {
+    return walletPublicKey;
+  }
+
+  public void setWalletPublicKey(String walletPublicKey) {
+    this.walletPublicKey = walletPublicKey;
+  }
+
+  public String getVnCode() {
+    return vnCode;
+  }
+
+  public void setVnCode(String vnCode) {
+    this.vnCode = vnCode;
+  }
+
   public String getWalletAddress() {
     return walletAddress;
   }

@@ -24,4 +24,9 @@ public interface VngatewayRouteInfoMapper {
 
     int deleteAll();
 
+    List<VngatewayRouteInfo> selectByCodes(String[] vnCodes);
+
+    List<VngatewayRouteInfo> selectAllVn();
+
+
 }

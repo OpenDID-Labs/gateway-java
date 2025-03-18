@@ -6,6 +6,18 @@ public class OracleChainCancelMsgDTO {
   private String requestId;
   private Long nonce;
 
+  private String vnCode;
+
+  private String keyCode;
+
+  public String getVnCode() {
+    return vnCode;
+  }
+
+  public void setVnCode(String vnCode) {
+    this.vnCode = vnCode;
+  }
+
   public String getJobId() {
     return jobId;
   }
@@ -29,4 +41,12 @@ public class OracleChainCancelMsgDTO {
   public void setRequestId(String requestId) {
     this.requestId = requestId;
   }
+
+    public String getKeyCode() {
+        return keyCode;
+    }
+
+    public void setKeyCode(String keyCode) {
+        this.keyCode = keyCode;
+    }
 }

@@ -90,6 +90,9 @@ public class MethodOracleRequestCancelCallback implements Web2CallbackMethod {
 
     LinkedHashMap<Object, Object> linkedHashMap = new LinkedHashMap<>();
     linkedHashMap.put("requestId", cancelResultDTO.getRequestId());
+    linkedHashMap.put("signData", cancelResultDTO.getCancelTxHash());
+    linkedHashMap.put("cancelTxHash", cancelResultDTO.getCancelTxHash());
+
     vnCallbackSignPayloadDTO.setMethodJsonRpc2Params(linkedHashMap);
 
     return vnCallbackSignPayloadDTO;

@@ -13,6 +13,8 @@ public class OdOracleContractEventlogWithBLOBs extends OdOracleContractEventlog 
 
     private String cancelResponseBody;
 
+    private String claimErrorMsg;
+
     public String getErrorMsg() {
         return errorMsg;
     }
@@ -59,5 +61,13 @@ public class OdOracleContractEventlogWithBLOBs extends OdOracleContractEventlog 
 
     public void setCancelResponseBody(String cancelResponseBody) {
         this.cancelResponseBody = cancelResponseBody == null ? null : cancelResponseBody.trim();
+    }
+
+    public String getClaimErrorMsg() {
+        return claimErrorMsg;
+    }
+
+    public void setClaimErrorMsg(String claimErrorMsg) {
+        this.claimErrorMsg = claimErrorMsg == null ? null : claimErrorMsg.trim();
     }
 }

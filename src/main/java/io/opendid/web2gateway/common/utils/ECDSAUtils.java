@@ -137,5 +137,12 @@ public class ECDSAUtils {
     return "0x"+publicKeyInHex;
   }
 
+
+  public static String getHexAddress(String publicKeyStr){
+    BigInteger privateKey = new BigInteger(publicKeyStr.replace("0x", ""), 16);
+    return "0x"+Keys.getAddress(privateKey);
+
+  }
+
 }
 

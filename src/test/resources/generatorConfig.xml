@@ -10,16 +10,16 @@
 
 <!--    CXF-->
 
-    <!--<classPathEntry
-      location="C:\Users\cuixi\.m2\repository\com\mysql\mysql-connector-j\8.0.33\mysql-connector-j-8.0.33.jar"
-    />-->
-
-    <!-- wyj-->
     <classPathEntry
-      location="C:\Users\Lenovo\.m2\repository\mysql\mysql-connector-java\8.0.21\mysql-connector-java-8.0.21.jar"
+            location="/Users/cuixingfan/.m2/repository/com/mysql/mysql-connector-j/8.3.0/mysql-connector-j-8.3.0.jar"
     />
 
-<!--    &lt;!&ndash;djg&ndash;&gt;-->
+    <!-- wyj-->
+<!--    <classPathEntry
+      location="C:\Users\Lenovo\.m2\repository\mysql\mysql-connector-java\8.0.21\mysql-connector-java-8.0.21.jar"
+    />-->
+
+    <!--djg-->
 <!--        <classPathEntry-->
 <!--                location="D:\mysql-connector-java-8.0.25.jar"-->
 <!--        />-->
@@ -32,7 +32,7 @@
         </commentGenerator>
 
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://192.168.1.57:3307/client_gateway_dev?characterEncoding=UTF-8"
+                        connectionURL="jdbc:mysql://192.168.1.57:3307/client_gateway_cui?characterEncoding=UTF-8"
                         userId="root" password="LoTsrcg5Bnvr">
             <property name="nullCatalogMeansCurrent" value="true"/>
         </jdbcConnection>
@@ -57,9 +57,9 @@
         </javaClientGenerator>
 
 
-        <!--<table tableName="vngateway_route_info" domainObjectName="VngatewayRouteInfo" enableCountByExample="false"
-          enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
-          selectByExampleQueryId="false"></table>-->
+<!--        <table tableName="vngateway_route_info" domainObjectName="VngatewayRouteInfo" enableCountByExample="false"-->
+<!--          enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
+<!--          selectByExampleQueryId="false"></table>-->
 
         <!--<table tableName="vngateway_jobid_mapping" domainObjectName="VngatewayJobidMapping" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
@@ -69,18 +69,26 @@
           enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
           selectByExampleQueryId="false"></table>
 
-        <!--<table tableName="gateway_key_vault" domainObjectName="GatewayKeyVault" enableCountByExample="false"
-          enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
-          selectByExampleQueryId="false"></table>-->
+<!--        <table tableName="gateway_key_vault" domainObjectName="GatewayKeyVault" enableCountByExample="false"-->
+<!--          enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
+<!--          selectByExampleQueryId="false"></table>-->
 
-        <!--<table tableName="oracle_msg_record" domainObjectName="OracleMsgRecord" enableCountByExample="false"
+        <table tableName="oracle_msg_record" domainObjectName="OracleMsgRecord" enableCountByExample="false"
           enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
-          selectByExampleQueryId="false"></table>-->
+          selectByExampleQueryId="false"></table>
 
 
         <!--<table tableName="tenant_jwt_manger" domainObjectName="TenantJwtManger" enableCountByExample="false"
   enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
   selectByExampleQueryId="false"></table>-->
+
+<!--        <table tableName="claim_record" domainObjectName="ClaimRecord" enableCountByExample="false"-->
+<!--          enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
+<!--          selectByExampleQueryId="false"></table>-->
+
+        <table tableName="gateway_homechain_key_manage" domainObjectName="GatewayHomechainKeyManage" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false"></table>
 
 
     </context>

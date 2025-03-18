@@ -17,11 +17,15 @@ public class OracleCallBackResultDTO {
 
   private String oracleFulfillTxHash;
 
+  private String oracleRequestTxHash;
+
   private String data;
 
   private String signData;
 
   private Integer status;
+
+  private String aptosVersion;
 
   public String getSignData() {
     return signData;
@@ -62,4 +66,20 @@ public class OracleCallBackResultDTO {
   public void setStatus(Integer status) {
     this.status = status;
   }
+
+  public String getAptosVersion() {
+    return aptosVersion;
+  }
+
+  public void setAptosVersion(String aptosVersion) {
+    this.aptosVersion = aptosVersion;
+  }
+
+    public String getOracleRequestTxHash() {
+        return oracleRequestTxHash;
+    }
+
+    public void setOracleRequestTxHash(String oracleRequestTxHash) {
+        this.oracleRequestTxHash = oracleRequestTxHash;
+    }
 }

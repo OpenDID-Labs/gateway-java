@@ -9,14 +9,29 @@
      ooce.request_id requestId,
      ooce.create_date requestDate,
      ooce.request_oracle_hash oracleRequestHash,
-     ooce.response_body responseBody
+     ooce.response_body responseBody,
+     ooce.claim_status claimStatus
    FROM
      od_oracle_contract_eventlog ooce
    WHERE
        ooce.request_id = #{requestId,jdbcType=VARCHAR}
-   ORDER BY
-     log_id DESC;
  </select>
+
+  <select id="selectByRequestTransactionHash" resultType="io.opendid.web2gateway.model.dto.oracle.GetTransactionRespDTO">
+    SELECT
+      ooce.job_id,
+      ooce.process_status status,
+      ooce.error_msg errorMessage,
+      ooce.request_id requestId,
+      ooce.create_date requestDate,
+      ooce.request_oracle_hash oracleRequestTxHash,
+      ooce.response_body responseBody,
+      ooce.claim_status claimStatus
+    FROM
+      od_oracle_contract_eventlog ooce
+    WHERE
+      ooce.request_oracle_hash = #{oracleRequestHash,jdbcType=VARCHAR}
+  </select>
 
   <update id="updateByRequestId" parameterType="io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs">
     update oracle_msg_record

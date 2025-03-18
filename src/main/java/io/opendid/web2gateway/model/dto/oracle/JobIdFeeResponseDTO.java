@@ -12,6 +12,16 @@ public class JobIdFeeResponseDTO {
 
   private Long jobFee;
 
+  private Long claimFee;
+
+  public Long getClaimFee() {
+    return claimFee;
+  }
+
+  public void setClaimFee(Long claimFee) {
+    this.claimFee = claimFee;
+  }
+
   public Long getJobFee() {
     return jobFee;
   }

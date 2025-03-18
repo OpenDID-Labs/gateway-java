@@ -12,33 +12,33 @@ package io.opendid.web2gateway.model.dto.oracle;
  **/
 public class OracleRequestRespDTO {
 
-  private String requestId;
+//  private String requestId;
 
-  private String oracleRequestHash;
+  private String oracleRequestTxHash;
 
-  private String aptosVersion;
+//  private String aptosVersion;
+//
+//  public String getAptosVersion() {
+//    return aptosVersion;
+//  }
+//
+//  public void setAptosVersion(String aptosVersion) {
+//    this.aptosVersion = aptosVersion;
+//  }
+//
+//  public String getRequestId() {
+//    return requestId;
+//  }
+//
+//  public void setRequestId(String requestId) {
+//    this.requestId = requestId;
+//  }
 
-  public String getAptosVersion() {
-    return aptosVersion;
+  public String getOracleRequestTxHash() {
+    return oracleRequestTxHash;
   }
 
-  public void setAptosVersion(String aptosVersion) {
-    this.aptosVersion = aptosVersion;
-  }
-
-  public String getRequestId() {
-    return requestId;
-  }
-
-  public void setRequestId(String requestId) {
-    this.requestId = requestId;
-  }
-
-  public String getOracleRequestHash() {
-    return oracleRequestHash;
-  }
-
-  public void setOracleRequestHash(String oracleRequestHash) {
-    this.oracleRequestHash = oracleRequestHash;
+  public void setOracleRequestTxHash(String oracleRequestTxHash) {
+    this.oracleRequestTxHash = oracleRequestTxHash;
   }
 }

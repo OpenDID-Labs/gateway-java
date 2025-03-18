@@ -19,4 +19,8 @@ public class TraceIdPutUtil {
 
     return traceId;
   }
+
+  public static  void removeTraceId(){
+    MDC.remove(LogTraceIdConstant.TRACE_ID);
+  }
 }

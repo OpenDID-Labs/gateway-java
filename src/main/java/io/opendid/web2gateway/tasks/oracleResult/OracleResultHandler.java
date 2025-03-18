@@ -16,10 +16,14 @@ import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Response;
 import io.opendid.web2gateway.oracleweb2process.MethodExecutor;
 import io.opendid.web2gateway.repository.mapper.OdOracleContractEventlogMapper;
+import io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs;
 import io.opendid.web2gateway.service.OracleContractEventLogService;
 import jakarta.annotation.Resource;
+
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,44 +70,49 @@ public class OracleResultHandler {
           logger.info("process pending data: {}", JSON.toJSONString(pendingData));
           JsonRpc2Response request = vnGatewayClient.request(requestParameters(pendingData));
 
-          if (request != null) {
+          logger.info("process pending data response={}", JSON.toJSONString(request));
+
+          if (request != null && request.getResult() != null) {
+            logger.info("process pending data request != null");
 
             String resultStr = JSONObject.toJSONString(request.getResult());
+            logger.info("process pending data resultStr={}",resultStr);
 
-            JSONArray resultJsonArray = JSONArray.parseArray(resultStr);
+            JSONObject resultJson = JSONObject.parseObject(resultStr);
 
-            for (int i = 0; i < resultJsonArray.size(); i++) {
+            String oracleRequestTxHash = resultJson.getString("oracleRequestTxHash");
+            if (pendingData.getRequestOracleHash().equals(oracleRequestTxHash)) {
+              logger.info("process pending data hash same,RequestOracleHash={},oracleRequestTxHash={}",
+                  pendingData.getRequestOracleHash(),oracleRequestTxHash);
 
-              JSONObject resultJson = resultJsonArray.getJSONObject(i);
+              if (Integer.valueOf(ProcessStatusEnum.PROCESSED.getCode()).equals(resultJson.getInteger("status"))) {
+                logger.info("process pending data state is PROCESSED");
+                LinkedHashMap<Object, Object> resultLinkedHashMap = new LinkedHashMap<>();
+                resultLinkedHashMap.put("requestId", resultJson.getString("requestId"));
+                resultLinkedHashMap.put("oracleFulfillTxHash", resultJson.getString("oracleFulfillTxHash"));
+                resultLinkedHashMap.put("oracleRequestTxHash", oracleRequestTxHash);
+                resultLinkedHashMap.put("data", resultJson.getString("data"));
+                JsonRpc2Request oracleCallBack = new JsonRpc2Request(1L, "oracle_callback", resultLinkedHashMap, "");
+                MethodExecutor.publicMethod(JSONObject.toJSONString(oracleCallBack));
+              } else {
+                logger.info("process pending data state is not PROCESSED");
 
-              String requestId = resultJson.getString("requestId");
-              String aptosVersion = resultJson.getString("aptosVersion");
+                if (StringUtils.isNotBlank(resultJson.getString("requestId"))) {
+                  logger.info("process pending data RequestId={}",resultJson.getString("requestId"));
 
-              if(pendingData.getRequestId().equals(requestId)
-                  && pendingData.getRequestAptosVersion().equals(aptosVersion)){
-
-                if (Integer.valueOf(ProcessStatusEnum.PROCESSED.getCode()).equals(resultJson.getInteger("status"))) {
-
-                  LinkedHashMap<Object, Object> resultLinkedHashMap = new LinkedHashMap<>();
-                  resultLinkedHashMap.put("requestId", resultJson.getString("requestId"));
-                  resultLinkedHashMap.put("oracleFulfillTxHash", resultJson.getString("oracleFulfillTxHash"));
-                  resultLinkedHashMap.put("aptosVersion", resultJson.getString("aptosVersion"));
-                  resultLinkedHashMap.put("data", resultJson.getString("data"));
-                  JsonRpc2Request oracleCallBack = new JsonRpc2Request(1L, "oracle_callback", resultLinkedHashMap, "");
-                  MethodExecutor.publicMethod(JSONObject.toJSONString(oracleCallBack));
-                } else {
-                  oracleContractEventLogService.updateExecuteCount(pendingData.getLogId(), pendingData.getExecuteCount());
+                  OdOracleContractEventlogWithBLOBs updateB = new OdOracleContractEventlogWithBLOBs();
+                  updateB.setLogId(pendingData.getLogId());
+                  updateB.setRequestId(resultJson.getString("requestId"));
+                  oracleContractEventLogService.updateByPrimaryKeySelective(updateB);
                 }
-
+                oracleContractEventLogService.updateExecuteCount(pendingData.getLogId(), pendingData.getExecuteCount());
               }
-
             }
-
           } else {
             oracleContractEventLogService.updateExecuteCount(pendingData.getLogId(), pendingData.getExecuteCount());
           }
 
-        } catch ( Exception e) {
+        } catch (Exception e) {
           logger.error("process OracleResultHandler pending data error", e);
           throw new RuntimeException(e);
         }
@@ -116,7 +125,7 @@ public class OracleResultHandler {
 
     LinkedHashMap<String, String> params = new LinkedHashMap<>();
 
-    params.put("requestId", pendingData.getRequestId());
+    params.put("oracleRequestTxHash", pendingData.getRequestOracleHash());
 
     JsonRpc2Request jsonRpc2Request = new JsonRpc2Request(
         1L,
@@ -129,6 +138,7 @@ public class OracleResultHandler {
 
     vnClientJobIdDTO.setJobId(pendingData.getJobId());
     vnClientJobIdDTO.setRequestBody(jsonRpc2Request);
+    vnClientJobIdDTO.setVnCode(pendingData.getVnCode());
 
     return vnClientJobIdDTO;
   }

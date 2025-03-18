@@ -21,6 +21,12 @@ public class VngatewayRouteInfo {
 
     private String vnPublicKey;
 
+    private String vnHomechainPublicKey;
+
+    private String vnHomechainAccount;
+
+    private String vnHomeChainName;
+
     public Long getRouteId() {
         return routeId;
     }
@@ -91,5 +97,29 @@ public class VngatewayRouteInfo {
 
     public void setVnPublicKey(String vnPublicKey) {
         this.vnPublicKey = vnPublicKey == null ? null : vnPublicKey.trim();
+    }
+
+    public String getVnHomechainPublicKey() {
+        return vnHomechainPublicKey;
+    }
+
+    public void setVnHomechainPublicKey(String vnHomechainPublicKey) {
+        this.vnHomechainPublicKey = vnHomechainPublicKey == null ? null : vnHomechainPublicKey.trim();
+    }
+
+    public String getVnHomechainAccount() {
+        return vnHomechainAccount;
+    }
+
+    public void setVnHomechainAccount(String vnHomechainAccount) {
+        this.vnHomechainAccount = vnHomechainAccount == null ? null : vnHomechainAccount.trim();
+    }
+
+    public String getVnHomeChainName() {
+        return vnHomeChainName;
+    }
+
+    public void setVnHomeChainName(String vnHomeChainName) {
+        this.vnHomeChainName = vnHomeChainName == null ? null : vnHomeChainName.trim();
     }
 }

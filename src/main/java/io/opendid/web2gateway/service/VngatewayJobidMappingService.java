@@ -5,6 +5,8 @@ import io.opendid.web2gateway.repository.model.VngatewayJobidMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
 *  VngatewayJobidMappingService
 * @author Dong-Jianguo
@@ -28,6 +30,14 @@ public class VngatewayJobidMappingService {
   public void insertJobIdMapping(VngatewayJobidMapping vngatewayJobidMapping){
     vngatewayJobidMappingMapper.insertSelective(vngatewayJobidMapping);
 
+  }
+
+
+  public List<VngatewayJobidMapping> searchByJobId(String jobId){
+
+    List<VngatewayJobidMapping> results = vngatewayJobidMappingMapper.selectByJobId(jobId);
+
+    return results;
   }
 
 }

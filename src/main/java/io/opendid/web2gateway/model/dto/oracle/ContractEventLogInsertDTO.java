@@ -14,6 +14,8 @@ public class ContractEventLogInsertDTO {
 
   private String requestId;
 
+  private String keyCode;
+
   private String vnCode;
 
   private String platformCode;
@@ -31,6 +33,36 @@ public class ContractEventLogInsertDTO {
   private String errorMsg;
 
   private String requestBody;
+
+  private String transactionBatchCode;
+
+  private Long claimFee;
+
+  private Integer claimStatus;
+
+  public Integer getClaimStatus() {
+    return claimStatus;
+  }
+
+  public void setClaimStatus(Integer claimStatus) {
+    this.claimStatus = claimStatus;
+  }
+
+  public Long getClaimFee() {
+    return claimFee;
+  }
+
+  public void setClaimFee(Long claimFee) {
+    this.claimFee = claimFee;
+  }
+
+  public String getTransactionBatchCode() {
+    return transactionBatchCode;
+  }
+
+  public void setTransactionBatchCode(String transactionBatchCode) {
+    this.transactionBatchCode = transactionBatchCode;
+  }
 
   public String getRequestBody() {
     return requestBody;
@@ -119,4 +151,12 @@ public class ContractEventLogInsertDTO {
   public void setJobId(String jobId) {
     this.jobId = jobId;
   }
+
+    public String getKeyCode() {
+        return keyCode;
+    }
+
+    public void setKeyCode(String keyCode) {
+        this.keyCode = keyCode;
+    }
 }

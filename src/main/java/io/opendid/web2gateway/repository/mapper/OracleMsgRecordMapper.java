@@ -22,5 +22,9 @@ public interface OracleMsgRecordMapper {
 
     List<GetTransactionRespDTO> selectByRequestId(String requestId);
 
+    GetTransactionRespDTO selectByRequestTransactionHash(String requestTransactionHash);
+
+
+
     int updateByRequestId(OracleMsgRecordWithBLOBs record);
 }

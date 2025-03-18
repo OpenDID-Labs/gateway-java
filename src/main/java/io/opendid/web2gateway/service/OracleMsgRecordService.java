@@ -7,15 +7,19 @@ import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerError
 import io.opendid.web2gateway.model.dto.oracle.GetCancelTransactionRespDTO;
 import io.opendid.web2gateway.model.dto.oracle.GetTransactionRespDTO;
 import io.opendid.web2gateway.model.dto.oracle.MsgRecordInsertDTO;
+import io.opendid.web2gateway.repository.mapper.ClaimRecordMapper;
 import io.opendid.web2gateway.repository.mapper.OdOracleContractEventlogMapper;
 import io.opendid.web2gateway.repository.mapper.OracleMsgRecordMapper;
+import io.opendid.web2gateway.repository.model.ClaimRecord;
 import io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs;
 import io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs;
 import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -29,24 +33,34 @@ public class OracleMsgRecordService {
   @Resource
   private OdOracleContractEventlogMapper contractEventlogMapper;
 
-  public List<GetTransactionRespDTO> selectMsgRecordByRequestId(String requestId) throws Exception {
+  @Autowired
+  private ClaimRecordMapper claimRecordMapper;
 
-    List<GetTransactionRespDTO> getTransactionRespDTOList = oracleMsgRecordMapper.selectByRequestId(
-        requestId);
+  public  GetTransactionRespDTO selectMsgRecordByRequestId(String requestTransactionHash) throws Exception {
 
-    if (getTransactionRespDTOList != null && getTransactionRespDTOList.size() > 0) {
 
-      for (GetTransactionRespDTO getTransactionRespDTO : getTransactionRespDTOList) {
+    GetTransactionRespDTO getTransactionRespDTO =
+            oracleMsgRecordMapper.selectByRequestTransactionHash(requestTransactionHash);
 
+    if (requestTransactionHash != null ) {
         if (getTransactionRespDTO.getResponseBody() != null) {
-
           getTransactionRespDTO.setResponseBody(
               JSONObject.parseObject(getTransactionRespDTO.getResponseBody().toString())
           );
         }
-      }
+      ClaimRecord claimRecord = claimRecordMapper.selectByRequestId(getTransactionRespDTO.getRequestId());
 
-      return getTransactionRespDTOList;
+        if (claimRecord != null) {
+          if (StringUtils.isNotBlank(claimRecord.getContractParams())){
+            JSONObject jsonObject = JSONObject.parseObject(claimRecord.getContractParams());
+            jsonObject.put("claimId",claimRecord.getClaimId());
+            getTransactionRespDTO.setClaimBody(jsonObject);
+          }
+
+
+        }
+
+      return getTransactionRespDTO;
     } else {
       throw new JsonRpc2ServerErrorException(
           JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32004.getCode(),
@@ -55,28 +69,10 @@ public class OracleMsgRecordService {
           "The transaction data you requested does not exist");
     }
 
-    /*if (getTransactionRespDTO != null) {
-      if (getTransactionRespDTO.getResponseBody() != null) {
-        getTransactionRespDTO.setResponseBody(JSONObject.parseObject(getTransactionRespDTO.getResponseBody().toString()));
-      }
-      return getTransactionRespDTO;
-    } else {
-      return new GetTransactionRespDTO();
-    }*/
   }
 
 
-  /*public void insertMsgRecord(MsgRecordInsertDTO dto) {
 
-    OracleMsgRecordWithBLOBs oracleMsgRecord = new OracleMsgRecordWithBLOBs();
-    oracleMsgRecord.setVnCode(dto.getVnCode());
-    oracleMsgRecord.setRequestId(dto.getRequestId());
-    oracleMsgRecord.setRequestBody(dto.getRequestBody());
-    oracleMsgRecord.setCreateDate(new Date());
-    oracleMsgRecord.setUpdateDate(new Date());
-
-    oracleMsgRecordMapper.insertSelective(oracleMsgRecord);
-  }*/
 
   public List<GetCancelTransactionRespDTO> selectCancelStatusByRequestId(String requestId) throws Exception {
 

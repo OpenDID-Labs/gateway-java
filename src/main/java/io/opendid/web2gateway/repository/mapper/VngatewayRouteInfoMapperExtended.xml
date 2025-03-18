@@ -4,12 +4,18 @@
 
   <select id="selectByJobId" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT
+    distinct
       vri.*
     FROM
         vngateway_route_info AS vri
     LEFT JOIN vngateway_jobid_mapping AS vjm ON vri.vn_code = vjm.vn_code
-    WHERE
-        vjm.job_id = #{jobId}
+    <where>
+      <trim suffixOverrides="AND">
+        <if test="jobId != null and jobId!=''">
+          vjm.job_id = #{jobId}
+        </if>
+      </trim>
+    </where>
   </select>
 
   <update id="updateByVnCodeSelective" parameterType="io.opendid.web2gateway.repository.model.VngatewayRouteInfo">
@@ -36,6 +42,16 @@
       <if test="vnPublicKey != null">
         vn_public_key = #{vnPublicKey,jdbcType=VARCHAR},
       </if>
+      <if test="vnHomechainPublicKey != null">
+        vn_homechain_public_key = #{vnHomechainPublicKey,jdbcType=VARCHAR},
+      </if>
+
+      <if test="vnHomechainAccount != null">
+        vn_homechain_account = #{vnHomechainAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="vnHomeChainName != null">
+        vn_home_chain_name = #{vnHomeChainName,jdbcType=VARCHAR},
+      </if>
     </set>
     where vn_code = #{vnCode,jdbcType=VARCHAR}
   </update>
@@ -51,5 +67,21 @@
   <delete id="deleteAll" parameterType="java.lang.Long">
     delete from vngateway_route_info;
   </delete>
+
+  <select id="selectByCodes" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM vngateway_route_info
+    WHERE vn_code IN
+    <foreach collection="array" item="vnCode" open="(" separator="," close=")">
+      #{vnCode}
+    </foreach>
+  </select>
+
+  <select id="selectAllVn"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from vngateway_route_info
+  </select>
 
 </mapper>

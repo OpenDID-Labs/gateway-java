@@ -33,4 +33,13 @@ public interface OdOracleContractEventlogMapper {
 
     int updateByRequestIdAndHash(OdOracleContractEventlogWithBLOBs record);
 
+    int updateByRequestTransactionHash(OdOracleContractEventlogWithBLOBs record);
+
+    List<ClaimEventLogPendingOutDTO> selectClaimPendingData(ClaimEventLogPendingInDTO inDTO);
+
+    int updateClaimStatusByRequestId(OdOracleContractEventlogWithBLOBs record);
+
+
+    OdOracleContractEventlog selectByRequestOracleHash(String requestOracleHash);
+
 }

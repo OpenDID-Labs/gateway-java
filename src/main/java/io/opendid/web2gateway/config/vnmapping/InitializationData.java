@@ -3,23 +3,21 @@ package io.opendid.web2gateway.config.vnmapping;
 import com.alibaba.fastjson.JSON;
 import io.opendid.web2gateway.common.utils.ECDSAUtils;
 import io.opendid.web2gateway.common.utils.GatewayKeyVaultUtil;
+import io.opendid.web2gateway.model.dto.chainkey.ChainKeyDTO;
+import io.opendid.web2gateway.oraclebodyhandler.factory.HomeChainRequestBodyFactory;
+import io.opendid.web2gateway.oraclebodyhandler.interfaces.HomeChainRequestBodyInterface;
+import io.opendid.web2gateway.repository.model.GatewayHomechainKeyManage;
 import io.opendid.web2gateway.security.jwt.JWTKeyLoader;
 import io.opendid.web2gateway.model.dto.oracle.GeneratePubKeyAndAddrDTO;
 import io.opendid.web2gateway.model.vnmapping.JobidMappin;
 import io.opendid.web2gateway.model.vnmapping.VnMapping;
-import io.opendid.web2gateway.repository.mapper.GatewayKeyVaultMapper;
-import io.opendid.web2gateway.repository.mapper.VngatewayJobidMappingMapper;
-import io.opendid.web2gateway.repository.mapper.VngatewayRouteInfoMapper;
 import io.opendid.web2gateway.repository.model.GatewayKeyVault;
 import io.opendid.web2gateway.repository.model.VngatewayJobidMapping;
 import io.opendid.web2gateway.repository.model.VngatewayRouteInfo;
 import java.util.Date;
 import java.util.List;
 
-import io.opendid.web2gateway.service.GatewayKeyVaultService;
-import io.opendid.web2gateway.service.HomeChainService;
-import io.opendid.web2gateway.service.VngatewayJobidMappingService;
-import io.opendid.web2gateway.service.VngatewayRouteInfoService;
+import io.opendid.web2gateway.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +41,8 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
   private HomeChainService homeChainService;
   @Autowired
   private GatewayKeyVaultService gatewayKeyVaultService;
+  @Autowired
+  private HomeChainKeyManageService homeChainKeyManageService;
 
   @Autowired
   public JWTKeyLoader jwtKeyLoader;
@@ -79,24 +79,48 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
 
       String servicePubKey = ECDSAUtils.getHexPubKey(servicePrivateKey);
 
-      GeneratePubKeyAndAddrDTO generatePubKeyAndAddrDTO = homeChainService.generatePublicKeyAndAddr();
+      // Get homeChain process class
+      HomeChainRequestBodyInterface homeChainRequestHandler = HomeChainRequestBodyFactory.createRequestBodyHandler();
 
+      // Generate public key and address
+      List<GeneratePubKeyAndAddrDTO> generatePubKeyAndAddrDTOS = homeChainRequestHandler.generatePublicKeyAndAddr();
+
+      // Insert GatewayKeyVault
       GatewayKeyVault gatewayKeyVault = new GatewayKeyVault();
-      gatewayKeyVault.setWalletPublicKey(generatePubKeyAndAddrDTO.getPublicKey());
-      gatewayKeyVault.setWalletAddress(generatePubKeyAndAddrDTO.getWalletAddress());
       gatewayKeyVault.setServicePublicKey(servicePubKey);
       if (gatewayKeyVaultOld != null){
         gatewayKeyVault.setAdminJwt(gatewayKeyVaultOld.getAdminJwt());
       }
-
-
       gatewayKeyVault.setUpdateDate(new Date());
 
       gatewayKeyVaultService.insertKeyVault(gatewayKeyVault);
 
-      GatewayKeyVaultUtil.putValue(GatewayKeyVaultUtil.servicePublicKey,servicePubKey);
-      GatewayKeyVaultUtil.putValue(GatewayKeyVaultUtil.walletPublicKey,generatePubKeyAndAddrDTO.getPublicKey());
-      GatewayKeyVaultUtil.putValue(GatewayKeyVaultUtil.walletAddress,generatePubKeyAndAddrDTO.getWalletAddress());
+      // Delete Delete existing homechain key data
+      homeChainKeyManageService.deleteAll();
+      // Insert gateway_homechain_key_manage
+      for (GeneratePubKeyAndAddrDTO generatePubKeyAndAddrDTO : generatePubKeyAndAddrDTOS) {
+        GatewayHomechainKeyManage gatewayHomechainKeyManage = new GatewayHomechainKeyManage();
+        gatewayHomechainKeyManage.setVnCode(generatePubKeyAndAddrDTO.getVnCode());
+        gatewayHomechainKeyManage.setWalletPublicKey(generatePubKeyAndAddrDTO.getPublicKey());
+        gatewayHomechainKeyManage.setWalletAddress(generatePubKeyAndAddrDTO.getWalletAddress());
+        gatewayHomechainKeyManage.setUpdateDate(new Date());
+        gatewayHomechainKeyManage.setKeyCode(generatePubKeyAndAddrDTO.getPrivateKeyCode());
+
+//        GatewayKeyVaultUtil.putValue(generatePubKeyAndAddrDTO.getVnCode() + GatewayKeyVaultUtil.walletPrivateKey,
+//            generatePubKeyAndAddrDTO.getPrivateKey());
+
+        ChainKeyDTO chainKeyDTO = new ChainKeyDTO();
+        chainKeyDTO.setVnCode(generatePubKeyAndAddrDTO.getVnCode());
+        chainKeyDTO.setKeyCode(generatePubKeyAndAddrDTO.getPrivateKeyCode());
+        chainKeyDTO.setPrivateKey(generatePubKeyAndAddrDTO.getPrivateKey());
+        GatewayKeyVaultUtil.putChainValueByKeyCode(chainKeyDTO);
+        GatewayKeyVaultUtil.putChainValueByVnCode(chainKeyDTO);
+
+
+        homeChainKeyManageService.insertHomeChainKey(gatewayHomechainKeyManage);
+      }
+
+      GatewayKeyVaultUtil.putServiceValue(GatewayKeyVaultUtil.servicePublicKey,servicePubKey);
 
     } catch (Exception exception) {
       logger.error("GeneratePublicKey error:",exception);

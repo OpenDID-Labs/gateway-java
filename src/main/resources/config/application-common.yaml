@@ -10,7 +10,13 @@ service-key:
   privatekey: "0xeaeae0286d26c699b30a2e85d4db8c672288d35653a0c71a984b2ee4543877bf"
 
 wallet:
-  privatekey: "0xd67946a885804714166d72e876b2ca27ea4461a4bd85edbcfed687020cd0b641"
+  privatekey:
+    - keyCode: "key1"
+      keyValue: "0xd67946a885804714166d72e876b2ca27ea4461a4bd85edbcfed687020cd0b641"
+    - keyCode: "key2"
+      keyValue: "0x21c751fb4f665b6e44812ea0b4af7ca384a43ada90ef98395a84a84953a1e9e9"
+    - keyCode: "key3"
+      keyValue: "0x60552bec9699f65c407f877da88174d82b59bf706f1246ca706ee9f902046d9b"
 
 
 jwt-key:
@@ -20,6 +26,11 @@ jwt-key:
 oracle:
   callBack:
     url: ""
+
+
+vn-key-sync-task:
+  switch: true
+  tempo: 15000
 
 oracle-result-task:
   switch: true
@@ -31,6 +42,11 @@ oracle-cancel-result-task:
   switch: true
   tempo: 10000
   max-execute: 50
+  interval-second: 10
+
+claim-task:
+  switch: true
+  tempo: 5000
   interval-second: 10
 
 #Same as HomeChainName class definition

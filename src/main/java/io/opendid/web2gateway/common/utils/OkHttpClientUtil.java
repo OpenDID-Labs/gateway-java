@@ -147,7 +147,7 @@ public class OkHttpClientUtil {
 
 
   public ResponseDTO postForJson(String url, Object params, String accessToken) throws Exception {
-    String traceId = MDC.get(LogTraceIdConstant.TRACE_ID);
+    String traceId = MDC.get(LogTraceIdConstant.TRACE_ID)+"_"+UuidUtil.generateUuid32("");
 
     String responseBody = JSONObject.toJSONString(params);
 

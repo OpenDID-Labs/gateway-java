@@ -40,7 +40,7 @@ public class MethodOracleRequestCallback implements Web2CallbackMethod {
       LinkedHashMap params = request.getParams();
       String requestId = params.get("requestId").toString();
       String callbackOracleHash = params.get("oracleFulfillTxHash").toString();
-      String aptosVersion = params.get("aptosVersion").toString();
+      String oracleRequestTxHash=params.get("oracleRequestTxHash").toString();
       String responseBody = params.get("data").toString();
 
       UpdateEventLogDTO updateEventLogDTO = new UpdateEventLogDTO();
@@ -48,7 +48,8 @@ public class MethodOracleRequestCallback implements Web2CallbackMethod {
       updateEventLogDTO.setRequestId(requestId);
       updateEventLogDTO.setResponseBody(responseBody);
       updateEventLogDTO.setCallbackOracleHash(callbackOracleHash);
-      updateEventLogDTO.setRequestAptosVersion(aptosVersion);
+      updateEventLogDTO.setRequestTransactionHash(oracleRequestTxHash);
+
       oracleContractEventLogService.updateEventLogByRequestId(updateEventLogDTO);
       callBackRespDTO.setSuccessfully(CallbackProcessStatus.SUCCESSFUL.getCode());
     } catch (Exception e) {
@@ -78,7 +79,8 @@ public class MethodOracleRequestCallback implements Web2CallbackMethod {
     String signStr = oracleCallBackResultDTO.getRequestId()
             + oracleCallBackResultDTO.getOracleFulfillTxHash()
             + oracleCallBackResultDTO.getData()
-            + oracleCallBackResultDTO.getStatus();
+            + oracleCallBackResultDTO.getStatus()
+            + oracleCallBackResultDTO.getOracleRequestTxHash();
 
     vnCallbackSignPayloadDTO.setSignStr(signStr);
 
@@ -86,10 +88,12 @@ public class MethodOracleRequestCallback implements Web2CallbackMethod {
 
     linkedHashMap.put("requestId",oracleCallBackResultDTO.getRequestId());
     linkedHashMap.put("oracleFulfillTxHash",oracleCallBackResultDTO.getOracleFulfillTxHash());
+    linkedHashMap.put("oracleRequestTxHash",oracleCallBackResultDTO.getOracleRequestTxHash());
+
     linkedHashMap.put("data",oracleCallBackResultDTO.getData());
 
     vnCallbackSignPayloadDTO.setMethodJsonRpc2Params(linkedHashMap);
-
+    vnCallbackSignPayloadDTO.setOracleRequestTxHash(oracleCallBackResultDTO.getOracleRequestTxHash());
     return vnCallbackSignPayloadDTO;
   }
 }

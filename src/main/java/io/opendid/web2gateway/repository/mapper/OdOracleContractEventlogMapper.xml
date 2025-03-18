@@ -23,6 +23,12 @@
     <result column="request_aptos_version" jdbcType="VARCHAR" property="requestAptosVersion" />
     <result column="cancel_aptos_version" jdbcType="VARCHAR" property="cancelAptosVersion" />
     <result column="cancel_create_date" jdbcType="TIMESTAMP" property="cancelCreateDate" />
+    <result column="transaction_batch_code" jdbcType="VARCHAR" property="transactionBatchCode" />
+    <result column="claim_status" jdbcType="INTEGER" property="claimStatus" />
+    <result column="claim_execute_time" jdbcType="BIGINT" property="claimExecuteTime" />
+    <result column="claim_execute_count" jdbcType="INTEGER" property="claimExecuteCount" />
+    <result column="key_code" jdbcType="VARCHAR" property="keyCode" />
+    <result column="claim_fee" jdbcType="BIGINT" property="claimFee" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs">
     <result column="error_msg" jdbcType="LONGVARCHAR" property="errorMsg" />
@@ -31,15 +37,18 @@
     <result column="response_body" jdbcType="LONGVARCHAR" property="responseBody" />
     <result column="cancel_request_body" jdbcType="LONGVARCHAR" property="cancelRequestBody" />
     <result column="cancel_response_body" jdbcType="LONGVARCHAR" property="cancelResponseBody" />
+    <result column="claim_error_msg" jdbcType="LONGVARCHAR" property="claimErrorMsg" />
   </resultMap>
   <sql id="Base_Column_List">
     log_id, request_id, vn_code, job_id, job_id_fee, platform_code, process_status, callback_oracle_hash, 
     trace_id, create_date, update_date, next_execute_time, execute_count, request_oracle_hash, 
     cancel_status, cancel_oracle_hash, cancel_next_execute_time, cancel_execute_count, 
-    request_aptos_version, cancel_aptos_version, cancel_create_date
+    request_aptos_version, cancel_aptos_version, cancel_create_date, transaction_batch_code, 
+    claim_status, claim_execute_time, claim_execute_count, key_code, claim_fee
   </sql>
   <sql id="Blob_Column_List">
-    error_msg, cancel_error_msg, request_body, response_body, cancel_request_body, cancel_response_body
+    error_msg, cancel_error_msg, request_body, response_body, cancel_request_body, cancel_response_body, 
+    claim_error_msg
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select 
@@ -62,9 +71,12 @@
       cancel_oracle_hash, cancel_next_execute_time, 
       cancel_execute_count, request_aptos_version, 
       cancel_aptos_version, cancel_create_date, 
+      transaction_batch_code, claim_status, claim_execute_time, 
+      claim_execute_count, key_code, claim_fee, 
       error_msg, cancel_error_msg, request_body, 
       response_body, cancel_request_body, 
-      cancel_response_body)
+      cancel_response_body, claim_error_msg
+      )
     values (#{logId,jdbcType=BIGINT}, #{requestId,jdbcType=VARCHAR}, #{vnCode,jdbcType=VARCHAR}, 
       #{jobId,jdbcType=VARCHAR}, #{jobIdFee,jdbcType=BIGINT}, #{platformCode,jdbcType=VARCHAR}, 
       #{processStatus,jdbcType=INTEGER}, #{callbackOracleHash,jdbcType=VARCHAR}, #{traceId,jdbcType=VARCHAR}, 
@@ -73,9 +85,12 @@
       #{cancelOracleHash,jdbcType=VARCHAR}, #{cancelNextExecuteTime,jdbcType=BIGINT}, 
       #{cancelExecuteCount,jdbcType=INTEGER}, #{requestAptosVersion,jdbcType=VARCHAR}, 
       #{cancelAptosVersion,jdbcType=VARCHAR}, #{cancelCreateDate,jdbcType=TIMESTAMP}, 
+      #{transactionBatchCode,jdbcType=VARCHAR}, #{claimStatus,jdbcType=INTEGER}, #{claimExecuteTime,jdbcType=BIGINT}, 
+      #{claimExecuteCount,jdbcType=INTEGER}, #{keyCode,jdbcType=VARCHAR}, #{claimFee,jdbcType=BIGINT}, 
       #{errorMsg,jdbcType=LONGVARCHAR}, #{cancelErrorMsg,jdbcType=LONGVARCHAR}, #{requestBody,jdbcType=LONGVARCHAR}, 
       #{responseBody,jdbcType=LONGVARCHAR}, #{cancelRequestBody,jdbcType=LONGVARCHAR}, 
-      #{cancelResponseBody,jdbcType=LONGVARCHAR})
+      #{cancelResponseBody,jdbcType=LONGVARCHAR}, #{claimErrorMsg,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs">
     insert into od_oracle_contract_eventlog
@@ -143,6 +158,24 @@
       <if test="cancelCreateDate != null">
         cancel_create_date,
       </if>
+      <if test="transactionBatchCode != null">
+        transaction_batch_code,
+      </if>
+      <if test="claimStatus != null">
+        claim_status,
+      </if>
+      <if test="claimExecuteTime != null">
+        claim_execute_time,
+      </if>
+      <if test="claimExecuteCount != null">
+        claim_execute_count,
+      </if>
+      <if test="keyCode != null">
+        key_code,
+      </if>
+      <if test="claimFee != null">
+        claim_fee,
+      </if>
       <if test="errorMsg != null">
         error_msg,
       </if>
@@ -160,6 +193,9 @@
       </if>
       <if test="cancelResponseBody != null">
         cancel_response_body,
+      </if>
+      <if test="claimErrorMsg != null">
+        claim_error_msg,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -226,6 +262,24 @@
       <if test="cancelCreateDate != null">
         #{cancelCreateDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="transactionBatchCode != null">
+        #{transactionBatchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="claimStatus != null">
+        #{claimStatus,jdbcType=INTEGER},
+      </if>
+      <if test="claimExecuteTime != null">
+        #{claimExecuteTime,jdbcType=BIGINT},
+      </if>
+      <if test="claimExecuteCount != null">
+        #{claimExecuteCount,jdbcType=INTEGER},
+      </if>
+      <if test="keyCode != null">
+        #{keyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="claimFee != null">
+        #{claimFee,jdbcType=BIGINT},
+      </if>
       <if test="errorMsg != null">
         #{errorMsg,jdbcType=LONGVARCHAR},
       </if>
@@ -243,6 +297,9 @@
       </if>
       <if test="cancelResponseBody != null">
         #{cancelResponseBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="claimErrorMsg != null">
+        #{claimErrorMsg,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -309,6 +366,24 @@
       <if test="cancelCreateDate != null">
         cancel_create_date = #{cancelCreateDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="transactionBatchCode != null">
+        transaction_batch_code = #{transactionBatchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="claimStatus != null">
+        claim_status = #{claimStatus,jdbcType=INTEGER},
+      </if>
+      <if test="claimExecuteTime != null">
+        claim_execute_time = #{claimExecuteTime,jdbcType=BIGINT},
+      </if>
+      <if test="claimExecuteCount != null">
+        claim_execute_count = #{claimExecuteCount,jdbcType=INTEGER},
+      </if>
+      <if test="keyCode != null">
+        key_code = #{keyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="claimFee != null">
+        claim_fee = #{claimFee,jdbcType=BIGINT},
+      </if>
       <if test="errorMsg != null">
         error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
       </if>
@@ -326,6 +401,9 @@
       </if>
       <if test="cancelResponseBody != null">
         cancel_response_body = #{cancelResponseBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="claimErrorMsg != null">
+        claim_error_msg = #{claimErrorMsg,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where log_id = #{logId,jdbcType=BIGINT}
@@ -352,12 +430,19 @@
       request_aptos_version = #{requestAptosVersion,jdbcType=VARCHAR},
       cancel_aptos_version = #{cancelAptosVersion,jdbcType=VARCHAR},
       cancel_create_date = #{cancelCreateDate,jdbcType=TIMESTAMP},
+      transaction_batch_code = #{transactionBatchCode,jdbcType=VARCHAR},
+      claim_status = #{claimStatus,jdbcType=INTEGER},
+      claim_execute_time = #{claimExecuteTime,jdbcType=BIGINT},
+      claim_execute_count = #{claimExecuteCount,jdbcType=INTEGER},
+      key_code = #{keyCode,jdbcType=VARCHAR},
+      claim_fee = #{claimFee,jdbcType=BIGINT},
       error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
       cancel_error_msg = #{cancelErrorMsg,jdbcType=LONGVARCHAR},
       request_body = #{requestBody,jdbcType=LONGVARCHAR},
       response_body = #{responseBody,jdbcType=LONGVARCHAR},
       cancel_request_body = #{cancelRequestBody,jdbcType=LONGVARCHAR},
-      cancel_response_body = #{cancelResponseBody,jdbcType=LONGVARCHAR}
+      cancel_response_body = #{cancelResponseBody,jdbcType=LONGVARCHAR},
+      claim_error_msg = #{claimErrorMsg,jdbcType=LONGVARCHAR}
     where log_id = #{logId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlog">
@@ -381,7 +466,13 @@
       cancel_execute_count = #{cancelExecuteCount,jdbcType=INTEGER},
       request_aptos_version = #{requestAptosVersion,jdbcType=VARCHAR},
       cancel_aptos_version = #{cancelAptosVersion,jdbcType=VARCHAR},
-      cancel_create_date = #{cancelCreateDate,jdbcType=TIMESTAMP}
+      cancel_create_date = #{cancelCreateDate,jdbcType=TIMESTAMP},
+      transaction_batch_code = #{transactionBatchCode,jdbcType=VARCHAR},
+      claim_status = #{claimStatus,jdbcType=INTEGER},
+      claim_execute_time = #{claimExecuteTime,jdbcType=BIGINT},
+      claim_execute_count = #{claimExecuteCount,jdbcType=INTEGER},
+      key_code = #{keyCode,jdbcType=VARCHAR},
+      claim_fee = #{claimFee,jdbcType=BIGINT}
     where log_id = #{logId,jdbcType=BIGINT}
   </update>
 </mapper>

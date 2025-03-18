@@ -5,12 +5,17 @@ import io.opendid.web2gateway.common.web2.Web2MethodName;
 import io.opendid.web2gateway.model.dto.oracle.GetWalletAddressRespDTO;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
 import io.opendid.web2gateway.repository.mapper.GatewayKeyVaultMapper;
+import io.opendid.web2gateway.repository.model.GatewayHomechainKeyManage;
 import io.opendid.web2gateway.repository.model.GatewayKeyVault;
 import io.opendid.web2gateway.security.checkaspect.MethodPrivate;
+import io.opendid.web2gateway.service.HomeChainKeyManageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component(Web2MethodName.ORACLE_GET_WALLET_ADDRESS + Web2Method.BEAN_SUFFIX)
 @MethodPrivate
@@ -20,6 +25,8 @@ public class MethodOracleGetWalletAddress implements Web2Method {
 
   @Autowired
   private GatewayKeyVaultMapper gatewayKeyVaultMapper;
+  @Autowired
+  private HomeChainKeyManageService homeChainKeyManageService;
 
   @Override
   public Object process(JsonRpc2Request request) {
@@ -28,13 +35,21 @@ public class MethodOracleGetWalletAddress implements Web2Method {
 
     GatewayKeyVault gatewayKeyVault = gatewayKeyVaultMapper.selectKeyInfo();
 
-    GetWalletAddressRespDTO getWalletAddressRespDTO = new GetWalletAddressRespDTO();
+    List<GatewayHomechainKeyManage> gatewayHomechainKeyManages = homeChainKeyManageService.selectAll();
 
-    if (getWalletAddressRespDTO != null) {
-      getWalletAddressRespDTO.setWalletAddress(gatewayKeyVault.getWalletAddress());
+
+    List<GetWalletAddressRespDTO> resultList = new ArrayList<>();
+
+    for (GatewayHomechainKeyManage gatewayHomechainKeyManage : gatewayHomechainKeyManages) {
+      GetWalletAddressRespDTO getWalletAddressRespDTO = new GetWalletAddressRespDTO();
+      getWalletAddressRespDTO.setWalletAddress(gatewayHomechainKeyManage.getWalletAddress());
+      getWalletAddressRespDTO.setWalletPublicKey(gatewayHomechainKeyManage.getWalletPublicKey());
+      getWalletAddressRespDTO.setVnCode(gatewayHomechainKeyManage.getVnCode());
+
+      resultList.add(getWalletAddressRespDTO);
     }
 
-    return getWalletAddressRespDTO;
+    return resultList;
   }
 
   @Override

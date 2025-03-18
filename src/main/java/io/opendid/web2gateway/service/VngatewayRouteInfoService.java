@@ -5,6 +5,8 @@ import io.opendid.web2gateway.repository.model.VngatewayRouteInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 /**
 * VngatewayRouteInfoService
@@ -28,6 +30,29 @@ public class VngatewayRouteInfoService {
 
   public void insertRouteInfo(VngatewayRouteInfo vngatewayRouteInfo){
     vngatewayRouteInfoMapper.insertSelective(vngatewayRouteInfo);
+  }
+
+  public List<VngatewayRouteInfo> selectVnRouteByCodes(String[] codes){
+
+    List<VngatewayRouteInfo> vnGatewayRouteInfos =
+        vngatewayRouteInfoMapper.selectByCodes(codes);
+
+    return vnGatewayRouteInfos;
+  }
+
+
+  public List<VngatewayRouteInfo> selectVnRouteByJobId(String jobId){
+    List<VngatewayRouteInfo> vnGatewayRouteInfos = vngatewayRouteInfoMapper.selectByJobId(jobId);
+
+    return vnGatewayRouteInfos;
+  }
+
+
+  public List<VngatewayRouteInfo> selectAllVn(){
+
+    List<VngatewayRouteInfo> vngatewayRouteInfos = vngatewayRouteInfoMapper.selectAllVn();
+
+    return vngatewayRouteInfos;
   }
 
 

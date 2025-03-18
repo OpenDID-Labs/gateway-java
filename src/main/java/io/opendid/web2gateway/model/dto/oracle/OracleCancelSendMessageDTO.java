@@ -9,6 +9,16 @@ public class OracleCancelSendMessageDTO {
   private String method;
   private String jobId;
 
+  private String vnCode;
+
+  public String getVnCode() {
+    return vnCode;
+  }
+
+  public void setVnCode(String vnCode) {
+    this.vnCode = vnCode;
+  }
+
   public String getJobId() {
     return jobId;
   }

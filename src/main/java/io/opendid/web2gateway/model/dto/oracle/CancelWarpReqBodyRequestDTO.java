@@ -11,6 +11,17 @@ public class CancelWarpReqBodyRequestDTO {
 
   private String jobId;
 
+  private String vnCode;
+
+
+  public String getVnCode() {
+    return vnCode;
+  }
+
+  public void setVnCode(String vnCode) {
+    this.vnCode = vnCode;
+  }
+
   public String getPublicKey() {
     return publicKey;
   }
@@ -42,4 +53,5 @@ public class CancelWarpReqBodyRequestDTO {
   public void setJobId(String jobId) {
     this.jobId = jobId;
   }
+
 }

@@ -41,7 +41,7 @@ public class OAuth2TokenUtil {
     try {
       logger.info("KeyClockTokenUtil initToken start");
 
-      String publicKey = GatewayKeyVaultUtil.getKey(GatewayKeyVaultUtil.servicePublicKey);
+      String publicKey = GatewayKeyVaultUtil.getServiceKey(GatewayKeyVaultUtil.servicePublicKey);
 
       String sign = ECDSAUtils.sign(
           publicKey,

@@ -10,15 +10,8 @@ public class UpdateEventLogDTO {
 
   private String callbackOracleHash;
 
-  private String requestAptosVersion;
 
-  public String getRequestAptosVersion() {
-    return requestAptosVersion;
-  }
-
-  public void setRequestAptosVersion(String requestAptosVersion) {
-    this.requestAptosVersion = requestAptosVersion;
-  }
+  private String requestTransactionHash;
 
   public String getRequestId() {
     return requestId;
@@ -51,4 +44,12 @@ public class UpdateEventLogDTO {
   public void setCallbackOracleHash(String callbackOracleHash) {
     this.callbackOracleHash = callbackOracleHash;
   }
+
+    public String getRequestTransactionHash() {
+        return requestTransactionHash;
+    }
+
+    public void setRequestTransactionHash(String requestTransactionHash) {
+        this.requestTransactionHash = requestTransactionHash;
+    }
 }

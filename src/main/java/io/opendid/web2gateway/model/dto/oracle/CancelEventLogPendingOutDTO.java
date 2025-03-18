@@ -10,6 +10,16 @@ public class CancelEventLogPendingOutDTO {
 
     private String jobId;
 
+    private String vnCode;
+
+    public String getVnCode() {
+        return vnCode;
+    }
+
+    public void setVnCode(String vnCode) {
+        this.vnCode = vnCode;
+    }
+
     public Long getLogId() {
         return logId;
     }

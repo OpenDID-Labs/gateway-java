@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.GatewayHomechainKeyManageMapper">
+
+  <delete id="deleteAll">
+    delete from gateway_homechain_key_manage
+  </delete>
+
+  <select id="selectByVnCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from gateway_homechain_key_manage
+    where vn_code = #{vnCode}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from gateway_homechain_key_manage
+  </select>
+
+</mapper>

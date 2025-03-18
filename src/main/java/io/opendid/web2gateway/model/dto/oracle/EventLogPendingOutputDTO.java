@@ -16,6 +16,8 @@ public class EventLogPendingOutputDTO {
 
   private String requestAptosVersion;
 
+  private String requestOracleHash;
+
   public String getRequestAptosVersion() {
     return requestAptosVersion;
   }
@@ -71,4 +73,12 @@ public class EventLogPendingOutputDTO {
   public void setExecuteCount(Integer executeCount) {
     this.executeCount = executeCount;
   }
+
+    public String getRequestOracleHash() {
+        return requestOracleHash;
+    }
+
+    public void setRequestOracleHash(String requestOracleHash) {
+        this.requestOracleHash = requestOracleHash;
+    }
 }

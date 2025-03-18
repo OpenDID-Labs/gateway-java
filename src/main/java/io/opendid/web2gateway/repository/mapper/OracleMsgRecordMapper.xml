@@ -7,6 +7,8 @@
     <result column="request_id" jdbcType="VARCHAR" property="requestId" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="request_oracle_hash" jdbcType="VARCHAR" property="requestOracleHash" />
+    <result column="key_code" jdbcType="VARCHAR" property="keyCode" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs">
     <result column="request_body" jdbcType="LONGVARCHAR" property="requestBody" />
@@ -15,7 +17,7 @@
     <result column="cancel_response_body" jdbcType="LONGVARCHAR" property="cancelResponseBody" />
   </resultMap>
   <sql id="Base_Column_List">
-    msg_id, vn_code, request_id, create_date, update_date
+    msg_id, vn_code, request_id, create_date, update_date, request_oracle_hash, key_code
   </sql>
   <sql id="Blob_Column_List">
     request_body, response_body, cancel_request_body, cancel_response_body
@@ -34,13 +36,15 @@
   </delete>
   <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs">
     insert into oracle_msg_record (msg_id, vn_code, request_id, 
-      create_date, update_date, request_body, 
-      response_body, cancel_request_body, 
-      cancel_response_body)
+      create_date, update_date, request_oracle_hash, 
+      key_code, request_body, response_body, 
+      cancel_request_body, cancel_response_body
+      )
     values (#{msgId,jdbcType=BIGINT}, #{vnCode,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR}, 
-      #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{requestBody,jdbcType=LONGVARCHAR}, 
-      #{responseBody,jdbcType=LONGVARCHAR}, #{cancelRequestBody,jdbcType=LONGVARCHAR}, 
-      #{cancelResponseBody,jdbcType=LONGVARCHAR})
+      #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{requestOracleHash,jdbcType=VARCHAR}, 
+      #{keyCode,jdbcType=VARCHAR}, #{requestBody,jdbcType=LONGVARCHAR}, #{responseBody,jdbcType=LONGVARCHAR}, 
+      #{cancelRequestBody,jdbcType=LONGVARCHAR}, #{cancelResponseBody,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs">
     insert into oracle_msg_record
@@ -59,6 +63,12 @@
       </if>
       <if test="updateDate != null">
         update_date,
+      </if>
+      <if test="requestOracleHash != null">
+        request_oracle_hash,
+      </if>
+      <if test="keyCode != null">
+        key_code,
       </if>
       <if test="requestBody != null">
         request_body,
@@ -89,6 +99,12 @@
       <if test="updateDate != null">
         #{updateDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="requestOracleHash != null">
+        #{requestOracleHash,jdbcType=VARCHAR},
+      </if>
+      <if test="keyCode != null">
+        #{keyCode,jdbcType=VARCHAR},
+      </if>
       <if test="requestBody != null">
         #{requestBody,jdbcType=LONGVARCHAR},
       </if>
@@ -118,6 +134,12 @@
       <if test="updateDate != null">
         update_date = #{updateDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="requestOracleHash != null">
+        request_oracle_hash = #{requestOracleHash,jdbcType=VARCHAR},
+      </if>
+      <if test="keyCode != null">
+        key_code = #{keyCode,jdbcType=VARCHAR},
+      </if>
       <if test="requestBody != null">
         request_body = #{requestBody,jdbcType=LONGVARCHAR},
       </if>
@@ -139,6 +161,8 @@
       request_id = #{requestId,jdbcType=VARCHAR},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       update_date = #{updateDate,jdbcType=TIMESTAMP},
+      request_oracle_hash = #{requestOracleHash,jdbcType=VARCHAR},
+      key_code = #{keyCode,jdbcType=VARCHAR},
       request_body = #{requestBody,jdbcType=LONGVARCHAR},
       response_body = #{responseBody,jdbcType=LONGVARCHAR},
       cancel_request_body = #{cancelRequestBody,jdbcType=LONGVARCHAR},
@@ -150,7 +174,9 @@
     set vn_code = #{vnCode,jdbcType=VARCHAR},
       request_id = #{requestId,jdbcType=VARCHAR},
       create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_date = #{updateDate,jdbcType=TIMESTAMP}
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      request_oracle_hash = #{requestOracleHash,jdbcType=VARCHAR},
+      key_code = #{keyCode,jdbcType=VARCHAR}
     where msg_id = #{msgId,jdbcType=BIGINT}
   </update>
 </mapper>

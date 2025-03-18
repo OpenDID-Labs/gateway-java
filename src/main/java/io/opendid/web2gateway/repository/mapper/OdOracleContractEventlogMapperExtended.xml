@@ -12,7 +12,8 @@
       ocel.vn_code AS vnCode,
       ocel.next_execute_time AS nextExecuteTime,
       ocel.execute_count AS executeCount,
-      ocel.request_aptos_version AS requestAptosVersion
+      ocel.request_aptos_version AS requestAptosVersion,
+      ocel.request_oracle_hash
     FROM
         od_oracle_contract_eventlog AS ocel
     WHERE
@@ -92,8 +93,6 @@
     <include refid="Base_Column_List" />
     from od_oracle_contract_eventlog
     where request_id = #{requestId,jdbcType=VARCHAR}
-    ORDER BY log_id DESC
-    LIMIT 1;
   </select>
 
   <select id="selectCancelStatusByRequestId" parameterType="java.lang.String" resultType="io.opendid.web2gateway.model.dto.oracle.GetCancelTransactionRespDTO">
@@ -116,7 +115,8 @@
       ocel.log_id AS logId,
       ocel.request_id AS requestId,
       ocel.job_id AS jobId,
-      ocel.cancel_execute_count AS cancelExecuteCount
+      ocel.cancel_execute_count AS cancelExecuteCount,
+      ocel.vn_code AS vnCode
     FROM
       od_oracle_contract_eventlog AS ocel
     WHERE
@@ -196,4 +196,201 @@
     </if>
   </update>
 
+
+  <update id="updateByRequestTransactionHash" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs">
+    update od_oracle_contract_eventlog
+    <set>
+      <if test="vnCode != null">
+        vn_code = #{vnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="jobId != null">
+        job_id = #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="jobIdFee != null">
+        job_id_fee = #{jobIdFee,jdbcType=BIGINT},
+      </if>
+      <if test="platformCode != null">
+        platform_code = #{platformCode,jdbcType=VARCHAR},
+      </if>
+      <if test="processStatus != null">
+        process_status = #{processStatus,jdbcType=INTEGER},
+      </if>
+
+
+
+
+      <if test="requestId != null">
+        request_id = #{requestId,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackOracleHash != null">
+        callback_oracle_hash = #{callbackOracleHash,jdbcType=VARCHAR},
+      </if>
+      <if test="traceId != null">
+        trace_id = #{traceId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nextExecuteTime != null">
+        next_execute_time = #{nextExecuteTime,jdbcType=BIGINT},
+      </if>
+      <if test="executeCount != null">
+        execute_count = #{executeCount,jdbcType=INTEGER},
+      </if>
+      <if test="cancelStatus != null">
+        cancel_status = #{cancelStatus,jdbcType=INTEGER},
+      </if>
+      <if test="cancelOracleHash != null">
+        cancel_oracle_hash = #{cancelOracleHash,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null">
+        error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelErrorMsg != null">
+        cancel_error_msg = #{cancelErrorMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="requestBody != null">
+        request_body = #{requestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="responseBody != null">
+        response_body = #{responseBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelRequestBody != null">
+        cancel_request_body = #{cancelRequestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelResponseBody != null">
+        cancel_response_body = #{cancelResponseBody,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where request_oracle_hash = #{requestOracleHash,jdbcType=VARCHAR}
+
+  </update>
+
+  <select id="selectClaimPendingData" parameterType="io.opendid.web2gateway.model.dto.oracle.ClaimEventLogPendingInDTO"
+    resultType="io.opendid.web2gateway.model.dto.oracle.ClaimEventLogPendingOutDTO">
+    SELECT
+      ocel.log_id AS logId,
+      ocel.request_id AS requestId,
+      ocel.claim_execute_count AS claimExecuteCount,
+      ocel.vn_code AS vnCode,
+      ocel.job_id AS jobId
+    FROM
+      od_oracle_contract_eventlog AS ocel
+    WHERE
+      ocel.process_status = 5
+      AND ocel.claim_status = 1
+      AND ocel.claim_execute_time &lt;= #{claimExecuteTime}
+    ORDER BY
+      log_id ASC;
+  </select>
+
+  <update id="updateClaimStatusByRequestId" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs">
+    update od_oracle_contract_eventlog
+    <set>
+      <if test="requestId != null">
+        request_id = #{requestId,jdbcType=VARCHAR},
+      </if>
+      <if test="vnCode != null">
+        vn_code = #{vnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="jobId != null">
+        job_id = #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="jobIdFee != null">
+        job_id_fee = #{jobIdFee,jdbcType=BIGINT},
+      </if>
+      <if test="platformCode != null">
+        platform_code = #{platformCode,jdbcType=VARCHAR},
+      </if>
+      <if test="processStatus != null">
+        process_status = #{processStatus,jdbcType=INTEGER},
+      </if>
+      <if test="callbackOracleHash != null">
+        callback_oracle_hash = #{callbackOracleHash,jdbcType=VARCHAR},
+      </if>
+      <if test="traceId != null">
+        trace_id = #{traceId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nextExecuteTime != null">
+        next_execute_time = #{nextExecuteTime,jdbcType=BIGINT},
+      </if>
+      <if test="executeCount != null">
+        execute_count = #{executeCount,jdbcType=INTEGER},
+      </if>
+      <if test="requestOracleHash != null">
+        request_oracle_hash = #{requestOracleHash,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelStatus != null">
+        cancel_status = #{cancelStatus,jdbcType=INTEGER},
+      </if>
+      <if test="cancelOracleHash != null">
+        cancel_oracle_hash = #{cancelOracleHash,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelNextExecuteTime != null">
+        cancel_next_execute_time = #{cancelNextExecuteTime,jdbcType=BIGINT},
+      </if>
+      <if test="cancelExecuteCount != null">
+        cancel_execute_count = #{cancelExecuteCount,jdbcType=INTEGER},
+      </if>
+      <if test="requestAptosVersion != null">
+        request_aptos_version = #{requestAptosVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelAptosVersion != null">
+        cancel_aptos_version = #{cancelAptosVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelCreateDate != null">
+        cancel_create_date = #{cancelCreateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="transactionBatchCode != null">
+        transaction_batch_code = #{transactionBatchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="claimStatus != null">
+        claim_status = #{claimStatus,jdbcType=INTEGER},
+      </if>
+      <if test="claimExecuteTime != null">
+        claim_execute_time = #{claimExecuteTime,jdbcType=BIGINT},
+      </if>
+      <if test="claimExecuteCount != null">
+        claim_execute_count = #{claimExecuteCount,jdbcType=INTEGER},
+      </if>
+      <if test="errorMsg != null">
+        error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelErrorMsg != null">
+        cancel_error_msg = #{cancelErrorMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="requestBody != null">
+        request_body = #{requestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="responseBody != null">
+        response_body = #{responseBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelRequestBody != null">
+        cancel_request_body = #{cancelRequestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="cancelResponseBody != null">
+        cancel_response_body = #{cancelResponseBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="claimErrorMsg != null">
+        claim_error_msg = #{claimErrorMsg,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where request_id = #{requestId,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectByRequestOracleHash" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from od_oracle_contract_eventlog
+    where request_oracle_hash = #{requestOracleHash,jdbcType=VARCHAR}
+  </select>
 </mapper>

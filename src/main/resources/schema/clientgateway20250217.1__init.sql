@@ -1,0 +1,1 @@
+alter table od_oracle_contract_eventlog add column transaction_batch_code varchar(100) default NULL  comment 'Transaction batch code';

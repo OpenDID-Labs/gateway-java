@@ -45,6 +45,18 @@ public class OdOracleContractEventlog {
 
     private Date cancelCreateDate;
 
+    private String transactionBatchCode;
+
+    private Integer claimStatus;
+
+    private Long claimExecuteTime;
+
+    private Integer claimExecuteCount;
+
+    private String keyCode;
+
+    private Long claimFee;
+
     public Long getLogId() {
         return logId;
     }
@@ -211,5 +223,53 @@ public class OdOracleContractEventlog {
 
     public void setCancelCreateDate(Date cancelCreateDate) {
         this.cancelCreateDate = cancelCreateDate;
+    }
+
+    public String getTransactionBatchCode() {
+        return transactionBatchCode;
+    }
+
+    public void setTransactionBatchCode(String transactionBatchCode) {
+        this.transactionBatchCode = transactionBatchCode == null ? null : transactionBatchCode.trim();
+    }
+
+    public Integer getClaimStatus() {
+        return claimStatus;
+    }
+
+    public void setClaimStatus(Integer claimStatus) {
+        this.claimStatus = claimStatus;
+    }
+
+    public Long getClaimExecuteTime() {
+        return claimExecuteTime;
+    }
+
+    public void setClaimExecuteTime(Long claimExecuteTime) {
+        this.claimExecuteTime = claimExecuteTime;
+    }
+
+    public Integer getClaimExecuteCount() {
+        return claimExecuteCount;
+    }
+
+    public void setClaimExecuteCount(Integer claimExecuteCount) {
+        this.claimExecuteCount = claimExecuteCount;
+    }
+
+    public String getKeyCode() {
+        return keyCode;
+    }
+
+    public void setKeyCode(String keyCode) {
+        this.keyCode = keyCode == null ? null : keyCode.trim();
+    }
+
+    public Long getClaimFee() {
+        return claimFee;
+    }
+
+    public void setClaimFee(Long claimFee) {
+        this.claimFee = claimFee;
     }
 }

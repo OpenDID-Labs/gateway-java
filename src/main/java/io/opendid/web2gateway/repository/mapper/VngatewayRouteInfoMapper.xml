@@ -11,10 +11,13 @@
     <result column="client_secret" jdbcType="VARCHAR" property="clientSecret" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="vn_public_key" jdbcType="VARCHAR" property="vnPublicKey" />
+    <result column="vn_homechain_public_key" jdbcType="VARCHAR" property="vnHomechainPublicKey" />
+    <result column="vn_homechain_account" jdbcType="VARCHAR" property="vnHomechainAccount" />
+    <result column="vn_home_chain_name" jdbcType="VARCHAR" property="vnHomeChainName" />
   </resultMap>
   <sql id="Base_Column_List">
     route_id, vn_code, url, ssl_enabled, gateway_disable, client_id, client_secret, update_date, 
-    vn_public_key
+    vn_public_key, vn_homechain_public_key, vn_homechain_account, vn_home_chain_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -29,12 +32,14 @@
   <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.VngatewayRouteInfo">
     insert into vngateway_route_info (route_id, vn_code, url, 
       ssl_enabled, gateway_disable, client_id, 
-      client_secret, update_date, vn_public_key
-      )
+      client_secret, update_date, vn_public_key, 
+      vn_homechain_public_key, vn_homechain_account, 
+      vn_home_chain_name)
     values (#{routeId,jdbcType=BIGINT}, #{vnCode,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
       #{sslEnabled,jdbcType=INTEGER}, #{gatewayDisable,jdbcType=INTEGER}, #{clientId,jdbcType=VARCHAR}, 
-      #{clientSecret,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{vnPublicKey,jdbcType=VARCHAR}
-      )
+      #{clientSecret,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{vnPublicKey,jdbcType=VARCHAR}, 
+      #{vnHomechainPublicKey,jdbcType=VARCHAR}, #{vnHomechainAccount,jdbcType=VARCHAR}, 
+      #{vnHomeChainName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.VngatewayRouteInfo">
     insert into vngateway_route_info
@@ -66,6 +71,15 @@
       <if test="vnPublicKey != null">
         vn_public_key,
       </if>
+      <if test="vnHomechainPublicKey != null">
+        vn_homechain_public_key,
+      </if>
+      <if test="vnHomechainAccount != null">
+        vn_homechain_account,
+      </if>
+      <if test="vnHomeChainName != null">
+        vn_home_chain_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="routeId != null">
@@ -94,6 +108,15 @@
       </if>
       <if test="vnPublicKey != null">
         #{vnPublicKey,jdbcType=VARCHAR},
+      </if>
+      <if test="vnHomechainPublicKey != null">
+        #{vnHomechainPublicKey,jdbcType=VARCHAR},
+      </if>
+      <if test="vnHomechainAccount != null">
+        #{vnHomechainAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="vnHomeChainName != null">
+        #{vnHomeChainName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -124,6 +147,15 @@
       <if test="vnPublicKey != null">
         vn_public_key = #{vnPublicKey,jdbcType=VARCHAR},
       </if>
+      <if test="vnHomechainPublicKey != null">
+        vn_homechain_public_key = #{vnHomechainPublicKey,jdbcType=VARCHAR},
+      </if>
+      <if test="vnHomechainAccount != null">
+        vn_homechain_account = #{vnHomechainAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="vnHomeChainName != null">
+        vn_home_chain_name = #{vnHomeChainName,jdbcType=VARCHAR},
+      </if>
     </set>
     where route_id = #{routeId,jdbcType=BIGINT}
   </update>
@@ -136,7 +168,10 @@
       client_id = #{clientId,jdbcType=VARCHAR},
       client_secret = #{clientSecret,jdbcType=VARCHAR},
       update_date = #{updateDate,jdbcType=TIMESTAMP},
-      vn_public_key = #{vnPublicKey,jdbcType=VARCHAR}
+      vn_public_key = #{vnPublicKey,jdbcType=VARCHAR},
+      vn_homechain_public_key = #{vnHomechainPublicKey,jdbcType=VARCHAR},
+      vn_homechain_account = #{vnHomechainAccount,jdbcType=VARCHAR},
+      vn_home_chain_name = #{vnHomeChainName,jdbcType=VARCHAR}
     where route_id = #{routeId,jdbcType=BIGINT}
   </update>
 </mapper>

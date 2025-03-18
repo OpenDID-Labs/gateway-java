@@ -34,6 +34,7 @@ public class OracleJobController {
 
     try {
 
+
       return Mono.just(MethodExecutor.privateMethod(bodyStr));
     }catch (JsonRpc2ExceptionObject e){
       throw e;

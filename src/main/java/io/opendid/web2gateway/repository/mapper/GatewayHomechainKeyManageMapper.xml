@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.GatewayHomechainKeyManageMapper">
+  <resultMap id="BaseResultMap" type="io.opendid.web2gateway.repository.model.GatewayHomechainKeyManage">
+    <id column="key_id" jdbcType="INTEGER" property="keyId" />
+    <result column="vn_code" jdbcType="VARCHAR" property="vnCode" />
+    <result column="wallet_public_key" jdbcType="VARCHAR" property="walletPublicKey" />
+    <result column="wallet_address" jdbcType="VARCHAR" property="walletAddress" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="key_code" jdbcType="VARCHAR" property="keyCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    key_id, vn_code, wallet_public_key, wallet_address, update_date, key_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from gateway_homechain_key_manage
+    where key_id = #{keyId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from gateway_homechain_key_manage
+    where key_id = #{keyId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.GatewayHomechainKeyManage">
+    insert into gateway_homechain_key_manage (key_id, vn_code, wallet_public_key, 
+      wallet_address, update_date, key_code
+      )
+    values (#{keyId,jdbcType=INTEGER}, #{vnCode,jdbcType=VARCHAR}, #{walletPublicKey,jdbcType=VARCHAR}, 
+      #{walletAddress,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{keyCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.GatewayHomechainKeyManage">
+    insert into gateway_homechain_key_manage
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="keyId != null">
+        key_id,
+      </if>
+      <if test="vnCode != null">
+        vn_code,
+      </if>
+      <if test="walletPublicKey != null">
+        wallet_public_key,
+      </if>
+      <if test="walletAddress != null">
+        wallet_address,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="keyCode != null">
+        key_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="keyId != null">
+        #{keyId,jdbcType=INTEGER},
+      </if>
+      <if test="vnCode != null">
+        #{vnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="walletPublicKey != null">
+        #{walletPublicKey,jdbcType=VARCHAR},
+      </if>
+      <if test="walletAddress != null">
+        #{walletAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="keyCode != null">
+        #{keyCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="io.opendid.web2gateway.repository.model.GatewayHomechainKeyManage">
+    update gateway_homechain_key_manage
+    <set>
+      <if test="vnCode != null">
+        vn_code = #{vnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="walletPublicKey != null">
+        wallet_public_key = #{walletPublicKey,jdbcType=VARCHAR},
+      </if>
+      <if test="walletAddress != null">
+        wallet_address = #{walletAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="keyCode != null">
+        key_code = #{keyCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where key_id = #{keyId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.GatewayHomechainKeyManage">
+    update gateway_homechain_key_manage
+    set vn_code = #{vnCode,jdbcType=VARCHAR},
+      wallet_public_key = #{walletPublicKey,jdbcType=VARCHAR},
+      wallet_address = #{walletAddress,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      key_code = #{keyCode,jdbcType=VARCHAR}
+    where key_id = #{keyId,jdbcType=INTEGER}
+  </update>
+</mapper>

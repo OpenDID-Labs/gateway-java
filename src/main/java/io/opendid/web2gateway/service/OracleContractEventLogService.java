@@ -1,5 +1,6 @@
 package io.opendid.web2gateway.service;
 
+import com.alibaba.fastjson.JSON;
 import io.opendid.web2gateway.common.enums.status.ProcessStatusEnum;
 import io.opendid.web2gateway.common.utils.DateUtils;
 import io.opendid.web2gateway.model.dto.oracle.ContractEventLogInsertDTO;
@@ -10,6 +11,8 @@ import io.opendid.web2gateway.repository.mapper.OracleMsgRecordMapper;
 import io.opendid.web2gateway.repository.model.OdOracleContractEventlog;
 import io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs;
 import io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,8 @@ import java.util.Date;
 
 @Service
 public class OracleContractEventLogService {
+
+  private final Logger logger = LoggerFactory.getLogger(OracleContractEventLogService.class);
 
   @Autowired
   private OdOracleContractEventlogMapper odOracleContractEventlogMapper;
@@ -47,6 +52,10 @@ public class OracleContractEventLogService {
     odOracleContractEventlog.setRequestAptosVersion(dto.getRequestAptosVersion());
     odOracleContractEventlog.setErrorMsg(dto.getErrorMsg());
     odOracleContractEventlog.setRequestBody(dto.getRequestBody());
+    odOracleContractEventlog.setTransactionBatchCode(dto.getTransactionBatchCode());
+    odOracleContractEventlog.setKeyCode(dto.getKeyCode());
+    odOracleContractEventlog.setClaimFee(dto.getClaimFee());
+    odOracleContractEventlog.setClaimStatus(dto.getClaimStatus());
 
     odOracleContractEventlogMapper.insertSelective(odOracleContractEventlog);
   }
@@ -61,11 +70,12 @@ public class OracleContractEventLogService {
     eventlog.setRequestId(updateEventLogDTO.getRequestId());
     eventlog.setProcessStatus(updateEventLogDTO.getProcessStatus());
     eventlog.setCallbackOracleHash(updateEventLogDTO.getCallbackOracleHash());
-    eventlog.setRequestAptosVersion(updateEventLogDTO.getRequestAptosVersion());
     eventlog.setResponseBody(updateEventLogDTO.getResponseBody());
     eventlog.setUpdateDate(now);
+    eventlog.setRequestOracleHash(updateEventLogDTO.getRequestTransactionHash());
 
-    odOracleContractEventlogMapper.updateByRequestIdAndHash(eventlog);
+    odOracleContractEventlogMapper.updateByRequestTransactionHash(eventlog);
+
 
     /*OracleMsgRecordWithBLOBs msgRecordWithBLOBs = new OracleMsgRecordWithBLOBs();
     msgRecordWithBLOBs.setRequestId(updateEventLogDTO.getRequestId());
@@ -119,6 +129,8 @@ public class OracleContractEventLogService {
 //      eventlog.setProcessStatus(ProcessStatusEnum.EXCEEDING.getCode());
 //      eventlog.setErrorMsg("Exceeding the number of queries");
 //    }
+
+    logger.info("OracleContractEventLogService updateExecuteCount params={}", JSON.toJSONString(eventlog));
 
     odOracleContractEventlogMapper.updateByPrimaryKeySelective(eventlog);
 

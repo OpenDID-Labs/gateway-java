@@ -7,10 +7,6 @@ public class GatewayKeyVault {
 
     private String servicePublicKey;
 
-    private String walletPublicKey;
-
-    private String walletAddress;
-
     private Date updateDate;
 
     private String adminJwt;
@@ -29,22 +25,6 @@ public class GatewayKeyVault {
 
     public void setServicePublicKey(String servicePublicKey) {
         this.servicePublicKey = servicePublicKey == null ? null : servicePublicKey.trim();
-    }
-
-    public String getWalletPublicKey() {
-        return walletPublicKey;
-    }
-
-    public void setWalletPublicKey(String walletPublicKey) {
-        this.walletPublicKey = walletPublicKey == null ? null : walletPublicKey.trim();
-    }
-
-    public String getWalletAddress() {
-        return walletAddress;
-    }
-
-    public void setWalletAddress(String walletAddress) {
-        this.walletAddress = walletAddress == null ? null : walletAddress.trim();
     }
 
     public Date getUpdateDate() {

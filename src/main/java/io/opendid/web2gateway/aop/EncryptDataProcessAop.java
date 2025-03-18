@@ -78,9 +78,10 @@ public class EncryptDataProcessAop {
     VnCallbackSignPayloadDTO signPayloadDTO = methodProcess.buildSignPayload(decryptData);
     // 3.Get event log info by requestId
     logger.info("EncryptDataProcess requestId={}",signPayloadDTO.getRequestId());
+//    OdOracleContractEventlog odOracleContractEventlog =
+//        odOracleContractEventlogMapper.selectByRequestId(signPayloadDTO.getRequestId());
     OdOracleContractEventlog odOracleContractEventlog =
-        odOracleContractEventlogMapper.selectByRequestId(signPayloadDTO.getRequestId());
-
+            odOracleContractEventlogMapper.selectByRequestOracleHash(signPayloadDTO.getOracleRequestTxHash());
     if (odOracleContractEventlog == null){
       // 3.1 Event log info not exist
       logger.info("EncryptDataProcess odOracleContractEventlog is null");

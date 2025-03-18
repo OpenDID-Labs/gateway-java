@@ -4,7 +4,7 @@ public class OracleRequestCancelMetaDataDTO {
 
   private String jobId;
 
-  private Long nonce;
+  private String vnCode;
 
   private String publicKey;
 
@@ -20,13 +20,6 @@ public class OracleRequestCancelMetaDataDTO {
     this.jobId = jobId;
   }
 
-  public Long getNonce() {
-    return nonce;
-  }
-
-  public void setNonce(Long nonce) {
-    this.nonce = nonce;
-  }
 
   public String getPublicKey() {
     return publicKey;
@@ -51,4 +44,12 @@ public class OracleRequestCancelMetaDataDTO {
   public void setRequestId(String requestId) {
     this.requestId = requestId;
   }
+
+    public String getVnCode() {
+        return vnCode;
+    }
+
+    public void setVnCode(String vnCode) {
+        this.vnCode = vnCode;
+    }
 }

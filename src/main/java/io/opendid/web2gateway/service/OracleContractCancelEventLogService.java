@@ -31,6 +31,12 @@ public class OracleContractCancelEventLogService {
   @Value("${oracle-cancel-result-task.interval-second}")
   private Integer intervalSecond;
 
+  @Value("${claim-task.interval-second}")
+  private Integer claimIntervalSecond;
+
+  public int updateByPrimaryKeySelective(OdOracleContractEventlogWithBLOBs contractEventlogWithBLOBs){
+    return odOracleContractEventlogMapper.updateByPrimaryKeySelective(contractEventlogWithBLOBs);
+  }
 
   public void updateCancelEventLogByRequestId(UpdateCancelEventLogDTO updateCancelEventLogDTO) {
     Date now = new Date();
@@ -66,6 +72,22 @@ public class OracleContractCancelEventLogService {
 //      eventlog.setCancelStatus(CancelStatusEnum.EXCEEDING.getCode());
 //      eventlog.setCancelErrorMsg("Exceeding the number of queries");
 //    }
+
+    odOracleContractEventlogMapper.updateByPrimaryKeySelective(eventlog);
+
+  }
+
+  public void updateClaimExecuteCount(Long logId, Integer executeCount) {
+
+    int nextCount = executeCount + 1;
+
+    long nextExecuteTime = (long) nextCount * claimIntervalSecond + DateUtils.getCurrentTimestamps();
+
+    OdOracleContractEventlogWithBLOBs eventlog = new OdOracleContractEventlogWithBLOBs();
+    eventlog.setLogId(logId);
+    eventlog.setUpdateDate(new Date());
+    eventlog.setClaimExecuteCount(nextCount);
+    eventlog.setClaimExecuteTime(nextExecuteTime);
 
     odOracleContractEventlogMapper.updateByPrimaryKeySelective(eventlog);
 

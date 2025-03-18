@@ -14,7 +14,7 @@ public class OracleRequestCancelRespDTO {
 
   private String requestId;
 
-  private String oracleRequestHash;
+  private String cancelOracleHash;
 
   public String getRequestId() {
     return requestId;
@@ -24,11 +24,12 @@ public class OracleRequestCancelRespDTO {
     this.requestId = requestId;
   }
 
-  public String getOracleRequestHash() {
-    return oracleRequestHash;
-  }
 
-  public void setOracleRequestHash(String oracleRequestHash) {
-    this.oracleRequestHash = oracleRequestHash;
-  }
+    public String getCancelOracleHash() {
+        return cancelOracleHash;
+    }
+
+    public void setCancelOracleHash(String cancelOracleHash) {
+        this.cancelOracleHash = cancelOracleHash;
+    }
 }

@@ -53,3 +53,15 @@ vn-mapping:
           platform: CIVIC-PASS
         - jobid: d54a7215ed444b558e431985a2b64bc6
           platform: LDID
+    - vncode: e8dd7859ac6045c2af673c855c317908
+      vnurl: http://127.0.0.1:8711
+      jobidmapping:
+        - jobid: 9330d9fc54ab48ada8373493b0ef9cf3
+          platform: REAL-DID
+        - jobid: 87e067aa13944a2496bb9cddf46a54a4
+          platform: REAL-DID
+    - vncode: 35c865ca87fa4eeb9bdc62751d652e53
+      vnurl: http://127.0.0.1:8711
+      jobidmapping:
+        - jobid: 9330d9fc54ab48ada8373493b0ef9cf3
+          platform: REAL-DID    

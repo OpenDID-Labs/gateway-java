@@ -1,6 +1,9 @@
 package io.opendid.web2gateway.repository.mapper;
 
+import io.opendid.web2gateway.model.dto.oracle.SelectJobIdMappingDTO;
 import io.opendid.web2gateway.repository.model.VngatewayJobidMapping;
+
+import java.util.List;
 
 public interface VngatewayJobidMappingMapper {
     int deleteByPrimaryKey(Long vnJobidMappingid);
@@ -15,7 +18,9 @@ public interface VngatewayJobidMappingMapper {
 
     int updateByPrimaryKey(VngatewayJobidMapping record);
 
-    VngatewayJobidMapping selectByJobId(String jobId);
+    VngatewayJobidMapping selectByJobIdVnCode(SelectJobIdMappingDTO selectJobIdMappingDTO);
+
+    List<VngatewayJobidMapping> selectByJobId(String jobId);
 
     int deleteAll();
 

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.ClaimRecordMapper">
+  <resultMap id="BaseResultMap" type="io.opendid.web2gateway.repository.model.ClaimRecord">
+    <id column="claim_record_id" jdbcType="BIGINT" property="claimRecordId" />
+    <result column="chain_name" jdbcType="VARCHAR" property="chainName" />
+    <result column="request_id" jdbcType="VARCHAR" property="requestId" />
+    <result column="claim_id" jdbcType="VARCHAR" property="claimId" />
+    <result column="issuer" jdbcType="VARCHAR" property="issuer" />
+    <result column="request_txn_hash" jdbcType="VARCHAR" property="requestTxnHash" />
+    <result column="request_data_hash" jdbcType="VARCHAR" property="requestDataHash" />
+    <result column="response_txn_hash" jdbcType="VARCHAR" property="responseTxnHash" />
+    <result column="response_data_hash" jdbcType="VARCHAR" property="responseDataHash" />
+    <result column="customize_hash" jdbcType="VARCHAR" property="customizeHash" />
+    <result column="id_system" jdbcType="VARCHAR" property="idSystem" />
+    <result column="issuance_date" jdbcType="VARCHAR" property="issuanceDate" />
+    <result column="expiration_date" jdbcType="VARCHAR" property="expirationDate" />
+    <result column="signature" jdbcType="VARCHAR" property="signature" />
+    <result column="transaction_hash" jdbcType="VARCHAR" property="transactionHash" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="io.opendid.web2gateway.repository.model.ClaimRecord">
+    <result column="contract_params" jdbcType="LONGVARCHAR" property="contractParams" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    claim_record_id, chain_name, request_id, claim_id, issuer, request_txn_hash, request_data_hash, 
+    response_txn_hash, response_data_hash, customize_hash, id_system, issuance_date, 
+    expiration_date, signature, transaction_hash, version, create_date, update_date
+  </sql>
+  <sql id="Blob_Column_List">
+    contract_params
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from claim_record
+    where claim_record_id = #{claimRecordId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from claim_record
+    where claim_record_id = #{claimRecordId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.ClaimRecord">
+    insert into claim_record (claim_record_id, chain_name, request_id, 
+      claim_id, issuer, request_txn_hash, 
+      request_data_hash, response_txn_hash, response_data_hash, 
+      customize_hash, id_system, issuance_date, 
+      expiration_date, signature, transaction_hash, 
+      version, create_date, update_date, 
+      contract_params)
+    values (#{claimRecordId,jdbcType=BIGINT}, #{chainName,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR}, 
+      #{claimId,jdbcType=VARCHAR}, #{issuer,jdbcType=VARCHAR}, #{requestTxnHash,jdbcType=VARCHAR}, 
+      #{requestDataHash,jdbcType=VARCHAR}, #{responseTxnHash,jdbcType=VARCHAR}, #{responseDataHash,jdbcType=VARCHAR}, 
+      #{customizeHash,jdbcType=VARCHAR}, #{idSystem,jdbcType=VARCHAR}, #{issuanceDate,jdbcType=VARCHAR}, 
+      #{expirationDate,jdbcType=VARCHAR}, #{signature,jdbcType=VARCHAR}, #{transactionHash,jdbcType=VARCHAR}, 
+      #{version,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{contractParams,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.ClaimRecord">
+    insert into claim_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="claimRecordId != null">
+        claim_record_id,
+      </if>
+      <if test="chainName != null">
+        chain_name,
+      </if>
+      <if test="requestId != null">
+        request_id,
+      </if>
+      <if test="claimId != null">
+        claim_id,
+      </if>
+      <if test="issuer != null">
+        issuer,
+      </if>
+      <if test="requestTxnHash != null">
+        request_txn_hash,
+      </if>
+      <if test="requestDataHash != null">
+        request_data_hash,
+      </if>
+      <if test="responseTxnHash != null">
+        response_txn_hash,
+      </if>
+      <if test="responseDataHash != null">
+        response_data_hash,
+      </if>
+      <if test="customizeHash != null">
+        customize_hash,
+      </if>
+      <if test="idSystem != null">
+        id_system,
+      </if>
+      <if test="issuanceDate != null">
+        issuance_date,
+      </if>
+      <if test="expirationDate != null">
+        expiration_date,
+      </if>
+      <if test="signature != null">
+        signature,
+      </if>
+      <if test="transactionHash != null">
+        transaction_hash,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="contractParams != null">
+        contract_params,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="claimRecordId != null">
+        #{claimRecordId,jdbcType=BIGINT},
+      </if>
+      <if test="chainName != null">
+        #{chainName,jdbcType=VARCHAR},
+      </if>
+      <if test="requestId != null">
+        #{requestId,jdbcType=VARCHAR},
+      </if>
+      <if test="claimId != null">
+        #{claimId,jdbcType=VARCHAR},
+      </if>
+      <if test="issuer != null">
+        #{issuer,jdbcType=VARCHAR},
+      </if>
+      <if test="requestTxnHash != null">
+        #{requestTxnHash,jdbcType=VARCHAR},
+      </if>
+      <if test="requestDataHash != null">
+        #{requestDataHash,jdbcType=VARCHAR},
+      </if>
+      <if test="responseTxnHash != null">
+        #{responseTxnHash,jdbcType=VARCHAR},
+      </if>
+      <if test="responseDataHash != null">
+        #{responseDataHash,jdbcType=VARCHAR},
+      </if>
+      <if test="customizeHash != null">
+        #{customizeHash,jdbcType=VARCHAR},
+      </if>
+      <if test="idSystem != null">
+        #{idSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="issuanceDate != null">
+        #{issuanceDate,jdbcType=VARCHAR},
+      </if>
+      <if test="expirationDate != null">
+        #{expirationDate,jdbcType=VARCHAR},
+      </if>
+      <if test="signature != null">
+        #{signature,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionHash != null">
+        #{transactionHash,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="contractParams != null">
+        #{contractParams,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="io.opendid.web2gateway.repository.model.ClaimRecord">
+    update claim_record
+    <set>
+      <if test="chainName != null">
+        chain_name = #{chainName,jdbcType=VARCHAR},
+      </if>
+      <if test="requestId != null">
+        request_id = #{requestId,jdbcType=VARCHAR},
+      </if>
+      <if test="claimId != null">
+        claim_id = #{claimId,jdbcType=VARCHAR},
+      </if>
+      <if test="issuer != null">
+        issuer = #{issuer,jdbcType=VARCHAR},
+      </if>
+      <if test="requestTxnHash != null">
+        request_txn_hash = #{requestTxnHash,jdbcType=VARCHAR},
+      </if>
+      <if test="requestDataHash != null">
+        request_data_hash = #{requestDataHash,jdbcType=VARCHAR},
+      </if>
+      <if test="responseTxnHash != null">
+        response_txn_hash = #{responseTxnHash,jdbcType=VARCHAR},
+      </if>
+      <if test="responseDataHash != null">
+        response_data_hash = #{responseDataHash,jdbcType=VARCHAR},
+      </if>
+      <if test="customizeHash != null">
+        customize_hash = #{customizeHash,jdbcType=VARCHAR},
+      </if>
+      <if test="idSystem != null">
+        id_system = #{idSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="issuanceDate != null">
+        issuance_date = #{issuanceDate,jdbcType=VARCHAR},
+      </if>
+      <if test="expirationDate != null">
+        expiration_date = #{expirationDate,jdbcType=VARCHAR},
+      </if>
+      <if test="signature != null">
+        signature = #{signature,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionHash != null">
+        transaction_hash = #{transactionHash,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="contractParams != null">
+        contract_params = #{contractParams,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where claim_record_id = #{claimRecordId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="io.opendid.web2gateway.repository.model.ClaimRecord">
+    update claim_record
+    set chain_name = #{chainName,jdbcType=VARCHAR},
+      request_id = #{requestId,jdbcType=VARCHAR},
+      claim_id = #{claimId,jdbcType=VARCHAR},
+      issuer = #{issuer,jdbcType=VARCHAR},
+      request_txn_hash = #{requestTxnHash,jdbcType=VARCHAR},
+      request_data_hash = #{requestDataHash,jdbcType=VARCHAR},
+      response_txn_hash = #{responseTxnHash,jdbcType=VARCHAR},
+      response_data_hash = #{responseDataHash,jdbcType=VARCHAR},
+      customize_hash = #{customizeHash,jdbcType=VARCHAR},
+      id_system = #{idSystem,jdbcType=VARCHAR},
+      issuance_date = #{issuanceDate,jdbcType=VARCHAR},
+      expiration_date = #{expirationDate,jdbcType=VARCHAR},
+      signature = #{signature,jdbcType=VARCHAR},
+      transaction_hash = #{transactionHash,jdbcType=VARCHAR},
+      version = #{version,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      contract_params = #{contractParams,jdbcType=LONGVARCHAR}
+    where claim_record_id = #{claimRecordId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.ClaimRecord">
+    update claim_record
+    set chain_name = #{chainName,jdbcType=VARCHAR},
+      request_id = #{requestId,jdbcType=VARCHAR},
+      claim_id = #{claimId,jdbcType=VARCHAR},
+      issuer = #{issuer,jdbcType=VARCHAR},
+      request_txn_hash = #{requestTxnHash,jdbcType=VARCHAR},
+      request_data_hash = #{requestDataHash,jdbcType=VARCHAR},
+      response_txn_hash = #{responseTxnHash,jdbcType=VARCHAR},
+      response_data_hash = #{responseDataHash,jdbcType=VARCHAR},
+      customize_hash = #{customizeHash,jdbcType=VARCHAR},
+      id_system = #{idSystem,jdbcType=VARCHAR},
+      issuance_date = #{issuanceDate,jdbcType=VARCHAR},
+      expiration_date = #{expirationDate,jdbcType=VARCHAR},
+      signature = #{signature,jdbcType=VARCHAR},
+      transaction_hash = #{transactionHash,jdbcType=VARCHAR},
+      version = #{version,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where claim_record_id = #{claimRecordId,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -13,6 +13,10 @@ public class OracleMsgRecord {
 
     private Date updateDate;
 
+    private String requestOracleHash;
+
+    private String keyCode;
+
     public Long getMsgId() {
         return msgId;
     }
@@ -51,5 +55,21 @@ public class OracleMsgRecord {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public String getRequestOracleHash() {
+        return requestOracleHash;
+    }
+
+    public void setRequestOracleHash(String requestOracleHash) {
+        this.requestOracleHash = requestOracleHash == null ? null : requestOracleHash.trim();
+    }
+
+    public String getKeyCode() {
+        return keyCode;
+    }
+
+    public void setKeyCode(String keyCode) {
+        this.keyCode = keyCode == null ? null : keyCode.trim();
     }
 }

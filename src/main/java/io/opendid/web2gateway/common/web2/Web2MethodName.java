@@ -9,6 +9,8 @@ public interface Web2MethodName {
 
   String ORACLE_GET_JOB_FEE="oracle_get_job_fee";
 
+  String ORACLE_GET_VN_INFO="oracle_get_vn_info";
+
   String ORACLE_GET_TRANSACTION="oracle_get_transaction";
 
   String ORACLE_REQUEST="oracle_request";
@@ -23,6 +25,10 @@ public interface Web2MethodName {
   String REQUEST_CANCEL="request_cancel";
 
   String ORACLE_GET_CANCEL_TRANSACTION="get_cancel_transaction";
+
+
+  String ORACLE_REQUEST_CLAIM_CALLBACK="request_claim_callback";
+
 
   String JWT_ROOT_UPDATE="jwt_root_update";
   String JWT_TENANT_CREATE="jwt_tenant_create";

@@ -126,6 +126,8 @@ public class OracleCancelHandler {
     VnClientJobIdDTO vnClientJobIdDTO = new VnClientJobIdDTO();
     vnClientJobIdDTO.setJobId(pendingOutDTO.getJobId());
     vnClientJobIdDTO.setRequestBody(jsonRpc2Request);
+    vnClientJobIdDTO.setVnCode(pendingOutDTO.getVnCode());
+
     return vnClientJobIdDTO;
   }
 

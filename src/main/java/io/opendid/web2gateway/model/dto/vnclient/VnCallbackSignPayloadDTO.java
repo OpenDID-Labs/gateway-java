@@ -8,6 +8,8 @@ public class VnCallbackSignPayloadDTO {
 
     private String requestId;
 
+    private String oracleRequestTxHash;
+
     private String vnSignData;
 
     private LinkedHashMap<Object, Object> methodJsonRpc2Params;
@@ -42,5 +44,13 @@ public class VnCallbackSignPayloadDTO {
 
     public void setMethodJsonRpc2Params(LinkedHashMap<Object, Object> methodJsonRpc2Params) {
         this.methodJsonRpc2Params = methodJsonRpc2Params;
+    }
+
+    public String getOracleRequestTxHash() {
+        return oracleRequestTxHash;
+    }
+
+    public void setOracleRequestTxHash(String oracleRequestTxHash) {
+        this.oracleRequestTxHash = oracleRequestTxHash;
     }
 }

@@ -4,6 +4,7 @@ package io.opendid.web2gateway.common.enums.status;
 //status  1=pending   5=processed  10=error
 public enum CancelStatusEnum {
 
+  NOT_CANCELLED(0),
   PENDING(1),
   SUCCESSFULLY(5),
   FAIL(15),

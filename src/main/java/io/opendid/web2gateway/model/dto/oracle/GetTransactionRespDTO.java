@@ -1,8 +1,5 @@
 package io.opendid.web2gateway.model.dto.oracle;
 
-import java.util.Date;
-import javax.xml.crypto.Data;
-
 /**
 *  GetTransactionRespDTO
 * @author Dong-Jianguo
@@ -21,18 +18,22 @@ public class GetTransactionRespDTO {
 
   private Integer status;
 
-  private String oracleRequestHash;
+  private String oracleRequestTxHash;
 
   private String requestDate;
 
+  private Integer claimStatus;
+
+  private Object claimBody;
+
   private Object responseBody;
 
-  public String getOracleRequestHash() {
-    return oracleRequestHash;
+  public String getOracleRequestTxHash() {
+    return oracleRequestTxHash;
   }
 
-  public void setOracleRequestHash(String oracleRequestHash) {
-    this.oracleRequestHash = oracleRequestHash;
+  public void setOracleRequestTxHash(String oracleRequestTxHash) {
+    this.oracleRequestTxHash = oracleRequestTxHash;
   }
 
   public String getRequestDate() {
@@ -75,6 +76,18 @@ public class GetTransactionRespDTO {
     this.status = status;
   }
 
+
+
+
+
+  public Integer getClaimStatus() {
+    return claimStatus;
+  }
+
+  public void setClaimStatus(Integer claimStatus) {
+    this.claimStatus = claimStatus;
+  }
+
   public Object getResponseBody() {
     return responseBody;
   }
@@ -82,4 +95,12 @@ public class GetTransactionRespDTO {
   public void setResponseBody(Object responseBody) {
     this.responseBody = responseBody;
   }
+
+    public Object getClaimBody() {
+        return claimBody;
+    }
+
+    public void setClaimBody(Object claimBody) {
+        this.claimBody = claimBody;
+    }
 }

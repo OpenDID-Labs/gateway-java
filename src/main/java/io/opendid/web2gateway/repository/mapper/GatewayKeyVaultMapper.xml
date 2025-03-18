@@ -4,13 +4,11 @@
   <resultMap id="BaseResultMap" type="io.opendid.web2gateway.repository.model.GatewayKeyVault">
     <id column="key_id" jdbcType="INTEGER" property="keyId" />
     <result column="service_public_key" jdbcType="VARCHAR" property="servicePublicKey" />
-    <result column="wallet_public_key" jdbcType="VARCHAR" property="walletPublicKey" />
-    <result column="wallet_address" jdbcType="VARCHAR" property="walletAddress" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="admin_jwt" jdbcType="VARCHAR" property="adminJwt" />
   </resultMap>
   <sql id="Base_Column_List">
-    key_id, service_public_key, wallet_public_key, wallet_address, update_date, admin_jwt
+    key_id, service_public_key, update_date, admin_jwt
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -23,12 +21,10 @@
     where key_id = #{keyId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.GatewayKeyVault">
-    insert into gateway_key_vault (key_id, service_public_key, wallet_public_key, 
-      wallet_address, update_date, admin_jwt
-      )
-    values (#{keyId,jdbcType=INTEGER}, #{servicePublicKey,jdbcType=VARCHAR}, #{walletPublicKey,jdbcType=VARCHAR}, 
-      #{walletAddress,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{adminJwt,jdbcType=VARCHAR}
-      )
+    insert into gateway_key_vault (key_id, service_public_key, update_date, 
+      admin_jwt)
+    values (#{keyId,jdbcType=INTEGER}, #{servicePublicKey,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{adminJwt,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.GatewayKeyVault">
     insert into gateway_key_vault
@@ -38,12 +34,6 @@
       </if>
       <if test="servicePublicKey != null">
         service_public_key,
-      </if>
-      <if test="walletPublicKey != null">
-        wallet_public_key,
-      </if>
-      <if test="walletAddress != null">
-        wallet_address,
       </if>
       <if test="updateDate != null">
         update_date,
@@ -59,12 +49,6 @@
       <if test="servicePublicKey != null">
         #{servicePublicKey,jdbcType=VARCHAR},
       </if>
-      <if test="walletPublicKey != null">
-        #{walletPublicKey,jdbcType=VARCHAR},
-      </if>
-      <if test="walletAddress != null">
-        #{walletAddress,jdbcType=VARCHAR},
-      </if>
       <if test="updateDate != null">
         #{updateDate,jdbcType=TIMESTAMP},
       </if>
@@ -79,12 +63,6 @@
       <if test="servicePublicKey != null">
         service_public_key = #{servicePublicKey,jdbcType=VARCHAR},
       </if>
-      <if test="walletPublicKey != null">
-        wallet_public_key = #{walletPublicKey,jdbcType=VARCHAR},
-      </if>
-      <if test="walletAddress != null">
-        wallet_address = #{walletAddress,jdbcType=VARCHAR},
-      </if>
       <if test="updateDate != null">
         update_date = #{updateDate,jdbcType=TIMESTAMP},
       </if>
@@ -97,8 +75,6 @@
   <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.GatewayKeyVault">
     update gateway_key_vault
     set service_public_key = #{servicePublicKey,jdbcType=VARCHAR},
-      wallet_public_key = #{walletPublicKey,jdbcType=VARCHAR},
-      wallet_address = #{walletAddress,jdbcType=VARCHAR},
       update_date = #{updateDate,jdbcType=TIMESTAMP},
       admin_jwt = #{adminJwt,jdbcType=VARCHAR}
     where key_id = #{keyId,jdbcType=INTEGER}
