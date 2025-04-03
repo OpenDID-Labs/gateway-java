@@ -57,6 +57,16 @@ public class OdOracleContractEventlog {
 
     private Long claimFee;
 
+    private String subId;
+
+    private String consumerAddress;
+
+    private Integer coinType;
+
+    private Integer paymentType;
+
+    private String userPayFee;
+
     public Long getLogId() {
         return logId;
     }
@@ -271,5 +281,45 @@ public class OdOracleContractEventlog {
 
     public void setClaimFee(Long claimFee) {
         this.claimFee = claimFee;
+    }
+
+    public String getSubId() {
+        return subId;
+    }
+
+    public void setSubId(String subId) {
+        this.subId = subId == null ? null : subId.trim();
+    }
+
+    public String getConsumerAddress() {
+        return consumerAddress;
+    }
+
+    public void setConsumerAddress(String consumerAddress) {
+        this.consumerAddress = consumerAddress == null ? null : consumerAddress.trim();
+    }
+
+    public Integer getCoinType() {
+        return coinType;
+    }
+
+    public void setCoinType(Integer coinType) {
+        this.coinType = coinType;
+    }
+
+    public Integer getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(Integer paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public String getUserPayFee() {
+        return userPayFee;
+    }
+
+    public void setUserPayFee(String userPayFee) {
+        this.userPayFee = userPayFee == null ? null : userPayFee.trim();
     }
 }

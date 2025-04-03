@@ -1,15 +1,12 @@
 package io.opendid.web2gateway.tasks.claimtask;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.opendid.web2gateway.common.enums.request.MethodEnum;
-import io.opendid.web2gateway.common.enums.status.CancelStatusEnum;
 import io.opendid.web2gateway.common.enums.status.ClaimStatusEnum;
 import io.opendid.web2gateway.common.traceid.TraceIdPutUtil;
 import io.opendid.web2gateway.common.utils.DateUtils;
 import io.opendid.web2gateway.common.vnclient.VnGatewayClient;
-import io.opendid.web2gateway.model.dto.oracle.CancelEventLogPendingOutDTO;
 import io.opendid.web2gateway.model.dto.oracle.ClaimEventLogPendingInDTO;
 import io.opendid.web2gateway.model.dto.oracle.ClaimEventLogPendingOutDTO;
 import io.opendid.web2gateway.model.dto.vnclient.VnClientJobIdDTO;
@@ -59,7 +56,7 @@ public class ClaimHandler {
         TraceIdPutUtil.newPutTraceId();
         logger.info("process cancel pending data: {}", JSON.toJSONString(pendingOutDTO));
 
-        JsonRpc2Response request = vnGatewayClient.request(requestParameters(pendingOutDTO));
+        JsonRpc2Response request = vnGatewayClient.requestJobSend(requestParameters(pendingOutDTO));
 
         if (request != null) {
 

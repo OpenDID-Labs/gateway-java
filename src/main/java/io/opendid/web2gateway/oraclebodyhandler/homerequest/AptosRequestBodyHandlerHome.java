@@ -52,6 +52,7 @@ public class AptosRequestBodyHandlerHome implements HomeChainRequestBodyInterfac
         warpAptosReqBodyRequestDTO.setData(oracleWrapRequestBodyDTO.getData());
         warpAptosReqBodyRequestDTO.setVnCode(oracleWrapRequestBodyDTO.getVnCode());
         warpAptosReqBodyRequestDTO.setGenerateClaim(oracleWrapRequestBodyDTO.getGenerateClaim());
+        warpAptosReqBodyRequestDTO.setSubId(oracleWrapRequestBodyDTO.getSubId());
 
         logger.info("MethodOracleRequest process warp RequestBody prams={}",
                 JSON.toJSONString(warpAptosReqBodyRequestDTO));
@@ -117,7 +118,7 @@ public class AptosRequestBodyHandlerHome implements HomeChainRequestBodyInterfac
         );
         vnClientJobIdDTO.setRequestBody(jsonRpc2Request);
         vnClientJobIdDTO.setVnCode(metaData.getVnCode());
-        JsonRpc2Response respResult = vnGatewayClient.request(vnClientJobIdDTO);
+        JsonRpc2Response respResult = vnGatewayClient.requestJobSend(vnClientJobIdDTO);
 
         return respResult;
     }

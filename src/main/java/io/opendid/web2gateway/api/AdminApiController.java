@@ -4,10 +4,9 @@ import io.opendid.web2gateway.common.codes.JsonRpc2MessageCodeEnum;
 import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ExceptionObject;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
-import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2UnauthorizedRequestException;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Response;
 import io.opendid.web2gateway.oracleweb2process.MethodExecutor;
-import io.opendid.web2gateway.security.checkaspect.TenantJwtTokenCheck;
+import io.opendid.web2gateway.security.checkaspect.PrivateApiSecurityCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -28,7 +27,7 @@ public class AdminApiController {
 
 
   @PostMapping("v1/admin")
-  @TenantJwtTokenCheck
+  @PrivateApiSecurityCheck
   public Mono<JsonRpc2Response> oracleAdmin(
           ServerWebExchange exchange,
           @RequestBody String bodyStr) throws Exception {

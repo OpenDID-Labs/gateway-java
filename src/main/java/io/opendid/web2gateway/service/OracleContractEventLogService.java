@@ -1,6 +1,7 @@
 package io.opendid.web2gateway.service;
 
 import com.alibaba.fastjson.JSON;
+import io.opendid.web2gateway.common.enums.status.PaymentTypeEnum;
 import io.opendid.web2gateway.common.enums.status.ProcessStatusEnum;
 import io.opendid.web2gateway.common.utils.DateUtils;
 import io.opendid.web2gateway.model.dto.oracle.ContractEventLogInsertDTO;
@@ -11,6 +12,7 @@ import io.opendid.web2gateway.repository.mapper.OracleMsgRecordMapper;
 import io.opendid.web2gateway.repository.model.OdOracleContractEventlog;
 import io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs;
 import io.opendid.web2gateway.repository.model.OracleMsgRecordWithBLOBs;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,10 @@ public class OracleContractEventLogService {
   private Integer intervalSecond;
 
 
+  public OdOracleContractEventlog selectByRequestId(String requestId){
+    return odOracleContractEventlogMapper.selectByRequestId(requestId);
+  }
+
   public void insertContractEventLog(ContractEventLogInsertDTO dto){
 
     OdOracleContractEventlogWithBLOBs odOracleContractEventlog = new OdOracleContractEventlogWithBLOBs();
@@ -56,6 +62,13 @@ public class OracleContractEventLogService {
     odOracleContractEventlog.setKeyCode(dto.getKeyCode());
     odOracleContractEventlog.setClaimFee(dto.getClaimFee());
     odOracleContractEventlog.setClaimStatus(dto.getClaimStatus());
+    odOracleContractEventlog.setSubId(dto.getSubId());
+    if (StringUtils.isNotBlank(dto.getSubId())){
+      odOracleContractEventlog.setPaymentType(PaymentTypeEnum.PAYMENT_TYPE_PRE.getCode());
+    }else {
+      odOracleContractEventlog.setPaymentType(PaymentTypeEnum.PAYMENT_TYPE_REAL_TIME.getCode());
+    }
+    odOracleContractEventlog.setConsumerAddress(dto.getConsumerAddress());
 
     odOracleContractEventlogMapper.insertSelective(odOracleContractEventlog);
   }
@@ -73,6 +86,8 @@ public class OracleContractEventLogService {
     eventlog.setResponseBody(updateEventLogDTO.getResponseBody());
     eventlog.setUpdateDate(now);
     eventlog.setRequestOracleHash(updateEventLogDTO.getRequestTransactionHash());
+    eventlog.setUserPayFee(updateEventLogDTO.getUserPayFee());
+    eventlog.setCoinType(updateEventLogDTO.getCoinType());
 
     odOracleContractEventlogMapper.updateByRequestTransactionHash(eventlog);
 

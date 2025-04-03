@@ -33,7 +33,7 @@ public class HomeWrapCancelBodyClient {
         vnClientJobIdDTO.setRequestBody(oracleWrapRequestBody);
         vnClientJobIdDTO.setVnCode(requestDTO.getVnCode());
 
-        JsonRpc2Response request = vnGatewayClient.request(vnClientJobIdDTO);
+        JsonRpc2Response request = vnGatewayClient.requestJobSend(vnClientJobIdDTO);
 
         return request;
 

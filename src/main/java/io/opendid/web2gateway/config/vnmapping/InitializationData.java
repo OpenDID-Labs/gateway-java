@@ -1,8 +1,9 @@
 package io.opendid.web2gateway.config.vnmapping;
 
 import com.alibaba.fastjson.JSON;
+import io.opendid.web2gateway.common.catches.ChainSignKeyVaultCache;
 import io.opendid.web2gateway.common.utils.ECDSAUtils;
-import io.opendid.web2gateway.common.utils.GatewayKeyVaultUtil;
+import io.opendid.web2gateway.common.catches.*;
 import io.opendid.web2gateway.model.dto.chainkey.ChainKeyDTO;
 import io.opendid.web2gateway.oraclebodyhandler.factory.HomeChainRequestBodyFactory;
 import io.opendid.web2gateway.oraclebodyhandler.interfaces.HomeChainRequestBodyInterface;
@@ -43,6 +44,8 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
   private GatewayKeyVaultService gatewayKeyVaultService;
   @Autowired
   private HomeChainKeyManageService homeChainKeyManageService;
+  @Autowired
+  private SubIdCacheService subIdCacheService;
 
   @Autowired
   public JWTKeyLoader jwtKeyLoader;
@@ -60,6 +63,8 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
     initializationGatewayPublicKey();
 
     initializationRootJWTToken();
+
+    initializationSubIdInfo();
   }
 
   private void initializationRootJWTToken() {
@@ -110,17 +115,19 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
 //            generatePubKeyAndAddrDTO.getPrivateKey());
 
         ChainKeyDTO chainKeyDTO = new ChainKeyDTO();
+        chainKeyDTO.setWalletAddress(generatePubKeyAndAddrDTO.getWalletAddress());
         chainKeyDTO.setVnCode(generatePubKeyAndAddrDTO.getVnCode());
         chainKeyDTO.setKeyCode(generatePubKeyAndAddrDTO.getPrivateKeyCode());
         chainKeyDTO.setPrivateKey(generatePubKeyAndAddrDTO.getPrivateKey());
-        GatewayKeyVaultUtil.putChainValueByKeyCode(chainKeyDTO);
-        GatewayKeyVaultUtil.putChainValueByVnCode(chainKeyDTO);
-
+        chainKeyDTO.setPublicKey(generatePubKeyAndAddrDTO.getPublicKey());
+        ChainSignKeyVaultCache.putChainValueByKeyCode(chainKeyDTO);
+        ChainSignKeyVaultCache.putChainValueByVnCode(chainKeyDTO);
+        ChainSignKeyVaultCache.putChainValueByWalletAddress(chainKeyDTO);
 
         homeChainKeyManageService.insertHomeChainKey(gatewayHomechainKeyManage);
       }
 
-      GatewayKeyVaultUtil.putServiceValue(GatewayKeyVaultUtil.servicePublicKey,servicePubKey);
+      ServiceKeyVaultCache.putServiceValue(ServiceKeyVaultCache.servicePublicKey,servicePubKey);
 
     } catch (Exception exception) {
       logger.error("GeneratePublicKey error:",exception);
@@ -191,6 +198,10 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
     logger.info("VN Route SAVE: " + JSON.toJSONString(vngatewayRouteInfo,true));
 
 
+  }
+
+  private void  initializationSubIdInfo(){
+    subIdCacheService.subIdToCache();
   }
 
 }

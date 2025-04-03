@@ -1,0 +1,2 @@
+alter table subscription_consumer add column consumer_status int default 1  comment 'consumer status:0=unbound 1=binding';
+alter table subscription_consumer add column last_tx_hash varchar(200)  comment '最后的交易hash';

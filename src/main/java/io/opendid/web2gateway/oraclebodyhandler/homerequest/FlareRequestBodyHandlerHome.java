@@ -3,7 +3,6 @@ package io.opendid.web2gateway.oraclebodyhandler.homerequest;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.opendid.web2gateway.common.homechain.HomeChainName;
-import io.opendid.web2gateway.common.utils.AptosUtils;
 import io.opendid.web2gateway.common.utils.ECDSAUtils;
 import io.opendid.web2gateway.common.vnclient.VnGatewayClient;
 import io.opendid.web2gateway.config.WalletPrivateKeyConfig;
@@ -26,7 +25,6 @@ import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.utils.Numeric;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -57,6 +55,7 @@ public class FlareRequestBodyHandlerHome implements HomeChainRequestBodyInterfac
     warpAptosReqBodyRequestDTO.setData(oracleWrapRequestBodyDTO.getData());
     warpAptosReqBodyRequestDTO.setVnCode(oracleWrapRequestBodyDTO.getVnCode());
     warpAptosReqBodyRequestDTO.setGenerateClaim(oracleWrapRequestBodyDTO.getGenerateClaim());
+    warpAptosReqBodyRequestDTO.setSubId(oracleWrapRequestBodyDTO.getSubId());
 
     logger.info("FlareRequestBodyHandlerHome MethodOracleRequest process warp RequestBody prams={}",
         JSON.toJSONString(warpAptosReqBodyRequestDTO));
@@ -132,7 +131,7 @@ public class FlareRequestBodyHandlerHome implements HomeChainRequestBodyInterfac
     );
     vnClientJobIdDTO.setRequestBody(jsonRpc2Request);
     vnClientJobIdDTO.setVnCode(metaData.getVnCode());
-    JsonRpc2Response respResult = vnGatewayClient.request(vnClientJobIdDTO);
+    JsonRpc2Response respResult = vnGatewayClient.requestJobSend(vnClientJobIdDTO);
 
     return respResult;
   }

@@ -11,7 +11,7 @@ public class HomeChainRequestCancelBodyFactory {
   ){
 
     HomeChainRequestCancelBodyInterfaceV2 bean = SpringContextUtil.getBean(
-            HomeChainName.APTOS + HomeChainRequestCancelBodyInterfaceV2.BEAN_SUFFIX
+            HomeChainType.getHomeChainName()+ HomeChainRequestCancelBodyInterfaceV2.BEAN_SUFFIX
         , HomeChainRequestCancelBodyInterfaceV2.class);
     return bean;
 

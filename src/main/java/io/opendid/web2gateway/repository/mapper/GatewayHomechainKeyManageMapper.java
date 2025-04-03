@@ -22,4 +22,6 @@ public interface GatewayHomechainKeyManageMapper {
     GatewayHomechainKeyManage selectByVnCode(String vnCode);
 
     List<GatewayHomechainKeyManage> selectAll();
+
+    GatewayHomechainKeyManage selectByWalletAddress(String walletAddress);
 }

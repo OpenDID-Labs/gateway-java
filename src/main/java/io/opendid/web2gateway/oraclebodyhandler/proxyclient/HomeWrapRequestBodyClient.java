@@ -35,11 +35,12 @@ public class HomeWrapRequestBodyClient {
         linkedHashMap.put("nonce",requestDTO.getNonce());
         linkedHashMap.put("data",requestDTO.getData());
         linkedHashMap.put("generateClaim",requestDTO.getGenerateClaim());
+        linkedHashMap.put("subId",requestDTO.getSubId());
         JsonRpc2Request oracleWrapRequestBody = new JsonRpc2Request(1L, "oracle_wrap_request_body", linkedHashMap, "");
         vnClientJobIdDTO.setRequestBody(oracleWrapRequestBody);
         vnClientJobIdDTO.setVnCode(requestDTO.getVnCode());
 
-        JsonRpc2Response request = vnGatewayClient.request(vnClientJobIdDTO);
+        JsonRpc2Response request = vnGatewayClient.requestJobSend(vnClientJobIdDTO);
         if (request == null){
             logger.error("WarpRequestBodyService request vn gateway return null");
             throw new JsonRpc2ServerErrorException(

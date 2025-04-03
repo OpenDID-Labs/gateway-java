@@ -1,24 +1,20 @@
 package io.opendid.web2gateway.oracleweb2process.method;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import io.opendid.web2gateway.common.web2.Web2MethodName;
 import io.opendid.web2gateway.model.dto.oracle.aptos.GetVnInfoRespDTO;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
 import io.opendid.web2gateway.repository.model.VngatewayRouteInfo;
-import io.opendid.web2gateway.security.checkaspect.MethodPrivate;
+import io.opendid.web2gateway.security.checkaspect.MethodOracle;
 import io.opendid.web2gateway.service.VngatewayRouteInfoService;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component(Web2MethodName.ORACLE_GET_VN_INFO + Web2Method.BEAN_SUFFIX)
-@MethodPrivate
+@MethodOracle
 public class MethodOracleGetVnInfo implements Web2Method {
 
   @Autowired

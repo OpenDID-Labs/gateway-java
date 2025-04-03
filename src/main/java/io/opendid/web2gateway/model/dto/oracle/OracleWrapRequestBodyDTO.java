@@ -1,6 +1,9 @@
 package io.opendid.web2gateway.model.dto.oracle;
 
 public class OracleWrapRequestBodyDTO {
+
+    private String subId;
+
     private String jobId;
 
     private String publicKey;
@@ -11,6 +14,13 @@ public class OracleWrapRequestBodyDTO {
 
     private Boolean generateClaim;
 
+    public String getSubId() {
+        return subId;
+    }
+
+    public void setSubId(String subId) {
+        this.subId = subId;
+    }
 
     public String getJobId() {
         return jobId;

@@ -10,8 +10,27 @@ public class UpdateEventLogDTO {
 
   private String callbackOracleHash;
 
-
   private String requestTransactionHash;
+
+  private String userPayFee;
+
+  private Integer coinType;
+
+  public Integer getCoinType() {
+    return coinType;
+  }
+
+  public void setCoinType(Integer coinType) {
+    this.coinType = coinType;
+  }
+
+  public String getUserPayFee() {
+    return userPayFee;
+  }
+
+  public void setUserPayFee(String userPayFee) {
+    this.userPayFee = userPayFee;
+  }
 
   public String getRequestId() {
     return requestId;

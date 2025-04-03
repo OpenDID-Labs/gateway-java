@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.SubscriptionTransferTokenRecordMapper">
+  <resultMap id="BaseResultMap" type="io.opendid.web2gateway.repository.model.SubscriptionTransferTokenRecord">
+    <id column="transfer_id" jdbcType="BIGINT" property="transferId" />
+    <result column="sub_id" jdbcType="VARCHAR" property="subId" />
+    <result column="from_address" jdbcType="VARCHAR" property="fromAddress" />
+    <result column="to_address" jdbcType="VARCHAR" property="toAddress" />
+    <result column="token_amounts" jdbcType="DECIMAL" property="tokenAmounts" />
+    <result column="latest_balance" jdbcType="DECIMAL" property="latestBalance" />
+    <result column="old_balance" jdbcType="DECIMAL" property="oldBalance" />
+    <result column="request_vn_code" jdbcType="VARCHAR" property="requestVnCode" />
+    <result column="sign_address" jdbcType="VARCHAR" property="signAddress" />
+    <result column="sign_key_code" jdbcType="VARCHAR" property="signKeyCode" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="transaction_hash" jdbcType="VARCHAR" property="transactionHash" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    transfer_id, sub_id, from_address, to_address, token_amounts, latest_balance, old_balance, 
+    request_vn_code, sign_address, sign_key_code, create_date, update_date, transaction_hash
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from subscription_transfer_token_record
+    where transfer_id = #{transferId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from subscription_transfer_token_record
+    where transfer_id = #{transferId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.SubscriptionTransferTokenRecord">
+    insert into subscription_transfer_token_record (transfer_id, sub_id, from_address, 
+      to_address, token_amounts, latest_balance, 
+      old_balance, request_vn_code, sign_address, 
+      sign_key_code, create_date, update_date, 
+      transaction_hash)
+    values (#{transferId,jdbcType=BIGINT}, #{subId,jdbcType=VARCHAR}, #{fromAddress,jdbcType=VARCHAR}, 
+      #{toAddress,jdbcType=VARCHAR}, #{tokenAmounts,jdbcType=DECIMAL}, #{latestBalance,jdbcType=DECIMAL}, 
+      #{oldBalance,jdbcType=DECIMAL}, #{requestVnCode,jdbcType=VARCHAR}, #{signAddress,jdbcType=VARCHAR}, 
+      #{signKeyCode,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{transactionHash,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.SubscriptionTransferTokenRecord">
+    insert into subscription_transfer_token_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="transferId != null">
+        transfer_id,
+      </if>
+      <if test="subId != null">
+        sub_id,
+      </if>
+      <if test="fromAddress != null">
+        from_address,
+      </if>
+      <if test="toAddress != null">
+        to_address,
+      </if>
+      <if test="tokenAmounts != null">
+        token_amounts,
+      </if>
+      <if test="latestBalance != null">
+        latest_balance,
+      </if>
+      <if test="oldBalance != null">
+        old_balance,
+      </if>
+      <if test="requestVnCode != null">
+        request_vn_code,
+      </if>
+      <if test="signAddress != null">
+        sign_address,
+      </if>
+      <if test="signKeyCode != null">
+        sign_key_code,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="transactionHash != null">
+        transaction_hash,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="transferId != null">
+        #{transferId,jdbcType=BIGINT},
+      </if>
+      <if test="subId != null">
+        #{subId,jdbcType=VARCHAR},
+      </if>
+      <if test="fromAddress != null">
+        #{fromAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="toAddress != null">
+        #{toAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="tokenAmounts != null">
+        #{tokenAmounts,jdbcType=DECIMAL},
+      </if>
+      <if test="latestBalance != null">
+        #{latestBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="oldBalance != null">
+        #{oldBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="requestVnCode != null">
+        #{requestVnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="signAddress != null">
+        #{signAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="signKeyCode != null">
+        #{signKeyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="transactionHash != null">
+        #{transactionHash,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="io.opendid.web2gateway.repository.model.SubscriptionTransferTokenRecord">
+    update subscription_transfer_token_record
+    <set>
+      <if test="subId != null">
+        sub_id = #{subId,jdbcType=VARCHAR},
+      </if>
+      <if test="fromAddress != null">
+        from_address = #{fromAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="toAddress != null">
+        to_address = #{toAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="tokenAmounts != null">
+        token_amounts = #{tokenAmounts,jdbcType=DECIMAL},
+      </if>
+      <if test="latestBalance != null">
+        latest_balance = #{latestBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="oldBalance != null">
+        old_balance = #{oldBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="requestVnCode != null">
+        request_vn_code = #{requestVnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="signAddress != null">
+        sign_address = #{signAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="signKeyCode != null">
+        sign_key_code = #{signKeyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="transactionHash != null">
+        transaction_hash = #{transactionHash,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where transfer_id = #{transferId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.SubscriptionTransferTokenRecord">
+    update subscription_transfer_token_record
+    set sub_id = #{subId,jdbcType=VARCHAR},
+      from_address = #{fromAddress,jdbcType=VARCHAR},
+      to_address = #{toAddress,jdbcType=VARCHAR},
+      token_amounts = #{tokenAmounts,jdbcType=DECIMAL},
+      latest_balance = #{latestBalance,jdbcType=DECIMAL},
+      old_balance = #{oldBalance,jdbcType=DECIMAL},
+      request_vn_code = #{requestVnCode,jdbcType=VARCHAR},
+      sign_address = #{signAddress,jdbcType=VARCHAR},
+      sign_key_code = #{signKeyCode,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      transaction_hash = #{transactionHash,jdbcType=VARCHAR}
+    where transfer_id = #{transferId,jdbcType=BIGINT}
+  </update>
+</mapper>

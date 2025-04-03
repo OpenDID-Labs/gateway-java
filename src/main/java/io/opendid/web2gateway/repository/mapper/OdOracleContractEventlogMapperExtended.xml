@@ -215,10 +215,6 @@
       <if test="processStatus != null">
         process_status = #{processStatus,jdbcType=INTEGER},
       </if>
-
-
-
-
       <if test="requestId != null">
         request_id = #{requestId,jdbcType=VARCHAR},
       </if>
@@ -263,6 +259,12 @@
       </if>
       <if test="cancelResponseBody != null">
         cancel_response_body = #{cancelResponseBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="userPayFee != null">
+        user_pay_fee = #{userPayFee,jdbcType=VARCHAR},
+      </if>
+      <if test="coinType != null">
+        coin_type = #{coinType,jdbcType=INTEGER},
       </if>
     </set>
     where request_oracle_hash = #{requestOracleHash,jdbcType=VARCHAR}

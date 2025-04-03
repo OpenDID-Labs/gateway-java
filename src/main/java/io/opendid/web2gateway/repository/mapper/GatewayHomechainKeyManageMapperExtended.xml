@@ -19,4 +19,11 @@
     from gateway_homechain_key_manage
   </select>
 
+  <select id="selectByWalletAddress" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from gateway_homechain_key_manage
+    where wallet_address = #{walletAddress}
+  </select>
+
 </mapper>

@@ -4,10 +4,9 @@ import io.opendid.web2gateway.common.codes.JsonRpc2MessageCodeEnum;
 import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ExceptionObject;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
-import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2UnauthorizedRequestException;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Response;
 import io.opendid.web2gateway.oracleweb2process.MethodExecutor;
-import io.opendid.web2gateway.security.checkaspect.TenantJwtTokenCheck;
+import io.opendid.web2gateway.security.checkaspect.PrivateApiSecurityCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -27,7 +26,7 @@ public class OracleJobController {
 
 
   @PostMapping("send")
-  @TenantJwtTokenCheck
+  @PrivateApiSecurityCheck
   public Mono<JsonRpc2Response> oracleJobWeb2Api(
       ServerWebExchange exchange,
       @RequestBody String bodyStr) throws Exception {
@@ -35,7 +34,7 @@ public class OracleJobController {
     try {
 
 
-      return Mono.just(MethodExecutor.privateMethod(bodyStr));
+      return Mono.just(MethodExecutor.oracleMethod(bodyStr));
     }catch (JsonRpc2ExceptionObject e){
       throw e;
     } catch (Exception ex){

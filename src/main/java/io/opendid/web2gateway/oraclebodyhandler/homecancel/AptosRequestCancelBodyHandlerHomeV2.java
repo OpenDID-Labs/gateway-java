@@ -6,24 +6,18 @@ import io.opendid.web2gateway.common.codes.JsonRpc2MessageCodeEnum;
 import io.opendid.web2gateway.common.homechain.HomeChainName;
 import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
 import io.opendid.web2gateway.common.utils.AptosUtils;
-import io.opendid.web2gateway.common.utils.GatewayKeyVaultUtil;
 import io.opendid.web2gateway.common.vnclient.VnGatewayClient;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
-import io.opendid.web2gateway.model.dto.chainkey.ChainKeyDTO;
 import io.opendid.web2gateway.model.dto.oracle.*;
 import io.opendid.web2gateway.model.dto.vnclient.VnClientJobIdDTO;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Response;
-import io.opendid.web2gateway.oraclebodyhandler.interfaces.HomeChainRequestCancelBodyInterface;
 import io.opendid.web2gateway.oraclebodyhandler.interfaces.HomeChainRequestCancelBodyInterfaceV2;
 import io.opendid.web2gateway.oraclebodyhandler.proxyclient.HomeWrapCancelBodyClient;
-import io.opendid.web2gateway.repository.model.GatewayHomechainKeyManage;
-import io.opendid.web2gateway.service.HomeChainKeyManageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
@@ -111,7 +105,7 @@ public class AptosRequestCancelBodyHandlerHomeV2 implements HomeChainRequestCanc
     vnClientJobIdDTO.setRequestBody(jsonRpc2Request);
     vnClientJobIdDTO.setVnCode(metaData.getVnCode());
 
-    JsonRpc2Response respResult = vnGatewayClient.request(vnClientJobIdDTO);
+    JsonRpc2Response respResult = vnGatewayClient.requestJobSend(vnClientJobIdDTO);
 
     if (respResult == null){
       logger.error("AptosChainRequestCancelBody request vn gateway return null");

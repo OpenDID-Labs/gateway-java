@@ -1,0 +1,1 @@
+alter table subscription_transfer_token_record add column transaction_hash varchar(200) comment '';

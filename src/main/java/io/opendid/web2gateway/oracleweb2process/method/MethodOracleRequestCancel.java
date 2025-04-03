@@ -2,11 +2,10 @@ package io.opendid.web2gateway.oracleweb2process.method;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import io.opendid.web2gateway.common.catches.ChainSignKeyVaultCache;
 import io.opendid.web2gateway.common.codes.JsonRpc2MessageCodeEnum;
 import io.opendid.web2gateway.common.enums.status.CancelStatusEnum;
 import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
-import io.opendid.web2gateway.common.utils.AptosUtils;
-import io.opendid.web2gateway.common.utils.GatewayKeyVaultUtil;
 import io.opendid.web2gateway.common.web2.Web2MethodName;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2InvalidRequestException;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
@@ -15,13 +14,12 @@ import io.opendid.web2gateway.model.dto.oracle.*;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Response;
 import io.opendid.web2gateway.oraclebodyhandler.factory.HomeChainRequestCancelBodyFactory;
-import io.opendid.web2gateway.oraclebodyhandler.interfaces.HomeChainRequestCancelBodyInterface;
 import io.opendid.web2gateway.oraclebodyhandler.interfaces.HomeChainRequestCancelBodyInterfaceV2;
 import io.opendid.web2gateway.repository.mapper.OdOracleContractEventlogMapper;
 import io.opendid.web2gateway.repository.model.GatewayHomechainKeyManage;
 import io.opendid.web2gateway.repository.model.OdOracleContractEventlog;
 import io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs;
-import io.opendid.web2gateway.security.checkaspect.MethodPrivate;
+import io.opendid.web2gateway.security.checkaspect.MethodOracle;
 import io.opendid.web2gateway.service.CheckRepeatService;
 import io.opendid.web2gateway.service.HomeChainKeyManageService;
 import io.opendid.web2gateway.service.OracleContractEventLogService;
@@ -38,7 +36,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component(Web2MethodName.REQUEST_CANCEL + Web2Method.BEAN_SUFFIX)
-@MethodPrivate
+@MethodOracle
 public class MethodOracleRequestCancel implements Web2Method {
 
   @Autowired
@@ -120,7 +118,7 @@ public class MethodOracleRequestCancel implements Web2Method {
 
 
       // 2. signature
-      ChainKeyDTO chainKeyByKeyCode = GatewayKeyVaultUtil.getChainKeyByKeyCode(odOracleContractEventlog.getKeyCode());
+      ChainKeyDTO chainKeyByKeyCode = ChainSignKeyVaultCache.getChainKeyByKeyCode(odOracleContractEventlog.getKeyCode());
       String walletPrivateKey=chainKeyByKeyCode.getPrivateKey();
 
       OracleCancelSignatureDTO signatureDTO=new OracleCancelSignatureDTO();

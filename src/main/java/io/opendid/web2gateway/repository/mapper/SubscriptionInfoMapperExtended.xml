@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.SubscriptionInfoMapper">
+  <select id="selectBySubIds" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from subscription_info
+    <if test="subIds != null and subIds.size() > 0">
+      where sub_id in
+      <foreach collection="list" open="(" close=")" separator="," item="subId">
+        #{subId}
+      </foreach>
+    </if>
+  </select>
+
+  <select id="selectBySubId" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from subscription_info
+    where sub_id =#{subId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllSubIds" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from subscription_info
+  </select>
+
+  <update id="updateBySubIdSelective" parameterType="io.opendid.web2gateway.repository.model.SubscriptionInfo">
+    update subscription_info
+    <set>
+      <if test="subId != null">
+        sub_id = #{subId,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerAddress != null">
+        owner_address = #{ownerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="balance != null">
+        balance = #{balance,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where sub_id = #{subId}
+  </update>
+
+</mapper>

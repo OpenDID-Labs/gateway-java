@@ -40,6 +40,26 @@ public class ContractEventLogInsertDTO {
 
   private Integer claimStatus;
 
+  private String subId;
+
+  private String consumerAddress;
+
+  public String getConsumerAddress() {
+    return consumerAddress;
+  }
+
+  public void setConsumerAddress(String consumerAddress) {
+    this.consumerAddress = consumerAddress;
+  }
+
+  public String getSubId() {
+    return subId;
+  }
+
+  public void setSubId(String subId) {
+    this.subId = subId;
+  }
+
   public Integer getClaimStatus() {
     return claimStatus;
   }

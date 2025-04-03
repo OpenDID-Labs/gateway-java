@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.SubscriptionConsumerMapper">
+
+  <select id="selectBySubIdAndAddress" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from subscription_consumer
+    where sub_id = #{subId}
+    AND consumer_address = #{address}
+    LIMIT 1;
+  </select>
+
+  <select id="selectAllBySubId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from subscription_consumer
+    where sub_id = #{subId}
+    and consumer_status=1
+  </select>
+
+</mapper>

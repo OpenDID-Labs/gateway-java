@@ -13,13 +13,12 @@ import io.opendid.web2gateway.model.dto.OAuth2.OAuth2RegisterDTO;
 import io.opendid.web2gateway.common.vnclient.OAuth2Register;
 import io.opendid.web2gateway.common.vnclient.OAuth2Token;
 import io.opendid.web2gateway.common.utils.ECDSAUtils;
-import io.opendid.web2gateway.model.vnmapping.VnMapping;
 import io.opendid.web2gateway.model.dto.vnclient.VnClientJobIdDTO;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Response;
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
-import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -98,7 +97,7 @@ public class KeyClockTest {
 
     try {
 
-      JsonRpc2Response responseRoot = vnClient.request(vnClientJobIdDTO);
+      JsonRpc2Response responseRoot = vnClient.requestJobSend(vnClientJobIdDTO);
 
       System.out.println(JSONObject.toJSONString(responseRoot));
 

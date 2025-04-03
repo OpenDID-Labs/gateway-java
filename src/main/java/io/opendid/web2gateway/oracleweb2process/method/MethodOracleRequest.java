@@ -1,17 +1,18 @@
 package io.opendid.web2gateway.oracleweb2process.method;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import io.opendid.web2gateway.common.catches.ChainSignKeyVaultCache;
 import io.opendid.web2gateway.common.codes.JsonRpc2MessageCodeEnum;
 import io.opendid.web2gateway.common.enums.status.ClaimStatusEnum;
 import io.opendid.web2gateway.common.enums.status.ProcessStatusEnum;
 import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
-import io.opendid.web2gateway.common.utils.GatewayKeyVaultUtil;
 import io.opendid.web2gateway.common.utils.UuidUtil;
 import io.opendid.web2gateway.common.vnclient.VnGatewayClient;
 import io.opendid.web2gateway.common.web2.Web2MethodName;
+import io.opendid.web2gateway.config.WalletPrivateKeyConfig;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
+import io.opendid.web2gateway.model.dto.SelectVnListDTO;
 import io.opendid.web2gateway.model.dto.chainkey.ChainKeyDTO;
 import io.opendid.web2gateway.model.dto.oracle.*;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
@@ -21,9 +22,10 @@ import io.opendid.web2gateway.oraclebodyhandler.factory.HomeChainRequestBodyFact
 import io.opendid.web2gateway.oraclebodyhandler.interfaces.HomeChainRequestBodyInterface;
 import io.opendid.web2gateway.repository.mapper.VngatewayJobidMappingMapper;
 import io.opendid.web2gateway.repository.model.GatewayHomechainKeyManage;
+import io.opendid.web2gateway.repository.model.SubscriptionConsumer;
 import io.opendid.web2gateway.repository.model.VngatewayJobidMapping;
 import io.opendid.web2gateway.repository.model.VngatewayRouteInfo;
-import io.opendid.web2gateway.security.checkaspect.MethodPrivate;
+import io.opendid.web2gateway.security.checkaspect.MethodOracle;
 import io.opendid.web2gateway.service.*;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,12 +37,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 @Component(Web2MethodName.ORACLE_REQUEST + Web2Method.BEAN_SUFFIX)
-@MethodPrivate
+@MethodOracle
 public class MethodOracleRequest implements Web2Method {
 
   private Logger logger = LoggerFactory.getLogger(MethodOracleRequest.class);
@@ -61,6 +62,12 @@ public class MethodOracleRequest implements Web2Method {
   private HomeChainKeyManageService homeChainKeyManageService;
   @Autowired
   private VngatewayJobidMappingService vngatewayJobidMappingService;
+  @Autowired
+  private SelectVnListService selectVnListService;
+  @Autowired
+  private ConsumerDataService consumerDataService;
+  @Autowired
+  private WalletPrivateKeyConfig walletPrivateKeyConfig;
 
 
   @Value("${oracle.callBack.url}")
@@ -78,10 +85,15 @@ public class MethodOracleRequest implements Web2Method {
 
     LinkedHashMap params = request.getParams();
     String jobId = MapUtils.getString(params, "jobId");
+    String subId = MapUtils.getString(params, "subId");
     String data = MapUtils.getString(params, "data");
     boolean generateClaim = MapUtils.getBooleanValue(params, "generateClaim",false);
 
-    List<VngatewayRouteInfo> vnGatewayRouteInfos = selectVnList(params);
+    SelectVnListDTO selectVnListDTO = new SelectVnListDTO();
+    selectVnListDTO.setJobId(MapUtils.getString(params, "jobId"));
+    selectVnListDTO.setVnList(MapUtils.getObject(params, "vnList"));
+    selectVnListDTO.setVnCount(MapUtils.getInteger(params, "vnCount"));
+    List<VngatewayRouteInfo> vnGatewayRouteInfos = selectVnListService.selectVnList(selectVnListDTO);
     List<OracleRequestRespDTO> resultList = new ArrayList<>();
     String transactionBatchCode = "grp_"+UuidUtil.generateUuid32();
 
@@ -92,7 +104,7 @@ public class MethodOracleRequest implements Web2Method {
       GatewayHomechainKeyManage gatewayHomechainKeyManage = homeChainKeyManageService.selectByVnCode(vnCode);
       String homeChainPublicKey = gatewayHomechainKeyManage.getWalletPublicKey();
 
-      logger.info("MethodOracleRequest process jobId={}", jobId);
+      logger.info("MethodOracleRequest process jobId={},subId={}", jobId, subId);
 
 
       //1 wrap request body
@@ -102,12 +114,13 @@ public class MethodOracleRequest implements Web2Method {
       wrapReqBody.setData(data);
       wrapReqBody.setVnCode(vnCode);
       wrapReqBody.setGenerateClaim(generateClaim);
+      wrapReqBody.setSubId(subId);
       OracleWrapRequestBodyResDTO requestBodyResDTO = homeChainRequestHandler.wrapBody(wrapReqBody);
 
 
       // 2,Signing with a private key
-      ChainKeyDTO chainKeyDTO = GatewayKeyVaultUtil.getChainKeyByVnCode(vnCode);
-      ChainKeyDTO chainKeyByVnCode = GatewayKeyVaultUtil.getChainKeyByVnCode(vnCode);
+      ChainKeyDTO chainKeyDTO = ChainSignKeyVaultCache.getChainKeyByVnCode(vnCode);
+      ChainKeyDTO chainKeyByVnCode = ChainSignKeyVaultCache.getChainKeyByVnCode(vnCode);
 
 
       OracleRequestSignatureDTO signatureDTO=new OracleRequestSignatureDTO();
@@ -120,6 +133,7 @@ public class MethodOracleRequest implements Web2Method {
       OracleRequestMetaDataDTO metaData = new OracleRequestMetaDataDTO();
       metaData.setVnCode(vnCode);
       metaData.setJobId(jobId);
+      metaData.setSubId(subId);
       metaData.setPublicKey(homeChainPublicKey);
       metaData.setCallbackUrl(callBackUrl);
       metaData.setData(data);
@@ -172,6 +186,8 @@ public class MethodOracleRequest implements Web2Method {
         insertDTO.setClaimStatus(ClaimStatusEnum.PENDING.getCode());
       }
       insertDTO.setKeyCode(chainKeyByVnCode.getKeyCode());
+      insertDTO.setSubId(subId);
+      insertDTO.setConsumerAddress(gatewayHomechainKeyManage.getWalletAddress());
       oracleContractEventLogService.insertContractEventLog(insertDTO);
 
 
@@ -199,73 +215,17 @@ public class MethodOracleRequest implements Web2Method {
       return "jobId does not exist";
     }
 
+    String subId = MapUtils.getString(request.getParams(), "subId");
+    if (StringUtils.isNotBlank(subId)){
+      List<SubscriptionConsumer> subscriptionConsumers = consumerDataService.selectAllBySubId(subId);
+      if (walletPrivateKeyConfig.getPrivatekey().size() != subscriptionConsumers.size()) {
+        return "In the configuration: wallet.privatekey, all addresses need to be registered as consumers of subId";
+      }
+    }
+
     return null;
   }
 
-
-
-
-  private List<VngatewayRouteInfo> selectVnList(LinkedHashMap params) throws Exception {
-
-    String jobId = MapUtils.getString(params, "jobId");
-    String[] vnList=null;
-    // Query the VnCode parameter in the input parameter
-    Object vnListObj = MapUtils.getObject(params, "vnList");
-    if (vnListObj instanceof JSONArray){
-        // Determine whether vnCode is correct
-      JSONArray jsonArray = (JSONArray) vnListObj;
-      vnList= jsonArray.toJavaList(String.class).toArray(new String[0]);
-    }
-
-
-    // Query the Vn quantity parameter in the input parameter
-    Integer vnCount = MapUtils.getInteger(params, "vnCount");
-
-    if (vnList!=null && vnList.length>0) {
-
-      // Determine whether vnCode is correct
-      List<VngatewayRouteInfo> vnGatewayRouteInfos = vngatewayRouteInfoService.selectVnRouteByCodes(vnList);
-      if (vnGatewayRouteInfos.size() != vnList.length) {
-        // The number of input parameters is inconsistent with the number of query results,
-        // indicating that there is non-existent vnGateway information in the input parameters.
-        logger.error("MethodOracleRequest selectVnList vnGateway number error");
-        throw new JsonRpc2ServerErrorException(
-            JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32002.getCode(),
-            MDC.get(LogTraceIdConstant.TRACE_ID),
-            JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32002.getMessage(),
-            "The VnCode you entered is incorrect!");
-      }
-
-      return vnGatewayRouteInfos;
-    } else if (vnCount != null){
-      // Randomly select vnCode based on the number of user requests
-      List<VngatewayRouteInfo> vnGatewayRouteInfos = vngatewayRouteInfoService.selectVnRouteByJobId(jobId);
-
-      // Determine whether the quantity is reasonable
-      if (vnCount <= 0
-          || vnCount > vnGatewayRouteInfos.size()) {
-        logger.error("MethodOracleRequest selectVnList vnGateway number error");
-        throw new JsonRpc2ServerErrorException(
-            JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32002.getCode(),
-            MDC.get(LogTraceIdConstant.TRACE_ID),
-            JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32002.getMessage(),
-            "The number of VNs that support this JobId is:" + vnGatewayRouteInfos.size());
-      }
-
-      // Select vn method based on quantity, the current strategy is random
-      // Shuffle the list order and return vnCount quantity
-      Collections.shuffle(vnGatewayRouteInfos);
-
-      return vnGatewayRouteInfos.subList(0, vnCount);
-    }
-
-    logger.error("MethodOracleRequest selectVnList no code and number");
-    throw new JsonRpc2ServerErrorException(
-        JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32002.getCode(),
-        MDC.get(LogTraceIdConstant.TRACE_ID),
-        JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32002.getMessage(),
-        "You must specify the VnCode or Vn number");
-  }
 
   private void throwFailReuslt(JSONObject respResultJson) throws Exception {
     if (respResultJson.get("failReason") != null && !"".equals(respResultJson.get("failReason"))) {

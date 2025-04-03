@@ -42,6 +42,8 @@ public class MethodOracleRequestCallback implements Web2CallbackMethod {
       String callbackOracleHash = params.get("oracleFulfillTxHash").toString();
       String oracleRequestTxHash=params.get("oracleRequestTxHash").toString();
       String responseBody = params.get("data").toString();
+      String userPayFee = params.get("userPayFee").toString();
+      Integer coinType = Integer.valueOf(params.get("coinType").toString());
 
       UpdateEventLogDTO updateEventLogDTO = new UpdateEventLogDTO();
       updateEventLogDTO.setProcessStatus(ProcessStatusEnum.PROCESSED.getCode());
@@ -49,6 +51,8 @@ public class MethodOracleRequestCallback implements Web2CallbackMethod {
       updateEventLogDTO.setResponseBody(responseBody);
       updateEventLogDTO.setCallbackOracleHash(callbackOracleHash);
       updateEventLogDTO.setRequestTransactionHash(oracleRequestTxHash);
+      updateEventLogDTO.setUserPayFee(userPayFee);
+      updateEventLogDTO.setCoinType(coinType);
 
       oracleContractEventLogService.updateEventLogByRequestId(updateEventLogDTO);
       callBackRespDTO.setSuccessfully(CallbackProcessStatus.SUCCESSFUL.getCode());

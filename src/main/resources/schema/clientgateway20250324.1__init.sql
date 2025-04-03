@@ -1,0 +1,1 @@
+alter table od_oracle_contract_eventlog add column user_pay_fee varchar(100) comment '';

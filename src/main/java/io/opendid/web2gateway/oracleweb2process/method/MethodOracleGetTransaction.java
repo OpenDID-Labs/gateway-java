@@ -1,20 +1,17 @@
 package io.opendid.web2gateway.oracleweb2process.method;
 
 import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
-import io.opendid.web2gateway.common.traceid.TraceIdPutUtil;
-import io.opendid.web2gateway.common.utils.TraceIdeUtil;
 import io.opendid.web2gateway.common.web2.Web2MethodName;
-import io.opendid.web2gateway.contextfilter.api.SystemContextHolder;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2InvalidParamsException;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
-import io.opendid.web2gateway.security.checkaspect.MethodPrivate;
+import io.opendid.web2gateway.security.checkaspect.MethodOracle;
 import io.opendid.web2gateway.service.OracleMsgRecordService;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component(Web2MethodName.ORACLE_GET_TRANSACTION + Web2Method.BEAN_SUFFIX)
-@MethodPrivate
+@MethodOracle
 public class MethodOracleGetTransaction implements Web2Method {
 
 

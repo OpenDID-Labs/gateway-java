@@ -9,5 +9,7 @@ public class VnRequestAddress {
 
   public static String JOB_SEND = "/opdidgtw/vn/v1/oracle/jobsend";
 
+  public static String SUB_SEND = "/opdidgtw/vn/v1/oracle/subscriptionsend";
+
 
 }

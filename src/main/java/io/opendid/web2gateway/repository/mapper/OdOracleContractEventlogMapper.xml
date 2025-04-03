@@ -29,6 +29,11 @@
     <result column="claim_execute_count" jdbcType="INTEGER" property="claimExecuteCount" />
     <result column="key_code" jdbcType="VARCHAR" property="keyCode" />
     <result column="claim_fee" jdbcType="BIGINT" property="claimFee" />
+    <result column="sub_id" jdbcType="VARCHAR" property="subId" />
+    <result column="consumer_address" jdbcType="VARCHAR" property="consumerAddress" />
+    <result column="coin_type" jdbcType="INTEGER" property="coinType" />
+    <result column="payment_type" jdbcType="INTEGER" property="paymentType" />
+    <result column="user_pay_fee" jdbcType="VARCHAR" property="userPayFee" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs">
     <result column="error_msg" jdbcType="LONGVARCHAR" property="errorMsg" />
@@ -44,7 +49,8 @@
     trace_id, create_date, update_date, next_execute_time, execute_count, request_oracle_hash, 
     cancel_status, cancel_oracle_hash, cancel_next_execute_time, cancel_execute_count, 
     request_aptos_version, cancel_aptos_version, cancel_create_date, transaction_batch_code, 
-    claim_status, claim_execute_time, claim_execute_count, key_code, claim_fee
+    claim_status, claim_execute_time, claim_execute_count, key_code, claim_fee, sub_id, 
+    consumer_address, coin_type, payment_type, user_pay_fee
   </sql>
   <sql id="Blob_Column_List">
     error_msg, cancel_error_msg, request_body, response_body, cancel_request_body, cancel_response_body, 
@@ -73,10 +79,11 @@
       cancel_aptos_version, cancel_create_date, 
       transaction_batch_code, claim_status, claim_execute_time, 
       claim_execute_count, key_code, claim_fee, 
-      error_msg, cancel_error_msg, request_body, 
-      response_body, cancel_request_body, 
-      cancel_response_body, claim_error_msg
-      )
+      sub_id, consumer_address, coin_type, 
+      payment_type, user_pay_fee, error_msg, 
+      cancel_error_msg, request_body, response_body, 
+      cancel_request_body, cancel_response_body, 
+      claim_error_msg)
     values (#{logId,jdbcType=BIGINT}, #{requestId,jdbcType=VARCHAR}, #{vnCode,jdbcType=VARCHAR}, 
       #{jobId,jdbcType=VARCHAR}, #{jobIdFee,jdbcType=BIGINT}, #{platformCode,jdbcType=VARCHAR}, 
       #{processStatus,jdbcType=INTEGER}, #{callbackOracleHash,jdbcType=VARCHAR}, #{traceId,jdbcType=VARCHAR}, 
@@ -87,10 +94,11 @@
       #{cancelAptosVersion,jdbcType=VARCHAR}, #{cancelCreateDate,jdbcType=TIMESTAMP}, 
       #{transactionBatchCode,jdbcType=VARCHAR}, #{claimStatus,jdbcType=INTEGER}, #{claimExecuteTime,jdbcType=BIGINT}, 
       #{claimExecuteCount,jdbcType=INTEGER}, #{keyCode,jdbcType=VARCHAR}, #{claimFee,jdbcType=BIGINT}, 
-      #{errorMsg,jdbcType=LONGVARCHAR}, #{cancelErrorMsg,jdbcType=LONGVARCHAR}, #{requestBody,jdbcType=LONGVARCHAR}, 
-      #{responseBody,jdbcType=LONGVARCHAR}, #{cancelRequestBody,jdbcType=LONGVARCHAR}, 
-      #{cancelResponseBody,jdbcType=LONGVARCHAR}, #{claimErrorMsg,jdbcType=LONGVARCHAR}
-      )
+      #{subId,jdbcType=VARCHAR}, #{consumerAddress,jdbcType=VARCHAR}, #{coinType,jdbcType=INTEGER}, 
+      #{paymentType,jdbcType=INTEGER}, #{userPayFee,jdbcType=VARCHAR}, #{errorMsg,jdbcType=LONGVARCHAR}, 
+      #{cancelErrorMsg,jdbcType=LONGVARCHAR}, #{requestBody,jdbcType=LONGVARCHAR}, #{responseBody,jdbcType=LONGVARCHAR}, 
+      #{cancelRequestBody,jdbcType=LONGVARCHAR}, #{cancelResponseBody,jdbcType=LONGVARCHAR}, 
+      #{claimErrorMsg,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.OdOracleContractEventlogWithBLOBs">
     insert into od_oracle_contract_eventlog
@@ -175,6 +183,21 @@
       </if>
       <if test="claimFee != null">
         claim_fee,
+      </if>
+      <if test="subId != null">
+        sub_id,
+      </if>
+      <if test="consumerAddress != null">
+        consumer_address,
+      </if>
+      <if test="coinType != null">
+        coin_type,
+      </if>
+      <if test="paymentType != null">
+        payment_type,
+      </if>
+      <if test="userPayFee != null">
+        user_pay_fee,
       </if>
       <if test="errorMsg != null">
         error_msg,
@@ -280,6 +303,21 @@
       <if test="claimFee != null">
         #{claimFee,jdbcType=BIGINT},
       </if>
+      <if test="subId != null">
+        #{subId,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerAddress != null">
+        #{consumerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="coinType != null">
+        #{coinType,jdbcType=INTEGER},
+      </if>
+      <if test="paymentType != null">
+        #{paymentType,jdbcType=INTEGER},
+      </if>
+      <if test="userPayFee != null">
+        #{userPayFee,jdbcType=VARCHAR},
+      </if>
       <if test="errorMsg != null">
         #{errorMsg,jdbcType=LONGVARCHAR},
       </if>
@@ -384,6 +422,21 @@
       <if test="claimFee != null">
         claim_fee = #{claimFee,jdbcType=BIGINT},
       </if>
+      <if test="subId != null">
+        sub_id = #{subId,jdbcType=VARCHAR},
+      </if>
+      <if test="consumerAddress != null">
+        consumer_address = #{consumerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="coinType != null">
+        coin_type = #{coinType,jdbcType=INTEGER},
+      </if>
+      <if test="paymentType != null">
+        payment_type = #{paymentType,jdbcType=INTEGER},
+      </if>
+      <if test="userPayFee != null">
+        user_pay_fee = #{userPayFee,jdbcType=VARCHAR},
+      </if>
       <if test="errorMsg != null">
         error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
       </if>
@@ -436,6 +489,11 @@
       claim_execute_count = #{claimExecuteCount,jdbcType=INTEGER},
       key_code = #{keyCode,jdbcType=VARCHAR},
       claim_fee = #{claimFee,jdbcType=BIGINT},
+      sub_id = #{subId,jdbcType=VARCHAR},
+      consumer_address = #{consumerAddress,jdbcType=VARCHAR},
+      coin_type = #{coinType,jdbcType=INTEGER},
+      payment_type = #{paymentType,jdbcType=INTEGER},
+      user_pay_fee = #{userPayFee,jdbcType=VARCHAR},
       error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
       cancel_error_msg = #{cancelErrorMsg,jdbcType=LONGVARCHAR},
       request_body = #{requestBody,jdbcType=LONGVARCHAR},
@@ -472,7 +530,12 @@
       claim_execute_time = #{claimExecuteTime,jdbcType=BIGINT},
       claim_execute_count = #{claimExecuteCount,jdbcType=INTEGER},
       key_code = #{keyCode,jdbcType=VARCHAR},
-      claim_fee = #{claimFee,jdbcType=BIGINT}
+      claim_fee = #{claimFee,jdbcType=BIGINT},
+      sub_id = #{subId,jdbcType=VARCHAR},
+      consumer_address = #{consumerAddress,jdbcType=VARCHAR},
+      coin_type = #{coinType,jdbcType=INTEGER},
+      payment_type = #{paymentType,jdbcType=INTEGER},
+      user_pay_fee = #{userPayFee,jdbcType=VARCHAR}
     where log_id = #{logId,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -38,7 +38,7 @@ public class OracleOracleKeySyncHandler {
             try {
                 TraceIdPutUtil.newPutTraceId();
                 JsonRpc2Response response =
-                        vnGatewayClient.request(requestParameters(routeInfo.getVnCode()));
+                        vnGatewayClient.requestJobSend(requestParameters(routeInfo.getVnCode()));
 
                 logger.info("Oracle Keys Sync Request: {}", JSON.toJSON(response));
 

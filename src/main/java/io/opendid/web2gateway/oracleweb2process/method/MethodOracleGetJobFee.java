@@ -12,7 +12,7 @@ import io.opendid.web2gateway.model.dto.vnclient.VnClientJobIdDTO;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Response;
 import io.opendid.web2gateway.repository.model.VngatewayJobidMapping;
-import io.opendid.web2gateway.security.checkaspect.MethodPrivate;
+import io.opendid.web2gateway.security.checkaspect.MethodOracle;
 import io.opendid.web2gateway.service.VngatewayJobidMappingService;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 @Component(Web2MethodName.ORACLE_GET_JOB_FEE+ Web2Method.BEAN_SUFFIX)
-@MethodPrivate
+@MethodOracle
 public class MethodOracleGetJobFee implements Web2Method {
 
   private Logger logger = LoggerFactory.getLogger(MethodOracleGetJobFee.class);
@@ -46,7 +46,7 @@ public class MethodOracleGetJobFee implements Web2Method {
     dto.setJobId(request.getParams().get("jobId").toString());
     dto.setRequestBody(request);
     // request vn gateway
-    JsonRpc2Response response = vnGatewayClient.request(dto);
+    JsonRpc2Response response = vnGatewayClient.requestJobSend(dto);
     if (response != null) {
       JSONObject respResultJson = JSONObject.parseObject(
               JSONObject.toJSONString(response));
@@ -92,7 +92,7 @@ public class MethodOracleGetJobFee implements Web2Method {
     vnClientJobIdDTO.setRequestBody(jsonRpc2Request);
     vnClientJobIdDTO.setVnCode(vnClientJobIdDTO.getVnCode());
 
-    JsonRpc2Response response = vnGatewayClient.request(vnClientJobIdDTO);
+    JsonRpc2Response response = vnGatewayClient.requestJobSend(vnClientJobIdDTO);
 
     if (response != null) {
       JSONObject respResultJson = JSONObject.parseObject(

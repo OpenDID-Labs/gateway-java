@@ -10,7 +10,7 @@ public class HomeChainRequestBodyFactory {
   ){
 
     HomeChainRequestBodyInterface bean = SpringContextUtil.getBean(
-            HomeChainName.APTOS + HomeChainRequestBodyInterface.BEAN_SUFFIX
+            HomeChainType.getHomeChainName() + HomeChainRequestBodyInterface.BEAN_SUFFIX
         , HomeChainRequestBodyInterface.class);
     return bean;
 

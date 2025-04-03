@@ -41,5 +41,8 @@ public class HomeChainKeyManageService {
     return gatewayHomechainKeyManageMapper.selectAll();
   }
 
+  public GatewayHomechainKeyManage selectByWalletAddress(String walletAddress) {
+    return gatewayHomechainKeyManageMapper.selectByWalletAddress(walletAddress);
+  }
 
 }

@@ -2,11 +2,11 @@ package io.opendid.web2gateway.oraclebodyhandler.homecancel;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import io.opendid.web2gateway.common.catches.ChainSignKeyVaultCache;
 import io.opendid.web2gateway.common.codes.JsonRpc2MessageCodeEnum;
 import io.opendid.web2gateway.common.homechain.HomeChainName;
 import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
 import io.opendid.web2gateway.common.utils.AptosUtils;
-import io.opendid.web2gateway.common.utils.GatewayKeyVaultUtil;
 import io.opendid.web2gateway.common.vnclient.VnGatewayClient;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
 import io.opendid.web2gateway.model.dto.chainkey.ChainKeyDTO;
@@ -62,7 +62,7 @@ public class AptosRequestCancelBodyHandlerHome implements HomeChainRequestCancel
     vnClientJobIdDTO.setRequestBody(jsonRpc2Request);
     vnClientJobIdDTO.setVnCode(sendMessageDTO.getVnCode());
 
-    JsonRpc2Response respResult = vnGatewayClient.request(vnClientJobIdDTO);
+    JsonRpc2Response respResult = vnGatewayClient.requestJobSend(vnClientJobIdDTO);
 
     if (respResult == null){
       logger.error("AptosChainRequestCancelBody request vn gateway return null");
@@ -106,7 +106,7 @@ public class AptosRequestCancelBodyHandlerHome implements HomeChainRequestCancel
     logger.info("Cancel AptosChainMsg process warp RequestBody={}",JSON.toJSONString(warpReqBody));
 
 //     1,Signing with a private key
-    ChainKeyDTO chainKeyByKeyCode = GatewayKeyVaultUtil.getChainKeyByKeyCode(oracleChainCancelMsgDTO.getKeyCode());
+    ChainKeyDTO chainKeyByKeyCode = ChainSignKeyVaultCache.getChainKeyByKeyCode(oracleChainCancelMsgDTO.getKeyCode());
     String walletPrivateKey=chainKeyByKeyCode.getPrivateKey();
 //    String walletPrivateKey = GatewayKeyVaultUtil.getServiceKey(vnCode + GatewayKeyVaultUtil.walletPrivateKey);
     byte[] signature = AptosUtils.ed25519Sign(

@@ -1,14 +1,12 @@
 package io.opendid.web2gateway.tasks.oracleResult;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.opendid.web2gateway.common.enums.request.MethodEnum;
 import io.opendid.web2gateway.common.enums.status.ProcessStatusEnum;
 import io.opendid.web2gateway.common.traceid.TraceIdPutUtil;
 import io.opendid.web2gateway.common.utils.DateUtils;
 import io.opendid.web2gateway.common.vnclient.VnGatewayClient;
-import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
 import io.opendid.web2gateway.model.dto.oracle.EventLogPendingInputDTO;
 import io.opendid.web2gateway.model.dto.oracle.EventLogPendingOutputDTO;
 import io.opendid.web2gateway.model.dto.vnclient.VnClientJobIdDTO;
@@ -68,7 +66,7 @@ public class OracleResultHandler {
         try {
 
           logger.info("process pending data: {}", JSON.toJSONString(pendingData));
-          JsonRpc2Response request = vnGatewayClient.request(requestParameters(pendingData));
+          JsonRpc2Response request = vnGatewayClient.requestJobSend(requestParameters(pendingData));
 
           logger.info("process pending data response={}", JSON.toJSONString(request));
 
@@ -92,6 +90,10 @@ public class OracleResultHandler {
                 resultLinkedHashMap.put("oracleFulfillTxHash", resultJson.getString("oracleFulfillTxHash"));
                 resultLinkedHashMap.put("oracleRequestTxHash", oracleRequestTxHash);
                 resultLinkedHashMap.put("data", resultJson.getString("data"));
+                resultLinkedHashMap.put("userPayFee", resultJson.getString("userPayFee"));
+                resultLinkedHashMap.put("coinType", resultJson.getInteger("coinType"));
+
+
                 JsonRpc2Request oracleCallBack = new JsonRpc2Request(1L, "oracle_callback", resultLinkedHashMap, "");
                 MethodExecutor.publicMethod(JSONObject.toJSONString(oracleCallBack));
               } else {
@@ -103,6 +105,7 @@ public class OracleResultHandler {
                   OdOracleContractEventlogWithBLOBs updateB = new OdOracleContractEventlogWithBLOBs();
                   updateB.setLogId(pendingData.getLogId());
                   updateB.setRequestId(resultJson.getString("requestId"));
+                  updateB.setCoinType(resultJson.getInteger("coinType"));
                   oracleContractEventLogService.updateByPrimaryKeySelective(updateB);
                 }
                 oracleContractEventLogService.updateExecuteCount(pendingData.getLogId(), pendingData.getExecuteCount());

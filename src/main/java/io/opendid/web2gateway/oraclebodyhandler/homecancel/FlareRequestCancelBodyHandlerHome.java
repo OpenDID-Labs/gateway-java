@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import io.opendid.web2gateway.common.codes.JsonRpc2MessageCodeEnum;
 import io.opendid.web2gateway.common.homechain.HomeChainName;
 import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
-import io.opendid.web2gateway.common.utils.AptosUtils;
 import io.opendid.web2gateway.common.vnclient.VnGatewayClient;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
 import io.opendid.web2gateway.model.dto.oracle.*;
@@ -114,7 +113,7 @@ public class FlareRequestCancelBodyHandlerHome implements HomeChainRequestCancel
     vnClientJobIdDTO.setRequestBody(jsonRpc2Request);
     vnClientJobIdDTO.setVnCode(metaData.getVnCode());
 
-    JsonRpc2Response respResult = vnGatewayClient.request(vnClientJobIdDTO);
+    JsonRpc2Response respResult = vnGatewayClient.requestJobSend(vnClientJobIdDTO);
 
     if (respResult == null){
       logger.error("FlareChainRequestCancelBody request vn gateway return null");

@@ -8,7 +8,6 @@ import io.opendid.web2gateway.common.enums.status.CancelStatusEnum;
 import io.opendid.web2gateway.common.traceid.TraceIdPutUtil;
 import io.opendid.web2gateway.common.utils.DateUtils;
 import io.opendid.web2gateway.common.vnclient.VnGatewayClient;
-import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerErrorException;
 import io.opendid.web2gateway.model.dto.oracle.CancelEventLogPendingInDTO;
 import io.opendid.web2gateway.model.dto.oracle.CancelEventLogPendingOutDTO;
 import io.opendid.web2gateway.model.dto.vnclient.VnClientJobIdDTO;
@@ -66,7 +65,7 @@ public class OracleCancelHandler {
         logger.info("process cancel pending data: {}", JSON.toJSONString(pendingOutDTO));
         JsonRpc2Response request = null;
 
-        request = vnGatewayClient.request(requestParameters(pendingOutDTO));
+        request = vnGatewayClient.requestJobSend(requestParameters(pendingOutDTO));
 
         if (request != null) {
 

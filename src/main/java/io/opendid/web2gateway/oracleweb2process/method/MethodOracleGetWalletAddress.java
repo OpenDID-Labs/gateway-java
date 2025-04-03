@@ -7,7 +7,7 @@ import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
 import io.opendid.web2gateway.repository.mapper.GatewayKeyVaultMapper;
 import io.opendid.web2gateway.repository.model.GatewayHomechainKeyManage;
 import io.opendid.web2gateway.repository.model.GatewayKeyVault;
-import io.opendid.web2gateway.security.checkaspect.MethodPrivate;
+import io.opendid.web2gateway.security.checkaspect.MethodOracle;
 import io.opendid.web2gateway.service.HomeChainKeyManageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component(Web2MethodName.ORACLE_GET_WALLET_ADDRESS + Web2Method.BEAN_SUFFIX)
-@MethodPrivate
+@MethodOracle
 public class MethodOracleGetWalletAddress implements Web2Method {
 
   private Logger logger = LoggerFactory.getLogger(MethodOracleGetWalletAddress.class);
@@ -44,7 +44,7 @@ public class MethodOracleGetWalletAddress implements Web2Method {
       GetWalletAddressRespDTO getWalletAddressRespDTO = new GetWalletAddressRespDTO();
       getWalletAddressRespDTO.setWalletAddress(gatewayHomechainKeyManage.getWalletAddress());
       getWalletAddressRespDTO.setWalletPublicKey(gatewayHomechainKeyManage.getWalletPublicKey());
-      getWalletAddressRespDTO.setVnCode(gatewayHomechainKeyManage.getVnCode());
+//      getWalletAddressRespDTO.setVnCode(gatewayHomechainKeyManage.getVnCode());
 
       resultList.add(getWalletAddressRespDTO);
     }

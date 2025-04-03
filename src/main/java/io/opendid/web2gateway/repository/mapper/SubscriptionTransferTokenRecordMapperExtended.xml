@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.SubscriptionTransferTokenRecordMapper">
+
+  <select id="selectWaitingResultData" resultMap="BaseResultMap">
+    SELECT
+        <include refid="Base_Column_List" />
+    FROM
+        subscription_transfer_token_record
+    WHERE
+        transaction_hash IS NOT NULL
+    AND old_balance IS NULL
+    AND latest_balance IS NULL
+    ORDER BY
+        transfer_id ASC
+  </select>
+
+</mapper>

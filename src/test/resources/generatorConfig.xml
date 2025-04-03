@@ -10,19 +10,24 @@
 
 <!--    CXF-->
 
-    <classPathEntry
-            location="/Users/cuixingfan/.m2/repository/com/mysql/mysql-connector-j/8.3.0/mysql-connector-j-8.3.0.jar"
-    />
+     <!--<classPathEntry
+        location="/Users/cuixingfan/.m2/repository/com/mysql/mysql-connector-j/8.3.0/mysql-connector-j-8.3.0.jar"
+      />-->
 
     <!-- wyj-->
-<!--    <classPathEntry
+    <classPathEntry
       location="C:\Users\Lenovo\.m2\repository\mysql\mysql-connector-java\8.0.21\mysql-connector-java-8.0.21.jar"
-    />-->
+    />
+
+    <!-- hkj-->
+<!--    <classPathEntry-->
+<!--            location="D:\soft\install\maven\repository\mysql\mysql-connector-java\8.0.22\mysql-connector-java-8.0.22.jar"-->
+<!--    />-->
 
     <!--djg-->
-<!--        <classPathEntry-->
-<!--                location="D:\mysql-connector-java-8.0.25.jar"-->
-<!--        />-->
+        <!--<classPathEntry
+                location="D:\mysql-connector-java-8.0.25.jar"
+        />-->
 
 
     <context id="DB2Tables" targetRuntime="MyBatis3">
@@ -32,7 +37,7 @@
         </commentGenerator>
 
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://192.168.1.57:3307/client_gateway_cui?characterEncoding=UTF-8"
+                        connectionURL="jdbc:mysql://192.168.1.57:3307/client_gateway_dev?characterEncoding=UTF-8"
                         userId="root" password="LoTsrcg5Bnvr">
             <property name="nullCatalogMeansCurrent" value="true"/>
         </jdbcConnection>
@@ -73,9 +78,9 @@
 <!--          enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
 <!--          selectByExampleQueryId="false"></table>-->
 
-        <table tableName="oracle_msg_record" domainObjectName="OracleMsgRecord" enableCountByExample="false"
+<!--        <table tableName="oracle_msg_record" domainObjectName="OracleMsgRecord" enableCountByExample="false"
           enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
-          selectByExampleQueryId="false"></table>
+          selectByExampleQueryId="false"></table>-->
 
 
         <!--<table tableName="tenant_jwt_manger" domainObjectName="TenantJwtManger" enableCountByExample="false"
@@ -86,10 +91,21 @@
 <!--          enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
 <!--          selectByExampleQueryId="false"></table>-->
 
-        <table tableName="gateway_homechain_key_manage" domainObjectName="GatewayHomechainKeyManage" enableCountByExample="false"
+<!--        <table tableName="gateway_homechain_key_manage" domainObjectName="GatewayHomechainKeyManage" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false"></table>-->
+
+<!--        <table tableName="subscription_consumer" domainObjectName="SubscriptionConsumer" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"-->
+<!--               selectByExampleQueryId="false"></table>-->
+
+        <table tableName="subscription_info" domainObjectName="SubscriptionInfo" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false"></table>
 
 
+        <!--<table tableName="subscription_transfer_token_record" domainObjectName="SubscriptionTransferTokenRecord" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false"></table>-->
     </context>
 </generatorConfiguration>

@@ -1,5 +1,6 @@
 package io.opendid.web2gateway.common.utils;
 
+import io.opendid.web2gateway.common.catches.ServiceKeyVaultCache;
 import io.opendid.web2gateway.common.enums.oauth2.GrantTypeEnum;
 import io.opendid.web2gateway.common.vnclient.OAuth2Register;
 import io.opendid.web2gateway.common.vnclient.OAuth2Token;
@@ -41,7 +42,7 @@ public class OAuth2TokenUtil {
     try {
       logger.info("KeyClockTokenUtil initToken start");
 
-      String publicKey = GatewayKeyVaultUtil.getServiceKey(GatewayKeyVaultUtil.servicePublicKey);
+      String publicKey = ServiceKeyVaultCache.getServiceKey(ServiceKeyVaultCache.servicePublicKey);
 
       String sign = ECDSAUtils.sign(
           publicKey,

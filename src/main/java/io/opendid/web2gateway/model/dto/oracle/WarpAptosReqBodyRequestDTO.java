@@ -10,6 +10,8 @@ package io.opendid.web2gateway.model.dto.oracle;
 **/
 public class WarpAptosReqBodyRequestDTO {
 
+  private String subId;
+
   private String jobId;
 
   private String publicKey;
@@ -21,6 +23,14 @@ public class WarpAptosReqBodyRequestDTO {
   private String vnCode;
 
   private Boolean generateClaim;
+
+  public String getSubId() {
+    return subId;
+  }
+
+  public void setSubId(String subId) {
+    this.subId = subId;
+  }
 
   public Boolean getGenerateClaim() {
     return generateClaim;

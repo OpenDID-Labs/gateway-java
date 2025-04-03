@@ -49,6 +49,10 @@ claim-task:
   tempo: 5000
   interval-second: 10
 
+sub-token-transfer:
+  switch: true
+  tempo: 15000
+
 #Same as HomeChainName class definition
 homechain_name: APTOS
 

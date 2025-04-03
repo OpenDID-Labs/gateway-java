@@ -51,7 +51,7 @@ public class ApiJwtCheck {
   @Autowired
   private JwtTokenService jwtTokenService;
 
-  @Pointcut("@annotation(io.opendid.web2gateway.security.checkaspect.TenantJwtTokenCheck)")
+  @Pointcut("@annotation(io.opendid.web2gateway.security.checkaspect.PrivateApiSecurityCheck)")
   private void tenantJwtCheck() {
 
   }
