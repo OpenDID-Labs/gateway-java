@@ -38,7 +38,7 @@
 
   # 2. **Download and Configuration**
 
-1. Download [gateway-java-v1.0.4.zip](https://github.com/OpenDID-Labs/gateway-java/releases/download/v1.0.4/gateway-java-v1.0.4.zip "gateway-java-v1.0.4.zip") file.
+1. Download [gateway-java.zip](https://github.com/OpenDID-Labs/gateway-java/releases/") file.
 
 ```
 gateway-java/
