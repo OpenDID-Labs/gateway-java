@@ -144,7 +144,8 @@ bash 5-install-web2gateway.sh
 
 #### Verification
 
-After installation, verify the service's status.
+After installation, verify the service's status.**When the service is first started, you can obtain the corresponding JWT Token by checking the field containing RootJWT Token in the web2gateway service logs.**
+
 
 ```
 docker ps
