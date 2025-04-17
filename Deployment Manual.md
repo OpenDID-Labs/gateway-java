@@ -67,8 +67,7 @@ gateway-java/
 │   │   └── runc
 │   ├── docker-24.0.7.tar.gz
 │   ├── docker-compose-linux-x86_64
-│   ├── gateway-java.jar
-│   └── lib.tar.gz
+│   └── gateway-java.jar
 └── sql
     └── standalone-nacos-mysql.sql
 ```
