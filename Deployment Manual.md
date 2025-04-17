@@ -148,6 +148,10 @@ After installation, verify the service's status.**When the service is first star
 
 
 ```
-docker ps
+#docker ps
+CONTAINER ID   IMAGE                       COMMAND                  CREATED          STATUS          PORTS                                                                                  NAMES
+32e7ab55863a   openjdk:17                  "sh /data/web2gatewa…"   13 minutes ago   Up 13 minutes                                                                                          web2gateway
+ecacb0630e9f   nacos/nacos-server:v2.4.3   "sh bin/docker-start…"   17 minutes ago   Up 17 minutes   0.0.0.0:8848->8848/tcp, :::8848->8848/tcp, 0.0.0.0:9848->9848/tcp, :::9848->9848/tcp   nacos
+73347e29da79   mysql:8.0.36                "docker-entrypoint.s…"   25 minutes ago   Up 25 minutes   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp                                   mysql
 ```
 
