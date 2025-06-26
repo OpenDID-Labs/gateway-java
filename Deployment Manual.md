@@ -56,15 +56,6 @@ gateway-java/
 │   └── vnmapping.yaml
 ├── install.conf
 ├── packages
-│   ├── docker
-│   │   ├── containerd
-│   │   ├── containerd-shim-runc-v2
-│   │   ├── ctr
-│   │   ├── docker
-│   │   ├── docker-init
-│   │   ├── docker-proxy
-│   │   ├── dockerd
-│   │   └── runc
 │   ├── docker-24.0.7.tar.gz
 │   ├── docker-compose-linux-x86_64
 │   └── gateway-java.jar
