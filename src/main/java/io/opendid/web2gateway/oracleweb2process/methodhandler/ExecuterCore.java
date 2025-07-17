@@ -21,7 +21,7 @@ class ExecuterCore {
 
     static Web2Method doExecute(
                                 JsonRpc2Request body,
-                            MethodAccessVerify methodAccessVerify){
+                            MethodAccessVerify methodAccessVerify) throws Exception {
         String traceId = MDC.get(LogTraceIdConstant.TRACE_ID);
 
 //        JsonRpc2Request body = ExecuterCore.checkJsonString(bodyStr);
@@ -53,7 +53,7 @@ class ExecuterCore {
     }
 
    private static void checkParams(JsonRpc2Request body, Web2Method methodProcess,
-                            String traceId) {
+                            String traceId) throws Exception {
         String checkParams = methodProcess.checkParams(body);
         if (checkParams != null) {
             throw new JsonRpc2InvalidParamsException(

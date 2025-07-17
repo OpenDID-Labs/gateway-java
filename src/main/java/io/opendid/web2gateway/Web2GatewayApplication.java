@@ -1,5 +1,6 @@
 package io.opendid.web2gateway;
 
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,6 +13,7 @@ import org.springframework.web.context.request.RequestContextListener;
 @MapperScan("io.opendid.web2gateway.repository.mapper")
 @SpringBootApplication(scanBasePackages = {"io.opendid.web2gateway"})
 @EnableDiscoveryClient
+@EnableEncryptableProperties
 public class Web2GatewayApplication {
 
   public static void main(String[] args) {

@@ -53,6 +53,13 @@ sub-token-transfer:
   switch: true
   tempo: 15000
 
+jasypt:
+  encryptor:
+    password:
+    algorithm: PBEWITHHMACSHA512ANDAES_256
+    iv-generator-classname: org.jasypt.iv.RandomIvGenerator
+
+
 #Same as HomeChainName class definition
 homechain_name: APTOS
 

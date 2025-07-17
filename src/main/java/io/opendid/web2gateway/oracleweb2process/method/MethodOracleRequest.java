@@ -1,6 +1,7 @@
 package io.opendid.web2gateway.oracleweb2process.method;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.opendid.web2gateway.common.catches.ChainSignKeyVaultCache;
 import io.opendid.web2gateway.common.codes.JsonRpc2MessageCodeEnum;
@@ -15,6 +16,9 @@ import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2ServerError
 import io.opendid.web2gateway.model.dto.SelectVnListDTO;
 import io.opendid.web2gateway.model.dto.chainkey.ChainKeyDTO;
 import io.opendid.web2gateway.model.dto.oracle.*;
+import io.opendid.web2gateway.model.dto.oracle.subscription.SubscriptionGetRespDTO;
+import io.opendid.web2gateway.model.dto.subscription.EstimateOracleRequestRespDTO;
+import io.opendid.web2gateway.model.dto.vnclient.VnClientJobIdDTO;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
 import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Response;
 import io.opendid.web2gateway.model.jsonrpc2.method.OracleResultMethodRes;
@@ -36,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -68,6 +73,10 @@ public class MethodOracleRequest implements Web2Method {
   private ConsumerDataService consumerDataService;
   @Autowired
   private WalletPrivateKeyConfig walletPrivateKeyConfig;
+  @Autowired
+  private MethodEstimateOracleRequestToken methodEstimateOracleRequestToken;
+  @Autowired
+  private MethodSubGetSubscription messageSubGetSubscription;
 
 
   @Value("${oracle.callBack.url}")
@@ -203,7 +212,7 @@ public class MethodOracleRequest implements Web2Method {
 
 
   @Override
-  public String checkParams(JsonRpc2Request request) {
+  public String checkParams(JsonRpc2Request request) throws Exception {
 
     Object jobId = request.getParams().get("jobId");
     if (jobId == null || StringUtils.isBlank(String.valueOf(jobId))) {
@@ -221,6 +230,86 @@ public class MethodOracleRequest implements Web2Method {
       if (walletPrivateKeyConfig.getPrivatekey().size() != subscriptionConsumers.size()) {
         return "In the configuration: wallet.privatekey, all addresses need to be registered as consumers of subId";
       }
+
+      // Check balance and estimated charges
+      BigInteger balance = getBalance(request);
+      if (balance == null){
+        return "Error message when checking subId balance";
+      }
+
+      BigInteger estimateUsed = getEstimateUsed(request);
+      if (estimateUsed == null){
+        return "Error in querying estimated costs";
+      }
+
+      logger.info("MethodOracleRequest checkParams balance={}, estimateUsed={}", balance, estimateUsed);
+      if (balance.compareTo(estimateUsed) < 0){
+        return "Insufficient balance, subId balance: "+balance+" estimated fee: "+estimateUsed;
+      }
+
+    }
+
+    return null;
+  }
+
+  private BigInteger getBalance(JsonRpc2Request request) throws Exception {
+
+    LinkedHashMap params = request.getParams();
+    String subId = MapUtils.getString(params, "subId");
+
+    LinkedHashMap linkedHashMap = new LinkedHashMap();
+    List<String> subIdList = new ArrayList<>();
+    subIdList.add(subId);
+    linkedHashMap.put("subId",subIdList);
+
+    JsonRpc2Request oracleWrapRequestBody = new JsonRpc2Request(1L, "sub_get_subscription", linkedHashMap, "");
+
+    Object process = messageSubGetSubscription.process(oracleWrapRequestBody);
+
+    SubscriptionGetRespDTO subscriptionGetRespDTO = (SubscriptionGetRespDTO) process;
+
+    if (subscriptionGetRespDTO != null && subscriptionGetRespDTO.getSubIds().size() > 0){
+      return subscriptionGetRespDTO.getSubIds().get(0).getLatestBalance();
+    }
+
+    return null;
+  }
+
+  private BigInteger getEstimateUsed(JsonRpc2Request request) throws Exception {
+
+    LinkedHashMap params = request.getParams();
+
+    Integer vnCount = MapUtils.getInteger(params, "vnCount");
+    Object vnListObj = MapUtils.getObject(params, "vnList");
+    logger.info("getEstimateUsed,vnCount={},vnListObj={}",vnCount,vnListObj);
+    String[] vnList=null;
+    if (vnListObj instanceof JSONArray){
+      logger.info("getEstimateUsed,vnListObj instanceof JSONArray");
+      JSONArray jsonArray = (JSONArray) vnListObj;
+      vnList= jsonArray.toJavaList(String.class).toArray(new String[0]);
+    }
+
+    if (vnList!=null && vnList.length>0) {
+      logger.info("getEstimateUsed,vnList!=null,length={}",vnList.length);
+      vnCount = vnList.length;
+    }
+
+    String jobId = MapUtils.getString(params, "jobId");
+    boolean generateClaim = MapUtils.getBooleanValue(params, "generateClaim",false);
+
+    LinkedHashMap linkedHashMap = new LinkedHashMap();
+    linkedHashMap.put("jobId",jobId);
+    linkedHashMap.put("ovnCount",vnCount);
+    linkedHashMap.put("generateClaim",generateClaim);
+
+    JsonRpc2Request oracleWrapRequestBody = new JsonRpc2Request(1L, "get_method_estimate_oracle_request_token", linkedHashMap, "");
+
+    Object process = methodEstimateOracleRequestToken.process(oracleWrapRequestBody);
+
+    if (process != null){
+      EstimateOracleRequestRespDTO estimateOracleRequestResp = JSONObject.parseObject(process.toString(),
+          EstimateOracleRequestRespDTO.class);
+      return estimateOracleRequestResp.getJobFee();
     }
 
     return null;

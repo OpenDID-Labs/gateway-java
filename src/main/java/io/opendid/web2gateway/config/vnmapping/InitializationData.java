@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import io.opendid.web2gateway.common.catches.ChainSignKeyVaultCache;
 import io.opendid.web2gateway.common.utils.ECDSAUtils;
 import io.opendid.web2gateway.common.catches.*;
+import io.opendid.web2gateway.config.WalletPrivateKeyConfig;
 import io.opendid.web2gateway.model.dto.chainkey.ChainKeyDTO;
 import io.opendid.web2gateway.oraclebodyhandler.factory.HomeChainRequestBodyFactory;
 import io.opendid.web2gateway.oraclebodyhandler.interfaces.HomeChainRequestBodyInterface;
@@ -19,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import io.opendid.web2gateway.service.*;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +55,8 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
   @Value("${service-key.privatekey}")
   private String servicePrivateKey;
 
+  @Autowired
+  private WalletPrivateKeyConfig walletPrivateKeyConfig;
 
 
   @Override
@@ -72,13 +76,16 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
   }
 
 
-  private void initializationGatewayPublicKey(){
+  private void initializationGatewayPublicKey() {
 
     try {
 
+      // Check KeyCode
+      checkKeyCode();
+
       GatewayKeyVault gatewayKeyVaultOld = gatewayKeyVaultService.selectCurrentKeyVault();
 
-      if (gatewayKeyVaultOld != null){
+      if (gatewayKeyVaultOld != null) {
         gatewayKeyVaultService.deleteByKey(gatewayKeyVaultOld.getKeyId());
       }
 
@@ -93,7 +100,7 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
       // Insert GatewayKeyVault
       GatewayKeyVault gatewayKeyVault = new GatewayKeyVault();
       gatewayKeyVault.setServicePublicKey(servicePubKey);
-      if (gatewayKeyVaultOld != null){
+      if (gatewayKeyVaultOld != null) {
         gatewayKeyVault.setAdminJwt(gatewayKeyVaultOld.getAdminJwt());
       }
       gatewayKeyVault.setUpdateDate(new Date());
@@ -127,17 +134,45 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
         homeChainKeyManageService.insertHomeChainKey(gatewayHomechainKeyManage);
       }
 
-      ServiceKeyVaultCache.putServiceValue(ServiceKeyVaultCache.servicePublicKey,servicePubKey);
+      ServiceKeyVaultCache.putServiceValue(ServiceKeyVaultCache.servicePublicKey, servicePubKey);
 
     } catch (Exception exception) {
-      logger.error("GeneratePublicKey error:",exception);
+      logger.error("GeneratePublicKey error:", exception);
       throw new RuntimeException("GeneratePublicKey error");
     }
 
   }
 
+  private void checkKeyCode() {
 
-  private void initializationVnMapping(){
+    List<Map<String, String>> privateKeyList = walletPrivateKeyConfig.getPrivatekey();
+
+    for (int i = 0; i < privateKeyList.size(); i++) {
+
+      for (int g = i + 1; g < privateKeyList.size(); g++) {
+
+        String keyCode1 = privateKeyList.get(i).get(WalletPrivateKeyConfig.KEY_NAME);
+        String keyCode2 = privateKeyList.get(g).get(WalletPrivateKeyConfig.KEY_NAME);
+
+        String keyValue1 = privateKeyList.get(i).get(WalletPrivateKeyConfig.KEY_VALUE);
+        String keyValue2 = privateKeyList.get(g).get(WalletPrivateKeyConfig.KEY_VALUE);
+
+        if (keyCode1.equalsIgnoreCase(keyCode2)) {
+          throw new RuntimeException(
+              "GeneratePublicKey error: KeyCode " + keyCode1 + " cannot be repeated.");
+        }
+
+        if (keyValue1.equalsIgnoreCase(keyValue2)) {
+          logger.warn("GeneratePublicKey warn: The keyValue of " + keyCode1 + " and " + keyCode2
+              + " are duplicated.");
+        }
+      }
+
+    }
+  }
+
+
+  private void initializationVnMapping() {
 
     List<VnMapping> vninfo = vnMappingConfig.getVninfo();
 
@@ -145,7 +180,7 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
 
       vngatewayRouteInfoService.deleteAll();
       vngatewayJobidMappingService.deleteAll();
-      logger.info("VN Route SAVE Starting " );
+      logger.info("VN Route SAVE Starting ");
 
       for (VnMapping vnMapping : vninfo) {
 
@@ -195,12 +230,12 @@ public class InitializationData implements ApplicationListener<ApplicationStarte
     vngatewayRouteInfo.setUpdateDate(new Date());
 
     vngatewayRouteInfoService.insertRouteInfo(vngatewayRouteInfo);
-    logger.info("VN Route SAVE: " + JSON.toJSONString(vngatewayRouteInfo,true));
+    logger.info("VN Route SAVE: " + JSON.toJSONString(vngatewayRouteInfo, true));
 
 
   }
 
-  private void  initializationSubIdInfo(){
+  private void initializationSubIdInfo() {
     subIdCacheService.subIdToCache();
   }
 

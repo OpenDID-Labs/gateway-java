@@ -28,11 +28,11 @@ public class JwtCreate {
             JWTClaimDTO.ADMIN, mapClaims, jwtCatch1.getPrivateKey(),
             0L);
 
-    logger.info(
-        "\n============================\n "
-            + "RootJWT Token: {}"
-            + "\n============================\n",
-            tenantGenerateAccessTokenResDTO.getJwtToken());
+    System.out.println(
+            "\n============================\n "
+                    + "Root Token: "+  tenantGenerateAccessTokenResDTO.getJwtToken()
+                    + "\n============================\n"
+                  );
 
     return tenantGenerateAccessTokenResDTO.getJwtToken();
   }
