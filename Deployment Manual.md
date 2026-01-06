@@ -151,10 +151,10 @@ It is recommended to build the `opendid-gateway-java` on Ubuntu Server (Version 
    # Docker installation
    bash 2-install-docker.sh
    
-   # MySQL installation (Optional)
+   # MySQL installation
    bash 3-install-mysql.sh
    
-   # Nacos installation (Optional)
+   # Nacos installation
    bash 4-install_nacos.sh
    
    # Web2Gateway service installation
@@ -170,7 +170,7 @@ docker ps
 # Execute the docker ps command to view the current service status
 CONTAINER ID   IMAGE                       COMMAND                  CREATED        STATUS        PORTS                                                                                  NAMES
 551cf84b8a05   nacos/nacos-server:v2.4.3   "sh bin/docker-start…"   2 hours ago    Up 2 hours    0.0.0.0:8848->8848/tcp, :::8848->8848/tcp, 0.0.0.0:9848->9848/tcp, :::9848->9848/tcp   nacos
-899108816a0c   openjdk:17                  "sh /data/web2gatewa…"   19 hours ago   Up 19 hours                                                                                          web2gateway
+899108816a0c   eclipse-temurin:17-jdk      "sh /data/web2gatewa…"   19 hours ago   Up 19 hours                                                                                          web2gateway
 5677be8768ac   mysql:8.0.36                "docker-entrypoint.s…"   19 hours ago   Up 19 hours   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp                                   mysql
 
 # View web2gateway logs
@@ -211,7 +211,7 @@ To encrypt a new sensitive string (e.g., a password), you'll use the `JasyptPBES
     # Execute the encryption command
     docker run --rm \
       -v "$(pwd)/packages/jasypt-1.9.3.jar:/tmp/jasypt-1.9.3.jar" \
-      openjdk:17 \
+      eclipse-temurin:17-jdk \
       java -cp "/tmp/jasypt-1.9.3.jar" org.jasypt.intf.cli.JasyptPBEStringEncryptionCLI \
       input="YOUR_STRING_TO_ENCRYPT" password="YOUR_JASYPT_PASSWORD" \
       algorithm="PBEWITHHMACSHA512ANDAES_256" \
@@ -226,7 +226,7 @@ To encrypt a new sensitive string (e.g., a password), you'll use the `JasyptPBES
     ```bash
     docker run --rm \
       -v "$(pwd)/packages/jasypt-1.9.3.jar:/tmp/jasypt-1.9.3.jar" \
-      openjdk:17 \
+      eclipse-temurin:17-jdk \
       java -cp "/tmp/jasypt-1.9.3.jar" org.jasypt.intf.cli.JasyptPBEStringEncryptionCLI \
       input="myNewMySQLPass" password="myStrongJasyptPass" \
       algorithm="PBEWITHHMACSHA512ANDAES_256" \
@@ -261,7 +261,7 @@ To decrypt an existing encrypted value from Nacos (e.g., `ENC(AbCdEfG123...)`), 
     # Execute the decryption command
     docker run --rm \
     -v "$(pwd)/packages/jasypt-1.9.3.jar:/tmp/jasypt-1.9.3.jar" \
-    openjdk:17 \
+    eclipse-temurin:17-jdk \
     java -Djasypt.debug=true -cp "/tmp/jasypt-1.9.3.jar" org.jasypt.intf.cli.JasyptPBEStringDecryptionCLI \
     input="YOUR_ENCRYPTED_STRING" password="YOUR_JASYPT_PASSWORD" \
     algorithm="PBEWITHHMACSHA512ANDAES_256" \
