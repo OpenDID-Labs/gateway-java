@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import io.opendid.web2gateway.common.traceid.LogTraceIdConstant;
 import io.opendid.web2gateway.common.utils.ECDSAUtils;
 import io.opendid.web2gateway.common.vnclient.VnGlobalMapping;
+import io.opendid.web2gateway.common.web2.Web2MethodName;
 import io.opendid.web2gateway.contextfilter.api.SystemContextHolder;
 import io.opendid.web2gateway.exception.throwentity.jsonrpc2.JsonRpc2InternalErrorException;
 import io.opendid.web2gateway.model.dto.vnclient.VnCallbackSignPayloadDTO;
@@ -13,7 +14,9 @@ import io.opendid.web2gateway.model.jsonrpc2.JsonRpc2Request;
 import io.opendid.web2gateway.oracleweb2process.method.Web2CallbackMethod;
 import io.opendid.web2gateway.oracleweb2process.methodfactory.Web2MethodProcessFactory;
 import io.opendid.web2gateway.repository.mapper.OdOracleContractEventlogMapper;
+import io.opendid.web2gateway.repository.mapper.OracleRequestV2RecordMapper;
 import io.opendid.web2gateway.repository.model.OdOracleContractEventlog;
+import io.opendid.web2gateway.repository.model.OracleRequestV2RecordWithBLOBs;
 import io.opendid.web2gateway.repository.model.VngatewayRouteInfo;
 import io.opendid.web2gateway.service.CallbackParamsDecryptService;
 import org.aspectj.lang.JoinPoint;
@@ -50,6 +53,9 @@ public class EncryptDataProcessAop {
   @Autowired
   private OdOracleContractEventlogMapper odOracleContractEventlogMapper;
 
+  @Autowired
+  private OracleRequestV2RecordMapper oracleRequestV2RecordMapper;
+
 
   @Pointcut("@annotation(io.opendid.web2gateway.security.checkaspect.PublicApiSecurityCheck)")
   private void encryptDataProcess() {
@@ -76,21 +82,30 @@ public class EncryptDataProcessAop {
     String method = jsonRpc2Request.getMethod();
     Web2CallbackMethod methodProcess = (Web2CallbackMethod) Web2MethodProcessFactory.getMethodProcess(method);
     VnCallbackSignPayloadDTO signPayloadDTO = methodProcess.buildSignPayload(decryptData);
-    // 3.Get event log info by requestId
-    logger.info("EncryptDataProcess requestId={}",signPayloadDTO.getRequestId());
-//    OdOracleContractEventlog odOracleContractEventlog =
-//        odOracleContractEventlogMapper.selectByRequestId(signPayloadDTO.getRequestId());
-    OdOracleContractEventlog odOracleContractEventlog =
-            odOracleContractEventlogMapper.selectByRequestOracleHash(signPayloadDTO.getOracleRequestTxHash());
-    if (odOracleContractEventlog == null){
-      // 3.1 Event log info not exist
-      logger.info("EncryptDataProcess odOracleContractEventlog is null");
-      throw new JsonRpc2InternalErrorException(traceId,"requestId not exist!");
+    // 3.Get record info
+    logger.info("EncryptDataProcess requestId={}", signPayloadDTO.getRequestId());
+    String vnCode;
+    if (Web2MethodName.ORACLE_CALL_BACK_V2.equals(method)) {
+      OracleRequestV2RecordWithBLOBs v2Record =
+              oracleRequestV2RecordMapper.selectByRequestId(signPayloadDTO.getRequestId());
+      if (v2Record == null) {
+        logger.info("EncryptDataProcess oracleRequestV2Record is null");
+        throw new JsonRpc2InternalErrorException(traceId, "requestId not exist!");
+      }
+      vnCode = v2Record.getVnCode();
+    } else {
+      OdOracleContractEventlog odOracleContractEventlog =
+              odOracleContractEventlogMapper.selectByRequestOracleHash(signPayloadDTO.getOracleRequestTxHash());
+      if (odOracleContractEventlog == null) {
+        logger.info("EncryptDataProcess odOracleContractEventlog is null");
+        throw new JsonRpc2InternalErrorException(traceId, "requestId not exist!");
+      }
+      vnCode = odOracleContractEventlog.getVnCode();
     }
 
-    // 4.Get vn public key info by jobId
-    logger.info("EncryptDataProcess jobId={}",odOracleContractEventlog.getJobId());
-    VngatewayRouteInfo vnRouteByJobId = vnGlobalMapping.getVnRouteByJobId(odOracleContractEventlog.getJobId());
+    // 4.Get vn public key info by vnCode
+    logger.info("EncryptDataProcess vnCode={}", vnCode);
+    VngatewayRouteInfo vnRouteByJobId = vnGlobalMapping.getRouteInfoForVnCode(vnCode);
 
     String vnPublicKey = vnRouteByJobId.getVnPublicKey();
     if (vnPublicKey.startsWith("0x")){

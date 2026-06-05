@@ -21,6 +21,7 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,12 +39,12 @@ public class VnGatewayClient implements VnClient {
     @Autowired
     private VngatewayRouteInfoService vngatewayRouteInfoService;
 
-      /**
-   * 选择VnCode说明：
-   *    VnClientJobIdDTO中vnCode字段如果有值，则为指定VnCode，会调用该VnCode的gateway。
-   *    VnClientJobIdDTO中vnCode字段如果为空，且JobId不为空，会查询所有支持该JobId的VnCode，然后随机选择一个。
-   *    VnClientJobIdDTO中vnCode字段如果为空，且JobId也为空，会查询所有的VnCode，然后随机选择一个。
-   */
+    /**
+     * 选择VnCode说明：
+     * VnClientJobIdDTO中vnCode字段如果有值，则为指定VnCode，会调用该VnCode的gateway。
+     * VnClientJobIdDTO中vnCode字段如果为空，且JobId不为空，会查询所有支持该JobId的VnCode，然后随机选择一个。
+     * VnClientJobIdDTO中vnCode字段如果为空，且JobId也为空，会查询所有的VnCode，然后随机选择一个。
+     */
     @Override
     public JsonRpc2Response requestSubscriptionSend(VnClientJobIdDTO vnClientJobIdDTO) throws Exception {
         return callVn(vnClientJobIdDTO, VnRequestAddress.SUB_SEND);
@@ -74,65 +75,73 @@ public class VnGatewayClient implements VnClient {
             counter = 1;
         }
 
-        logger.info("VnGatewayClient request start parmas={}", JSON.toJSONString(vnClientJobIdDTO));
+        logger.info("VnGatewayClient request start parmas2={}", JSON.toJSONString(vnClientJobIdDTO));
 
-        String vnCode = "";
+        String vnCode =null;
+        List<VngatewayRouteInfo> vnAllCodes=new ArrayList<>(5);
         if (StringUtils.isBlank(vnClientJobIdDTO.getVnCode())) {
-            vnCode = getVnCode(vnClientJobIdDTO);
+//            vnCode = getVnCode(vnClientJobIdDTO);
+             vnAllCodes = getVnAllCodes();
         } else {
             vnCode = vnClientJobIdDTO.getVnCode();
+            VngatewayRouteInfo vnGatewayRouteInfo = vnGlobalMapping.getRouteInfoForVnCode(vnCode);
+            vnAllCodes= Collections.singletonList(vnGatewayRouteInfo);
         }
 
 
-        VngatewayRouteInfo vnGatewayRouteInfo = vnGlobalMapping.getRouteInfoForVnCode(vnCode);
-        logger.info("VnGatewayClient request vnGatewayRouteInfo={}", JSON.toJSONString(vnGatewayRouteInfo));
+        for (VngatewayRouteInfo routeInfo : vnAllCodes) {
+            logger.info("VnGatewayClient request vnGatewayRouteInfo={}", JSON.toJSONString(routeInfo));
+            JsonRpc2Response jsonRpc2Response = reqVn(routeInfo, vnApiPath, vnClientJobIdDTO, counter);
+            if (jsonRpc2Response != null){
+                logger.info("VnGatewayClient request success=  {}  addr:{}", routeInfo.getVnCode(),routeInfo.getUrl());
+                return jsonRpc2Response;
+            }else{
+                logger.warn("VnGatewayClient request fail.  vn:{}  addr:{} .", routeInfo.getVnCode(),routeInfo.getUrl());
 
+            }
+
+        }
+        logger.info("VnGatewayClient request return null.  vns:{}", JSON.toJSONString(vnAllCodes));
+        return null;
+
+
+    }
+
+    private JsonRpc2Response reqVn(VngatewayRouteInfo vnGatewayRouteInfo,
+                       String vnApiPath, VnClientJobIdDTO vnClientJobIdDTO,
+                       Integer counter
+    ) throws Exception {
         if (vnGatewayRouteInfo != null) {
-
             logger.info("VnGatewayClient request vnGatewayRouteInfo != null,url={}",
                     vnGatewayRouteInfo.getUrl());
-
             String accessToken;
-
             if (vnGatewayRouteInfo.getClientId() != null &&
                     !"".equals(vnGatewayRouteInfo.getClientId())) {
-
                 accessToken = keyClockTokenUtil.getToken(vnGatewayRouteInfo.getVnCode(),
                         vnGatewayRouteInfo.getUrl());
-
             } else {
-
                 accessToken = keyClockTokenUtil.initToken(
                         vnGatewayRouteInfo.getVnCode(),
                         vnGatewayRouteInfo.getUrl()
                 );
 
             }
-
             logger.info("VnGatewayClient request accessToken = {}", accessToken);
-
             ResponseDTO responseDTO = okHttpClientUtil.postForJson(
                     vnGatewayRouteInfo.getUrl() + vnApiPath,
                     vnClientJobIdDTO.getRequestBody(),
                     accessToken
             );
-
             logger.info("VnGatewayClient request result={}", JSON.toJSONString(responseDTO));
-
             if (responseDTO.getCode().equals(401) && counter > 0) {
-
                 logger.info("VnGatewayClient request code = 401,counter={}", counter);
-
                 counter = counter - 1;
-
                 keyClockTokenUtil.createToken(
                         vnGatewayRouteInfo.getVnCode(),
                         vnGatewayRouteInfo.getUrl()
                 );
-
                 vnClientJobIdDTO.setCounter(counter);
                 return requestJobSend(vnClientJobIdDTO);
-
             } else if (responseDTO.getCode().equals(200) || responseDTO.getCode().equals(400)) {
                 logger.info("VnGatewayClient request code = 200");
                 return responseManage(responseDTO.getBody());
@@ -148,9 +157,6 @@ public class VnGatewayClient implements VnClient {
                     JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32005.getMessage(),
                     JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32005.getMessage());
         }
-
-        logger.info("VnGatewayClient request return null");
-
 
         return null;
     }
@@ -207,6 +213,29 @@ public class VnGatewayClient implements VnClient {
             logger.info("VnGatewayClient request getVnCode is not blank={}", vnClientJobIdDTO.getVnCode());
             return vnClientJobIdDTO.getVnCode();
         }
+
+    }
+
+
+    private List<VngatewayRouteInfo>  getVnAllCodes() throws Exception {
+
+        // If there is a VnCode in the parameter, it will be returned.
+        // If not, a supported VnCode will be randomly selected.
+        logger.info("VnGatewayClient request getVnCode is blank");
+
+        List<VngatewayRouteInfo> vngatewayRouteInfos =
+                vngatewayRouteInfoService.selectAllVn();
+
+        if (vngatewayRouteInfos.isEmpty()) {
+            logger.info("VnGatewayClient request getVnCode vnGatewayRouteInfo = null");
+            throw new JsonRpc2ServerErrorException(
+                    JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32002.getCode(),
+                    MDC.get(LogTraceIdConstant.TRACE_ID),
+                    JsonRpc2MessageCodeEnum.JSON_RPC2_CODE_32002.getMessage(),
+                    "The Vn info is not exist!");
+        }
+
+        return vngatewayRouteInfos;
 
     }
 }

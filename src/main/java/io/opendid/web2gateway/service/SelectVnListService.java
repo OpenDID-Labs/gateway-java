@@ -28,7 +28,7 @@ public class SelectVnListService {
 
   /**
    * 获取VNList逻辑：
-   *    1，SelectVnListDTO中的vnList不为空，则为指定VNCode，返回指定的Vn信息
+   *    1，SelectVnListDTO中的vnList不为空，则为指定VNCode，查询该VNCode是否支持当前jobId，返回指定的Vn信息
    *    2，SelectVnListDTO中的vnList为空，vnCount不为空，jobId不为空，则查询所有支持该jobId的vn，随机返回指定个数的Vn信息
    *    3，SelectVnListDTO中的vnList为空，vnCount不为空，jobId为空，则查询所有的vn，随机返回指定个数的Vn信息
    */
@@ -51,7 +51,8 @@ public class SelectVnListService {
     if (vnList!=null && vnList.length>0) {
 
       // Determine whether vnCode is correct
-      List<VngatewayRouteInfo> vnGatewayRouteInfos = vngatewayRouteInfoService.selectVnRouteByCodes(vnList);
+      logger.info("MethodOracleRequest selectVnList jobId={},vnList={}", jobId, vnList);
+      List<VngatewayRouteInfo> vnGatewayRouteInfos = vngatewayRouteInfoService.selectVnRouteByCodes(vnList,jobId);
       if (vnGatewayRouteInfos.size() != vnList.length) {
         // The number of input parameters is inconsistent with the number of query results,
         // indicating that there is non-existent vnGateway information in the input parameters.

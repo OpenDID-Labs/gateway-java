@@ -1,6 +1,8 @@
 package io.opendid.web2gateway.repository.mapper;
 
 import io.opendid.web2gateway.repository.model.VngatewayRouteInfo;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface VngatewayRouteInfoMapper {
@@ -24,7 +26,7 @@ public interface VngatewayRouteInfoMapper {
 
     int deleteAll();
 
-    List<VngatewayRouteInfo> selectByCodes(String[] vnCodes);
+    List<VngatewayRouteInfo> selectByCodes(@Param("vnCodes")String[] vnCodes, @Param("jobId")String jobId);
 
     List<VngatewayRouteInfo> selectAllVn();
 

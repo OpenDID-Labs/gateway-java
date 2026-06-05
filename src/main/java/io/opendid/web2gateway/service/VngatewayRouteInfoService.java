@@ -32,10 +32,10 @@ public class VngatewayRouteInfoService {
     vngatewayRouteInfoMapper.insertSelective(vngatewayRouteInfo);
   }
 
-  public List<VngatewayRouteInfo> selectVnRouteByCodes(String[] codes){
+  public List<VngatewayRouteInfo> selectVnRouteByCodes(String[] codes,String jobId){
 
     List<VngatewayRouteInfo> vnGatewayRouteInfos =
-        vngatewayRouteInfoMapper.selectByCodes(codes);
+        vngatewayRouteInfoMapper.selectByCodes(codes,jobId);
 
     return vnGatewayRouteInfos;
   }

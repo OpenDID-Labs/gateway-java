@@ -70,12 +70,24 @@
 
   <select id="selectByCodes" resultMap="BaseResultMap">
     SELECT
-    <include refid="Base_Column_List" />
-    FROM vngateway_route_info
-    WHERE vn_code IN
-    <foreach collection="array" item="vnCode" open="(" separator="," close=")">
+           route.route_id,
+           route.vn_code, url,
+           route.ssl_enabled,
+           route.gateway_disable,
+           route.client_id,
+           route.client_secret,
+           route.update_date,
+           route.vn_public_key,
+           route.vn_homechain_public_key,
+           route.vn_homechain_account,
+           route.vn_home_chain_name
+    FROM vngateway_route_info route
+    LEFT JOIN vngateway_jobid_mapping mapping ON route.vn_code=mapping.vn_code
+    WHERE route.vn_code IN
+    <foreach collection="vnCodes" item="vnCode" open="(" separator="," close=")">
       #{vnCode}
     </foreach>
+    and mapping.job_id=#{jobId}
   </select>
 
   <select id="selectAllVn"  resultMap="BaseResultMap">

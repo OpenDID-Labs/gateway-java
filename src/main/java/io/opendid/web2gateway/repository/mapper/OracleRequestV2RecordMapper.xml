@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.opendid.web2gateway.repository.mapper.OracleRequestV2RecordMapper">
+  <resultMap id="BaseResultMap" type="io.opendid.web2gateway.repository.model.OracleRequestV2Record">
+    <id column="log_id" jdbcType="BIGINT" property="logId" />
+    <result column="request_id" jdbcType="VARCHAR" property="requestId" />
+    <result column="vn_code" jdbcType="VARCHAR" property="vnCode" />
+    <result column="job_id" jdbcType="VARCHAR" property="jobId" />
+    <result column="platform_code" jdbcType="VARCHAR" property="platformCode" />
+    <result column="process_status" jdbcType="INTEGER" property="processStatus" />
+    <result column="trace_id" jdbcType="VARCHAR" property="traceId" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="io.opendid.web2gateway.repository.model.OracleRequestV2RecordWithBLOBs">
+    <result column="error_msg" jdbcType="LONGVARCHAR" property="errorMsg" />
+    <result column="request_body" jdbcType="LONGVARCHAR" property="requestBody" />
+    <result column="response_body" jdbcType="LONGVARCHAR" property="responseBody" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    log_id, request_id, vn_code, job_id, platform_code, process_status, trace_id,
+    create_date, update_date
+  </sql>
+  <sql id="Blob_Column_List">
+    error_msg, request_body, response_body
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from oracle_request_v2_record
+    where log_id = #{logId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from oracle_request_v2_record
+    where log_id = #{logId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="io.opendid.web2gateway.repository.model.OracleRequestV2RecordWithBLOBs">
+    insert into oracle_request_v2_record (log_id, request_id, vn_code,
+      job_id, platform_code, process_status,
+      trace_id, create_date, update_date,
+      error_msg, request_body, response_body
+      )
+    values (#{logId,jdbcType=BIGINT}, #{requestId,jdbcType=VARCHAR}, #{vnCode,jdbcType=VARCHAR},
+      #{jobId,jdbcType=VARCHAR}, #{platformCode,jdbcType=VARCHAR}, #{processStatus,jdbcType=INTEGER},
+      #{traceId,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP},
+      #{errorMsg,jdbcType=LONGVARCHAR}, #{requestBody,jdbcType=LONGVARCHAR}, #{responseBody,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="io.opendid.web2gateway.repository.model.OracleRequestV2RecordWithBLOBs">
+    insert into oracle_request_v2_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="logId != null">
+        log_id,
+      </if>
+      <if test="requestId != null">
+        request_id,
+      </if>
+      <if test="vnCode != null">
+        vn_code,
+      </if>
+      <if test="jobId != null">
+        job_id,
+      </if>
+      <if test="platformCode != null">
+        platform_code,
+      </if>
+      <if test="processStatus != null">
+        process_status,
+      </if>
+      <if test="traceId != null">
+        trace_id,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="errorMsg != null">
+        error_msg,
+      </if>
+      <if test="requestBody != null">
+        request_body,
+      </if>
+      <if test="responseBody != null">
+        response_body,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="logId != null">
+        #{logId,jdbcType=BIGINT},
+      </if>
+      <if test="requestId != null">
+        #{requestId,jdbcType=VARCHAR},
+      </if>
+      <if test="vnCode != null">
+        #{vnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="jobId != null">
+        #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="platformCode != null">
+        #{platformCode,jdbcType=VARCHAR},
+      </if>
+      <if test="processStatus != null">
+        #{processStatus,jdbcType=INTEGER},
+      </if>
+      <if test="traceId != null">
+        #{traceId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="errorMsg != null">
+        #{errorMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="requestBody != null">
+        #{requestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="responseBody != null">
+        #{responseBody,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="io.opendid.web2gateway.repository.model.OracleRequestV2RecordWithBLOBs">
+    update oracle_request_v2_record
+    <set>
+      <if test="requestId != null">
+        request_id = #{requestId,jdbcType=VARCHAR},
+      </if>
+      <if test="vnCode != null">
+        vn_code = #{vnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="jobId != null">
+        job_id = #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="platformCode != null">
+        platform_code = #{platformCode,jdbcType=VARCHAR},
+      </if>
+      <if test="processStatus != null">
+        process_status = #{processStatus,jdbcType=INTEGER},
+      </if>
+      <if test="traceId != null">
+        trace_id = #{traceId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="errorMsg != null">
+        error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="requestBody != null">
+        request_body = #{requestBody,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="responseBody != null">
+        response_body = #{responseBody,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where log_id = #{logId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="io.opendid.web2gateway.repository.model.OracleRequestV2RecordWithBLOBs">
+    update oracle_request_v2_record
+    set request_id = #{requestId,jdbcType=VARCHAR},
+      vn_code = #{vnCode,jdbcType=VARCHAR},
+      job_id = #{jobId,jdbcType=VARCHAR},
+      platform_code = #{platformCode,jdbcType=VARCHAR},
+      process_status = #{processStatus,jdbcType=INTEGER},
+      trace_id = #{traceId,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      error_msg = #{errorMsg,jdbcType=LONGVARCHAR},
+      request_body = #{requestBody,jdbcType=LONGVARCHAR},
+      response_body = #{responseBody,jdbcType=LONGVARCHAR}
+    where log_id = #{logId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="io.opendid.web2gateway.repository.model.OracleRequestV2Record">
+    update oracle_request_v2_record
+    set request_id = #{requestId,jdbcType=VARCHAR},
+      vn_code = #{vnCode,jdbcType=VARCHAR},
+      job_id = #{jobId,jdbcType=VARCHAR},
+      platform_code = #{platformCode,jdbcType=VARCHAR},
+      process_status = #{processStatus,jdbcType=INTEGER},
+      trace_id = #{traceId,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where log_id = #{logId,jdbcType=BIGINT}
+  </update>
+</mapper>

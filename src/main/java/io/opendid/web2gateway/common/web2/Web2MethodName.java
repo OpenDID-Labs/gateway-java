@@ -48,4 +48,10 @@ public interface Web2MethodName {
 
   String GET_METHOD_ESTIMATE_ORACLE_REQUEST_TOKEN="get_method_estimate_oracle_request_token";
 
+  String ORACLE_REQUEST_V2="oracle_request_v2";
+
+  String ORACLE_GET_TRANSACTION_V2="oracle_get_transaction_v2";
+
+  String ORACLE_CALL_BACK_V2="oracle_callback_v2";
+
 }
